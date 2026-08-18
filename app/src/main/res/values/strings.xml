@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">gallery-sync-app</string>
+    <string name="text_value">SongName</string>
+    <string-array name="song_list">
+        <item>payPhone</item>
+        <item>leave Out ALl Rest</item>
+        <item>one More Light</item>
+        <item>Breaking The Habit</item>
+        <item>GodDamn</item>
+    </string-array>
+    <string name="next_song">NextSong</string>
+    <string name="list_label">Click Button To See The Songs</string>
 </resources>
