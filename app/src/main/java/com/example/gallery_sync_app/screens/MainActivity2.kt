@@ -1,18 +1,38 @@
 package com.example.gallery_sync_app.screens
 
+import android.app.ComponentCaller
+import android.content.Intent
+import android.media.Image
 import android.os.Bundle
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.gallery_sync_app.R
+import com.example.gallery_sync_app.screens.repo.Information
 
 class MainActivity2 : AppCompatActivity() {
+    private lateinit var info: Information
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         //where all the intializing happens and only executes once
+        info= Information()
+        val list=info.getList()
+        val index=intent.getIntExtra("index",0)
         super.onCreate(savedInstanceState)
+        val song= list[index]
         enableEdgeToEdge()
         setContentView(R.layout.activity_main2)
+        val image_id=findViewById<ImageView>(R.id.image)
+        image_id.setImageResource(song.image)
+        val artist_text=findViewById<TextView>(R.id.artist)
+        artist_text.text=song.song_name
+        val bio=findViewById<TextView>(R.id.bio)
+        bio.text=song.bio
+
 
     }
 
@@ -23,7 +43,7 @@ class MainActivity2 : AppCompatActivity() {
     }
 
     override fun onPause() {
-        //where the it loses focus
+        //where  it loses focus
         super.onPause()
     }
 
