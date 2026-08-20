@@ -1,6 +1,7 @@
 package com.example.gallery_sync_app.screens.bottomNavImp
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -22,15 +23,20 @@ class home_screen : AppCompatActivity() {
         bottom_id.setOnItemSelectedListener { item ->
             when(item.itemId){
                 R.id.settings -> {
+                    Toast.makeText(this,"You On Setting Screen",Toast.LENGTH_LONG).show()
                     showFragment(Settings_screen())
                     true
                 }
                 R.id.home -> {
+                    Toast.makeText(this,"You On Home Screen",Toast.LENGTH_LONG).show()
+
                     showFragment(homeFrag_screen())
 
                     true
                 }
                 R.id.chats -> {
+                    Toast.makeText(this,"You On Chat Screen",Toast.LENGTH_LONG).show()
+
                     showFragment(chat_Screen())
 
                     true
