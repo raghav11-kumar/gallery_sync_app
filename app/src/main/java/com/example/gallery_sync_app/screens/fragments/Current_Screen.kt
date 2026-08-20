@@ -12,6 +12,7 @@ import com.example.gallery_sync_app.R
 
 class Current_Screen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        //this screen defines the flow of how in single activity the fragments are implemented
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_current_screen)
