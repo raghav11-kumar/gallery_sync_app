@@ -26,10 +26,9 @@
     <string name="d2">Dialog 2</string>
     <string name="d3">Dialog 3</string>
     <string name="contactHint">Enter Contact Name</string>
-    <string name ="SaveContact">Do You Want To Save Contact</string>
+    <string name="SaveContact">Do You Want To Save Contact</string>
     <string name="pos">Yes </string>
     <string name="neg">No </string>
-
 
 
 </resources>
