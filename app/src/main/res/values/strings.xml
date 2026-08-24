@@ -10,4 +10,26 @@
     </string-array>
     <string name="next_song">NextSong</string>
     <string name="list_label">Click Button To See The Songs</string>
+    <string name="hintB">Click on Song Title To Check Info</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="frag_1">Fragment 1</string>
+    <string name="frag_2">Fragment 2</string>
+    <string name="frag1_info">Welcome To Fragment 1</string>
+    <string name="chats_icon">Chats</string>
+    <string name="frag2_info">Welcome To Fragment 2</string>
+    <string name="home_icon">Home</string>
+    <string name="setting_icon">Settings</string>
+    <string name="chatInfo">ChatInfo</string>
+    <string name="settingInfo">Setting</string>
+    <string name="HomeInfo">HomeScreen</string>
+    <string name="d1">Save Contact</string>
+    <string name="d2">Dialog 2</string>
+    <string name="d3">Dialog 3</string>
+    <string name="contactHint">Enter Contact Name</string>
+    <string name ="SaveContact">Do You Want To Save Contact</string>
+    <string name="pos">Yes </string>
+    <string name="neg">No </string>
+
+
+
 </resources>
