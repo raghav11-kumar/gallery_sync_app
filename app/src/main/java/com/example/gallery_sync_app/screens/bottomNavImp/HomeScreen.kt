@@ -4,13 +4,11 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.gallery_sync_app.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-class home_screen : AppCompatActivity() {
+class HomeScreen : AppCompatActivity() {
     /*well this screen start with the flow of showing the use of bottomnavigation  which help to shift blw the
      fragments
     * */
@@ -19,7 +17,7 @@ class home_screen : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_home_screen)
         val bottom_id=findViewById<BottomNavigationView>(R.id.bottom_nav)
-        showFragment(chat_Screen())
+        showFragment(ChatScreen())
         bottom_id.setOnItemSelectedListener { item ->
             when(item.itemId){
                 R.id.settings -> {
@@ -30,14 +28,14 @@ class home_screen : AppCompatActivity() {
                 R.id.home -> {
                     Toast.makeText(this,"You On Home Screen",Toast.LENGTH_LONG).show()
 
-                    showFragment(homeFrag_screen())
+                    showFragment(HomeFragScreen())
 
                     true
                 }
                 R.id.chats -> {
                     Toast.makeText(this,"You On Chat Screen",Toast.LENGTH_LONG).show()
 
-                    showFragment(chat_Screen())
+                    showFragment(ChatScreen())
 
                     true
                 }

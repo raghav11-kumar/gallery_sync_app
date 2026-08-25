@@ -9,6 +9,11 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:text="@string/gallery_"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textSize="19.sp"
+        android:id="@+id/gallery_text"
+        android:textStyle="bold"/>
 
 </FrameLayout>

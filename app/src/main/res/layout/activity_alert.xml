@@ -6,7 +6,7 @@
     android:padding="24.dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screens.alertDialog.alertActivity">
+    tools:context=".screens.alertDialog.AlertActivity">
 
     <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edit_text_id"

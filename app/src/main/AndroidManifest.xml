@@ -26,7 +26,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".screens.bottomNavImp.home_screen"
+            android:name=".screens.bottomNavImp.HomeScreen"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -60,7 +60,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".screens.alertDialog.alertActivity"
+            android:name=".screens.alertDialog.AlertActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -74,7 +74,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".screens.main_app.mainScreen"
+            android:name=".screens.main_app.MainScreen"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

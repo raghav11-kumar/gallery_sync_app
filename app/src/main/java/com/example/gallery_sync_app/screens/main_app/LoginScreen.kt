@@ -2,9 +2,9 @@ package com.example.gallery_sync_app.screens.main_app
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import android.widget.TextView
+import androidx.navigation.Navigation
 import com.example.gallery_sync_app.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -18,4 +18,12 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class loginScreen : Fragment(R.layout.fragment_login_screen) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val button = view.findViewById<TextView>(R.id.loginText)
+        button.setOnClickListener {
+            Navigation.findNavController(it).navigate(R.id.navigateLoginToGallery)
+        }
+    }
+
 }

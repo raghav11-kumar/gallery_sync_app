@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto"
-             android:id="@+id/nav_graph">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginScreen"
+    >
+    <fragment
+        android:id="@+id/loginScreen"
+        android:name="com.example.gallery_sync_app.screens.main_app.loginScreen"
+        android:label="@string/loginHeading"
+        tools:layout="@layout/fragment_login_screen">
+        <action
+            android:id="@+id/navigateLoginToGallery"
+            app:destination="@+id/galleryScreen"
+            />
+    </fragment>
+    <fragment
+        android:id="@+id/galleryScreen"
+        android:name="com.example.gallery_sync_app.screens.main_app.galleryScreen"
+        android:label="GalleryScreen"
+        tools:layout="@layout/fragment_gallery_screen">
+        <action
+            android:id="@+id/navigateGalleryToLogin"
+            app:destination="@+id/loginScreen">
+        </action>
+    </fragment>
 
 </navigation>

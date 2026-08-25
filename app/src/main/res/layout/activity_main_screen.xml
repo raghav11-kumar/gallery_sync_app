@@ -5,26 +5,27 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".screens.main_app.mainScreen">
-    <androidx.appcompat.widget.AppCompatSpinner
-        android:layout_width="wrap_content"
-        android:layout_height="50.dp"
+    tools:context=".screens.main_app.MainScreen">
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/frag_cont"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@id/mainBott"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:entries="@array/song_list"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:id="@+id/spinner_id"
-        />
-    <androidx.appcompat.widget.AppCompatButton
-        android:layout_width="wrap_content"
+        app:navGraph="@navigation/nav_graph" />
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/next_song"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_id"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/main_bottom"
+        android:id="@+id/mainBott"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:id="@+id/check1"
+        app:layout_constraintStart_toStartOf="parent"
+
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
