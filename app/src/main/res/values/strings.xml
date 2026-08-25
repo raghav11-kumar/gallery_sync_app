@@ -34,6 +34,7 @@
     <string name="loginHeading">Login</string>
     <string name="nameCred">Enter Your Name</string>
     <string name="passCred">Enter Your PassWord</string>
+    <string name="webSockets">WebSockets</string>
 
 
 </resources>

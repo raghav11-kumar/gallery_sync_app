@@ -1,4 +1,4 @@
-package com.example.gallery_sync_app.screens.main_app
+package com.example.gallery_sync_app.screens.mainApp
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,15 +14,15 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [galleryScreen.newInstance] factory method to
+ * Use the [LoginScreen.newInstance] factory method to
  * create an instance of this fragment.
  */
-class galleryScreen : Fragment(R.layout.fragment_gallery_screen) {
+class LoginScreen : Fragment(R.layout.fragment_login_screen) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val button=view.findViewById<TextView>(R.id.gallery_text)
+        val button = view.findViewById<TextView>(R.id.loginText)
         button.setOnClickListener {
-            Navigation.findNavController(it).navigate(R.id.navigateGalleryToLogin)
+            Navigation.findNavController(it).navigate(R.id.navigateLoginToButtonHolder)
         }
     }
 

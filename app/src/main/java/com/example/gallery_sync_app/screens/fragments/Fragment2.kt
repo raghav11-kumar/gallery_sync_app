@@ -10,9 +10,9 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [fragment2.newInstance] factory method to
+ * Use the [Fragment2.newInstance] factory method to
  * create an instance of this fragment.
  */
-class fragment2 : Fragment(R.layout.fragment_fragment2) {
+class Fragment2 : Fragment(R.layout.fragment_fragment2) {
 
 }

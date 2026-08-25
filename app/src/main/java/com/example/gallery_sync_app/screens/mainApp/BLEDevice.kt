@@ -1,4 +1,4 @@
-package com.example.gallery_sync_app.screens.bottomNavImp
+package com.example.gallery_sync_app.screens.mainApp
 
 import androidx.fragment.app.Fragment
 import com.example.gallery_sync_app.R
@@ -10,9 +10,11 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [SettingScreen.newInstance] factory method to
+ * Use the [BLEDevice.newInstance] factory method to
  * create an instance of this fragment.
  */
-class SettingScreen : Fragment(R.layout.fragment_settings_screen) {
+class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
+
+
 
 }

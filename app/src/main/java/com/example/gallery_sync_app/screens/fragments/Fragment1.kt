@@ -10,10 +10,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [fragment1.newInstance] factory method to
+ * Use the [Fragment1.newInstance] factory method to
  * create an instance of this fragment.
  */
-class fragment1 : Fragment(R.layout.fragment_fragment1) {
+class Fragment1 : Fragment(R.layout.fragment_fragment1) {
     //this fun also can be called by passing layout in constructor to
 //    override fun onCreateView(
 //        inflater: LayoutInflater,

@@ -3,27 +3,64 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginScreen"
+    app:startDestination="@id/loginFragScreen"
     >
     <fragment
-        android:id="@+id/loginScreen"
-        android:name="com.example.gallery_sync_app.screens.main_app.loginScreen"
+
+        android:id="@+id/loginFragScreen"
+        android:name="com.example.gallery_sync_app.screens.mainApp.LoginScreen"
         android:label="@string/loginHeading"
-        tools:layout="@layout/fragment_login_screen">
+        tools:layout="@layout/fragment_login_screen"
+        >
         <action
-            android:id="@+id/navigateLoginToGallery"
-            app:destination="@+id/galleryScreen"
-            />
+            android:id="@+id/navigateLoginToButtonHolder"
+            app:destination="@+id/buttonHolderFragScreen"/>
     </fragment>
     <fragment
-        android:id="@+id/galleryScreen"
-        android:name="com.example.gallery_sync_app.screens.main_app.galleryScreen"
-        android:label="GalleryScreen"
-        tools:layout="@layout/fragment_gallery_screen">
+        android:id="@+id/buttonHolderFragScreen"
+        android:name="com.example.gallery_sync_app.screens.mainApp.ButtonsHolder"
+        android:label="@string/home_icon"
+        tools:layout="@layout/fragment_buttons_holder"
+        >
         <action
-            android:id="@+id/navigateGalleryToLogin"
-            app:destination="@+id/loginScreen">
-        </action>
+            android:id="@+id/navigateMainToBle"
+            app:destination="@+id/bleFragScreen"/>
+        <action
+            android:id="@+id/navigateMainToGallery"
+            app:destination="@+id/galleryFragScreen"
+            />
+        <action
+            android:id="@+id/navigateMainToWebSocket"
+            app:destination="@+id/webSocketFragScreen"/>
+
+
     </fragment>
+    <fragment
+        android:id="@+id/bleFragScreen"
+        android:label="@string/ble"
+        android:name="com.example.gallery_sync_app.screens.mainApp.BLEDevice"
+        tools:layout="@layout/fragment_b_l_e_device">
+        <action
+            android:id="@+id/navigateBleToButtonHolder"
+            app:destination="@+id/buttonHolderFragScreen"/>
+    </fragment>
+    <fragment
+        android:id="@+id/galleryFragScreen"
+        android:name="com.example.gallery_sync_app.screens.mainApp.GalleryScreen"
+        android:label="@string/gallery_"
+        tools:layout="@layout/fragment_gallery_screen"
+        >
+
+    </fragment>
+    <fragment
+        android:id="@+id/webSocketFragScreen"
+        android:name="com.example.gallery_sync_app.screens.mainApp.WebSocketScreen"
+        android:label="@string/webSockets"
+        tools:layout="@layout/fragment_web_socket_screen"
+        >
+
+    </fragment>
+
+
 
 </navigation>

@@ -22,7 +22,7 @@ class HomeScreen : AppCompatActivity() {
             when(item.itemId){
                 R.id.settings -> {
                     Toast.makeText(this,"You On Setting Screen",Toast.LENGTH_LONG).show()
-                    showFragment(Settings_screen())
+                    showFragment(SettingScreen())
                     true
                 }
                 R.id.home -> {

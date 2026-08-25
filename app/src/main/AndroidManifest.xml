@@ -36,7 +36,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".screens.fragments.Current_Screen"
+            android:name=".screens.fragments.CurrentScreen"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -74,7 +74,7 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".screens.main_app.MainScreen"
+            android:name=".screens.mainApp.MainScreen"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
