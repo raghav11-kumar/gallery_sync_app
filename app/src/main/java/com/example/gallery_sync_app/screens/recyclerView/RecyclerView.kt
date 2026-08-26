@@ -4,6 +4,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContract
@@ -30,22 +31,26 @@ class RecyclerView : AppCompatActivity() {
         recy_id.adapter=adapter
         recy_id.layoutManager= LinearLayoutManager(this)
         val button_id=findViewById<Button>(R.id.add)
-        var image_uri: Uri?=null
+        val edit_text=findViewById<EditText>(R.id.et_id)
+
         val gal_image=registerForActivityResult(
             ActivityResultContracts.PickVisualMedia()
         ){uri->
             uri?.let {
-                image_uri=it
+
+                galleryList.add(
+                    GalleryImage(it,"${edit_text.text}")
+                )
+                adapter.notifyItemInserted(galleryList.size-1)
+
             }
         }
         button_id.setOnClickListener {
             gal_image.launch(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
             )
-            galleryList.add(
-                GalleryImage(image_uri,"New GalleryImage")
-            )
-            adapter.notifyItemInserted(galleryList.size-1)
+
+
 
 
         }
