@@ -1,4 +1,4 @@
-package com.example.gallery_sync_app.screens.screens
+package com.example.gallery_sync_app.screens.intents
 
 import android.os.Bundle
 import android.widget.ImageView

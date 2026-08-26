@@ -18,9 +18,10 @@
     <androidx.appcompat.widget.AppCompatButton
         android:layout_width="190.dp"
         android:layout_height="100dp"
-
+android:background="@drawable/text_border"
         android:text="@string/ble"
 android:gravity="center"
+android:layout_margin="10.dp"
         android:id="@+id/ble_button"
         >
 
@@ -31,9 +32,12 @@ android:gravity="center"
         android:layout_width="190.dp"
         android:layout_height="100dp"
         android:text="@string/gallery_"
+        android:background="@drawable/text_border"
+        android:layout_margin="10.dp"
 
         android:id="@+id/Gallery_button"
         android:gravity="center"
+
 
         >
 
@@ -45,6 +49,9 @@ android:gravity="center"
         android:layout_height="100dp"
         android:text="@string/webSockets"
         android:gravity="center"
+        android:background="@drawable/text_border"
+        android:layout_margin="10.dp"
+
         android:id="@+id/webSocket_button"
         />
     </androidx.appcompat.widget.LinearLayoutCompat>

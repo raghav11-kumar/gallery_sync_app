@@ -30,12 +30,13 @@
     <string name="pos">Yes </string>
     <string name="neg">No </string>
     <string name="gallery_">Gallery</string>
-    <string name="ble">\"BLE DEVICE\"</string>
+    <string name="ble">BLE DEVICE</string>
     <string name="loginHeading">Login</string>
     <string name="nameCred">Enter Your Name</string>
     <string name="passCred">Enter Your PassWord</string>
     <string name="webSockets">WebSockets</string>
     <string name="log_in">Log In</string>
+    <string name="add">Add</string>
 
 
 </resources>
