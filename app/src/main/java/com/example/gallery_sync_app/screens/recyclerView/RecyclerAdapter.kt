@@ -1,15 +1,12 @@
 package com.example.gallery_sync_app.screens.recyclerView
 
-import android.media.Image
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.R
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gallery_sync_app.screens.data.GalleryImage
-import com.example.gallery_sync_app.screens.data.ImageInfo
 
 class RecyclerAdapter(private val galleryList:List<GalleryImage>):
     RecyclerView.Adapter<RecyclerAdapter.GalleryAdapter>() {

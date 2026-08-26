@@ -1,23 +1,16 @@
 package com.example.gallery_sync_app.screens.recyclerView
 
-import android.net.Uri
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContentProviderCompat.requireContext
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.screens.data.GalleryImage
-import com.example.gallery_sync_app.screens.data.ImageInfo
 
 class RecyclerView : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,7 +35,6 @@ class RecyclerView : AppCompatActivity() {
                     GalleryImage(it,"${edit_text.text}")
                 )
                 adapter.notifyItemInserted(galleryList.size-1)
-
             }
         }
         button_id.setOnClickListener {
