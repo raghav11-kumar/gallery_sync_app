@@ -13,7 +13,4 @@ private const val ARG_PARAM2 = "param2"
  * Use the [WebSocketScreen.newInstance] factory method to
  * create an instance of this fragment.
  */
-class WebSocketScreen : Fragment(R.layout.fragment_web_socket_screen) {
-
-
-}
+class WebSocketScreen : Fragment(R.layout.fragment_web_socket_screen)
