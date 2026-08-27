@@ -11,7 +11,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.Navigation
 import com.example.gallery_sync_app.R
-import com.example.gallery_sync_app.databinding.ActivityMainBinding
 import com.example.gallery_sync_app.databinding.FragmentLoginScreenBinding
 
 // TODO: Rename parameter arguments, choose names that match
