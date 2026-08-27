@@ -15,4 +15,5 @@ private const val ARG_PARAM2 = "param2"
  */
 class WebSocketScreen : Fragment(R.layout.fragment_web_socket_screen) {
 
+
 }

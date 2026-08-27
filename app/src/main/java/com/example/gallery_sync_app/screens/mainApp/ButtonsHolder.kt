@@ -7,6 +7,7 @@ import android.widget.Button
 import androidx.navigation.Navigation
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentButtonsHolderBinding
+import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,14 +28,13 @@ class ButtonsHolder : Fragment(R.layout.fragment_buttons_holder) {
         val galleryBut=binding.GalleryButton
         val webBut=binding.webSocketButton
         bleBut.setOnClickListener {
-            Navigation.findNavController(it).navigate(R.id.navigateMainToBle)
+            ReusableFunctions.navigateSrcToDest(it,R.id.navigateMainToBle)
         }
         galleryBut.setOnClickListener {
-            Navigation.findNavController(it).navigate(R.id.navigateMainToGallery)
-
+            ReusableFunctions.navigateSrcToDest(it,R.id.navigateMainToGallery)
         }
         webBut.setOnClickListener {
-            Navigation.findNavController(it).navigate(R.id.navigateMainToWebSocket)
+            ReusableFunctions.navigateSrcToDest(it,R.id.navigateMainToWebSocket)
 
         }
     }

@@ -39,6 +39,8 @@
     <string name="add">Add</string>
     <string name="edit_img">Enter Image Name</string>a
     <string name="gal_">Gallery</string>
+    <string name="email">Enter Your GMail</string>
+    <string name="logo">Logo</string>
 
 
 </resources>

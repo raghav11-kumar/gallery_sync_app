@@ -3,8 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/loginFragScreen"
+    app:startDestination="@id/logoScreen"
     >
+    <fragment
+        android:id="@+id/logoScreen"
+        android:name="com.example.gallery_sync_app.screens.mainApp.LogoScreen"
+        android:label="@string/logo">
+        <action
+            android:id="@+id/navigateLogoToLogin"
+            app:destination="@+id/loginFragScreen"
+            app:popUpTo="@id/logoScreen"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/navigateLogoToMainScreen"
+            app:destination="@+id/buttonHolderFragScreen"
+            app:popUpTo="@id/logoScreen"
+            app:popUpToInclusive="true"/>
+    </fragment>
     <fragment
 
         android:id="@+id/loginFragScreen"
@@ -14,7 +29,9 @@
         >
         <action
             android:id="@+id/navigateLoginToButtonHolder"
-            app:destination="@+id/buttonHolderFragScreen"/>
+            app:destination="@+id/buttonHolderFragScreen"
+            app:popUpTo="@id/loginFragScreen"
+            app:popUpToInclusive="true"/>
     </fragment>
     <fragment
         android:id="@+id/buttonHolderFragScreen"

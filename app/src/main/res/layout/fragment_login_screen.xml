@@ -4,12 +4,15 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black">
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp"
+        android:gravity="center"
+        android:background="@color/crisp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,13 +20,13 @@
         app:layout_constraintWidth_percent="0.85">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
             android:gravity="center"
             android:text="@string/log_in"
             android:textColor="@android:color/black"
-            android:textSize="28sp"
+            android:textSize="22sp"
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatEditText
@@ -32,7 +35,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:background="@drawable/outlinetextborders"
-            android:hint="@string/nameCred"
+            android:hint="@string/email"
+            android:gravity="center_horizontal"
             android:inputType="textPersonName"
             android:padding="12dp" />
 
@@ -43,12 +47,14 @@
             android:layout_marginBottom="24dp"
             android:background="@drawable/outlinetextborders"
             android:hint="@string/passCred"
+            android:gravity="center_horizontal"
+
             android:inputType="textPassword"
             android:padding="12dp" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/loginButton"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:backgroundTint="@android:color/black"
             android:text="@string/loginHeading"
