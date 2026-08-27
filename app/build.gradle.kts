@@ -31,9 +31,10 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    buildFeatures{
-        viewBinding=true
+    buildFeatures {
+        viewBinding = true
     }
+
 }
 
 dependencies {
@@ -52,8 +53,6 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation("androidx.navigation:navigation-fragment-ktx:2.8.8")
     implementation("androidx.navigation:navigation-ui-ktx:2.8.8")
-    implementation("androidx.recyclerview:recyclerview:1.4.0")
-    implementation("com.google.dagger:hilt-android:2.57.1")
 
 
 }
