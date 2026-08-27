@@ -7,17 +7,20 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatButton
 import com.example.gallery_sync_app.R
+import com.example.gallery_sync_app.databinding.ActivityMainBinding
 import com.example.gallery_sync_app.screens.GalleryViewModel
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         val viewModel = GalleryViewModel()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main)
+        binding= ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
             //inflates the xml->view
-        val b_id = findViewById<AppCompatButton>(R.id.button_one)
-        val text_id = findViewById<AppCompatButton>(R.id.text_id)
+        val b_id = binding.buttonOne
+        val text_id =binding.textId
         val list = viewModel.getList()
         var i = 0
         text_id.text = list[i].song_name

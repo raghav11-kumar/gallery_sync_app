@@ -1,21 +1,25 @@
 package com.example.gallery_sync_app.screens.bottomNavImp
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.gallery_sync_app.R
+import com.example.gallery_sync_app.databinding.ActivityHomeScreenBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeScreen : AppCompatActivity() {
     /*well this screen start with the flow of showing the use of bottomnavigation  which help to shift blw the
      fragments
     * */
+    private lateinit var binding: ActivityHomeScreenBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_home_screen)
+        binding= ActivityHomeScreenBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         val bottom_id=findViewById<BottomNavigationView>(R.id.bottom_nav)
         showFragment(ChatScreen())
         bottom_id.setOnItemSelectedListener { item ->
