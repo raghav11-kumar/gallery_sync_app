@@ -37,6 +37,8 @@
     <string name="webSockets">WebSockets</string>
     <string name="log_in">Log In</string>
     <string name="add">Add</string>
+    <string name="edit_img">Enter Image Name</string>a
+    <string name="gal_">Gallery</string>
 
 
 </resources>

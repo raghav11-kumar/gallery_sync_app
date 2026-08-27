@@ -9,15 +9,18 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gallery_sync_app.R
+import com.example.gallery_sync_app.databinding.ActivityAlertBinding
+import com.example.gallery_sync_app.databinding.ActivityMainBinding
 
 class AlertActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityAlertBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_alert)
-        val edit_text_id=findViewById<EditText>(R.id.edit_text_id)
+        setContentView(binding.root)
+        val edit_text_id=binding.editTextId
         val text=edit_text_id.text.toString()
-        val d1But=findViewById<Button>(R.id.d1)
+        val d1But=binding.d1
         d1But.setOnClickListener {
             Log.e("AlertAct","it was clicking ")
             val defDi=getAlertDialog(text)
