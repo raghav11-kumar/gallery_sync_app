@@ -7,11 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.example.gallery_sync_app.R
+import com.example.gallery_sync_app.databinding.ActivityMainScreenBinding
 
 class MainScreen : AppCompatActivity() {
+    private lateinit var binding: ActivityMainScreenBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main_screen)
+        binding= ActivityMainScreenBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
     }
 }

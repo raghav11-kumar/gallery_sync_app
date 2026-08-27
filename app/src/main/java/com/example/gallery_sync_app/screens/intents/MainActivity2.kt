@@ -6,10 +6,12 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gallery_sync_app.R
+import com.example.gallery_sync_app.databinding.ActivityMain2Binding
 import com.example.gallery_sync_app.screens.repo.Information
 
 class MainActivity2 : AppCompatActivity() {
     private lateinit var info: Information
+    private lateinit var binding: ActivityMain2Binding
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,12 +22,13 @@ class MainActivity2 : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val song = list[index]
         enableEdgeToEdge()
-        setContentView(R.layout.activity_main2)
-        val image_id = findViewById<ImageView>(R.id.image)
+        binding= ActivityMain2Binding.inflate(layoutInflater)
+        setContentView(binding.root)
+        val image_id = binding.image
         image_id.setImageResource(song.image)
-        val artist_text = findViewById<TextView>(R.id.artist)
+        val artist_text = binding.artist
         artist_text.text = song.song_name
-        val bio = findViewById<TextView>(R.id.bio)
+        val bio =binding.bio
         bio.text = song.bio
     }
 
