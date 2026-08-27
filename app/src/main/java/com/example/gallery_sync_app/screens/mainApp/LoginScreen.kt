@@ -9,9 +9,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.Navigation
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentLoginScreenBinding
+import com.example.gallery_sync_app.screens.viewModels.AuthenticationViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import kotlin.getValue
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -23,11 +28,15 @@ private const val ARG_PARAM2 = "param2"
  * Use the [LoginScreen.newInstance] factory method to
  * create an instance of this fragment.
  */
+@AndroidEntryPoint
 class LoginScreen : Fragment(R.layout.fragment_login_screen) {
     private lateinit var binding: FragmentLoginScreenBinding
+    private  val authVm: AuthenticationViewModel by viewModels()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.e("Fragment","In Login Fragment")
         binding= FragmentLoginScreenBinding.bind(view)
+
         super.onViewCreated(view, savedInstanceState)
         val loginButton=binding.loginButton
         val userName=binding.userEmail
@@ -35,11 +44,16 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
 
         loginButton.setOnClickListener {
             Log.e("Fragment","loginButton is clickable")
+            authVm.signIn()
             Navigation.findNavController(it).navigate(
                 R.id.navigateLoginToButtonHolder
             )
             Toast.makeText(context,"welcome ${userName.text}",Toast.LENGTH_LONG).show()
         }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
     }
 
 }
