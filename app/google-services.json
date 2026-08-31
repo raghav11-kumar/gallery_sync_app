@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1049289047569",
+    "project_id": "my-application-ab41d",
+    "storage_bucket": "my-application-ab41d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1049289047569:android:7badfa50083f6f1042fbb0",
+        "android_client_info": {
+          "package_name": "com.example.gallery_sync_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1fjhTdDKwaLftuBsRcylYm7hV5bmAOUY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

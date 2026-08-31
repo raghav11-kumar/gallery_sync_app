@@ -13,8 +13,4 @@ private const val ARG_PARAM2 = "param2"
  * Use the [BLEDevice.newInstance] factory method to
  * create an instance of this fragment.
  */
-class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
-
-
-
-}
+class BLEDevice : Fragment(R.layout.fragment_b_l_e_device)
