@@ -43,4 +43,6 @@
     <string name="logo">Logo</string>
     <string name="main_screen_header">Main Screen</string>
     <string name="FcmButton">Notification</string>
+    <string name="userName">UserName</string>
+    <string name="Email">Email</string>
 </resources>

@@ -49,6 +49,11 @@
         <action
             android:id="@+id/navigateMainToWebSocket"
             app:destination="@+id/webSocketFragScreen"/>
+        <action
+
+            android:id="@+id/navigateMainToUserProfile"
+            app:destination="@+id/userProfile"/>
+
 
 
     </fragment>
@@ -76,6 +81,17 @@
         tools:layout="@layout/fragment_web_socket_screen"
         >
 
+    </fragment>
+    <fragment
+        android:id="@+id/userProfile"
+        android:name="com.example.gallery_sync_app.screens.mainApp.UserProfile"
+        tools:layout="@layout/fragment_user_profile"
+        >
+        <action
+            android:id="@+id/navigateProfileToLogin"
+            app:destination="@+id/loginFragScreen"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"/>
     </fragment>
 
 
