@@ -54,7 +54,16 @@
             android:text="@string/webSockets"
             android:textColor="@color/white"
             android:textStyle="bold" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/fcm_button"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:backgroundTint="@color/black"
+            android:text="@string/FcmButton"
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

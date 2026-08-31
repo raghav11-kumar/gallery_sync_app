@@ -42,4 +42,5 @@
     <string name="email">Enter Your GMail</string>
     <string name="logo">Logo</string>
     <string name="main_screen_header">Main Screen</string>
+    <string name="FcmButton">Notification</string>
 </resources>

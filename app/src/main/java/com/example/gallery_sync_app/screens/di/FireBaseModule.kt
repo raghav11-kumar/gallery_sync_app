@@ -1,10 +1,8 @@
 package com.example.gallery_sync_app.screens.di
 
-import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthProvider
-import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,11 +14,15 @@ import javax.inject.Singleton
 class FireBaseModule {
     @Singleton
     @Provides
-    fun provideFireBaseAuthentication()= FirebaseAuth.getInstance()
+    fun provideFireBaseAuthentication() = FirebaseAuth.getInstance()
+
     @Provides
     @Singleton
-    fun provideFireBaseFireStore()= FirebaseFirestore.getInstance()
+    fun provideFireBaseFireStore() = FirebaseFirestore.getInstance()
 
+    @Provides
+    @Singleton
+    fun provideFcm() = FirebaseMessaging.getInstance()
 
 
 }
