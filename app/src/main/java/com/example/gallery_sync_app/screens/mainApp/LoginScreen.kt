@@ -59,15 +59,16 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
 
         val context = view.context
         loginButton.setOnClickListener {
-            val userName: String = binding.userEmail.text.toString()
+            val userName:String=binding.nameCred.text.toString()
+            val userEmail: String = binding.userEmail.text.toString()
             val passWord: String = binding.passInput.text.toString()
             Log.e("Fragment", "loginButton is clickable")
-            if (ReusableFunctions.areStringsEmpty(userName, passWord)) {
+            if (ReusableFunctions.areStringsEmpty(userName, passWord,userEmail)) {
                 ReusableFunctions.DefaultAlertDialog(
-                    context, "Fill The Email And PassWord", "Sure", "No"
+                    context, "Fill The Email ,Name And PassWord", "Sure", "No"
                 ).show()
             } else {
-                authVm.signIn(userName, passWord)
+                authVm.signIn(userName,userEmail, passWord)
             }
 
 

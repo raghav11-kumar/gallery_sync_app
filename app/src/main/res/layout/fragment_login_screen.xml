@@ -19,6 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.85">
 
+
         <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,6 +29,16 @@
             android:textColor="@android:color/black"
             android:textSize="22sp"
             android:textStyle="bold" />
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/nameCred"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/outlinetextborders"
+            android:hint="@string/nameCred"
+            android:gravity="center_horizontal"
+            android:inputType="textPersonName"
+            android:padding="12dp" />
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/userEmail"

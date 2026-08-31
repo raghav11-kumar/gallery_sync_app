@@ -19,19 +19,20 @@ class AuthenticationViewModel @Inject constructor(
     private val fbAuth: FirebaseAuth,
     private val localDataSaver: LocalDataSaver,
     private val fcm: FirebaseMessaging,
-    private val notification: NotificationService
+    private val notification: NotificationService,
+
 ) : ViewModel() {
     private val isLoggedIn = MutableStateFlow<UserStatus>(UserStatus.Unknown)
     val isIn = isLoggedIn.asStateFlow()
 
-    fun signIn(userName: String, passWord: String) {
+    fun signIn(userName: String, userEmail: String, passWord: String) {
         viewModelScope.launch {
-            fbAuth.createUserWithEmailAndPassword(userName.trim(), passWord.trim())
+            fbAuth.createUserWithEmailAndPassword(userEmail.trim(), passWord.trim())
                 .addOnSuccessListener {
 
 
                     isLoggedIn.value = UserStatus.Success
-                    localDataSaver.saveUser(userName)
+                    localDataSaver.saveUser(userEmail)
                     Log.e("AuthVM", "SuccessFul Sign In")
                 }.addOnFailureListener {
                     isLoggedIn.value = UserStatus.Failure

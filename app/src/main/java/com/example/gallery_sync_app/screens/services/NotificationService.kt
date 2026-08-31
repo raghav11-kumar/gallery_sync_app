@@ -15,7 +15,7 @@ class NotificationService(
                 context,
                 "${counter_notif_id}"
             )
-                .setSmallIcon(R.drawable.c)
+                .setSmallIcon(R.drawable.home_icon_foreground)
                 .setContentTitle(title)
                 .setContentText(content)
                 .build()
