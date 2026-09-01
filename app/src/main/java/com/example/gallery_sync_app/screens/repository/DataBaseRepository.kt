@@ -6,8 +6,11 @@ import android.util.Log
 import com.example.gallery_sync_app.screens.apis.ImageBBApi
 import com.example.gallery_sync_app.screens.data.ImagBBResponse
 import com.example.gallery_sync_app.screens.data.UserData
+import com.example.gallery_sync_app.screens.data.roomDataBase.UserDao
+import com.example.gallery_sync_app.screens.data.roomDataBase.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.auth.User
 import kotlinx.coroutines.tasks.await
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -16,10 +19,11 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 class DataBaseRepository @Inject constructor(
-    val fbStore: FirebaseFirestore,
-    val fbAuth: FirebaseAuth,
-    val api: ImageBBApi,
-    val context: Context
+   private val fbStore: FirebaseFirestore,
+   private val fbAuth: FirebaseAuth,
+    private val api: ImageBBApi,
+   private val context: Context,
+   private val localDB: UserDao
 ) {
     fun saveUser(userData: UserData) {
         val user = mapOf(
@@ -30,7 +34,6 @@ class DataBaseRepository @Inject constructor(
         userData.uid?.let {
             fbStore.collection("users")
                 .document(it)
-
                 .set(user)
                 .addOnSuccessListener {
                     Log.e("DataBaseRep", "Saved SuccessFully")
@@ -42,7 +45,7 @@ class DataBaseRepository @Inject constructor(
 
     }
 
-    suspend fun getUser(uid: String): UserData? {
+    suspend fun getUser(uid: String): Users {
         val user = fbStore.collection("users")
             .document(uid)
             .get()
@@ -54,7 +57,8 @@ class DataBaseRepository @Inject constructor(
             }
             .await()
 
-        return user.toObject(UserData::class.java) // or toObject<UserData>()
+//        return user.toObject(UserData::class.java) // or toObject<UserData>()
+        return localDB.getUser(uid)
     }
 
     private fun getCurrUid() = fbAuth.uid ?: ""
@@ -73,7 +77,7 @@ class DataBaseRepository @Inject constructor(
                 .addOnSuccessListener {
                     Log.e("DataBaseRep", "SuccessFully Added the ImageUrl")
                 }
-
+            localDB.updateImageUrl(getCurrUid(),response.data.display_url)
             Log.e("DataBaseRep", "The Retrival Of Image ${response}")
             Result.success(response)
 
@@ -111,6 +115,15 @@ class DataBaseRepository @Inject constructor(
             Result.failure(e)
         }
     }
+    suspend fun localSaveUser(userData: Users){
+        try {
+            localDB.InsertUser(userData)
+
+        }catch (e: Exception){
+            Log.e("DataBaseRep","Failed To Save The User lOcally ${e.message}")
+        }
+    }
+
 
 
 }

@@ -52,7 +52,7 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
                 .UserInformation.collect { user ->
                     user?.let {
                         Log.e("UserProfileFrag", "The Info has Been called${it}")
-                        textId.setText(it.userName)
+                        textId.setText(it.name)
                         emailId.setText(it.email)
                         Glide.with(requireContext())
                             .load(it.imageUrl)

@@ -8,6 +8,7 @@ import com.example.gallery_sync_app.screens.constants.UserStatus
 import com.example.gallery_sync_app.screens.data.ImagBBResponse
 import com.example.gallery_sync_app.screens.data.UserData
 import com.example.gallery_sync_app.screens.data.local.LocalDataSaver
+import com.example.gallery_sync_app.screens.data.roomDataBase.Users
 import com.example.gallery_sync_app.screens.repository.DataBaseRepository
 import com.example.gallery_sync_app.screens.services.NotificationService
 import com.google.firebase.auth.FirebaseAuth
@@ -16,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,27 +33,29 @@ class AuthenticationViewModel @Inject constructor(
     val isIn = isLoggedIn.asStateFlow()
     private fun CurrUserUid() = fbAuth.uid ?: ""
 
+
     fun signIn(userName: String, userEmail: String, passWord: String) {
         viewModelScope.launch {
-            fbAuth.createUserWithEmailAndPassword(userEmail.trim(), passWord.trim())
-                .addOnSuccessListener {
-                    val currUid = CurrUserUid()
-                    repo.saveUser(
-                        UserData(
-                            currUid,
-                            userName,
-                            userEmail
+            try {
+                // 1. Wait for Firebase to create the user
+                val authResult = fbAuth.createUserWithEmailAndPassword(userEmail.trim(), passWord.trim()).await()
+                val newUid = authResult.user?.uid ?: ""
 
-                        )
-                    )
+                if (newUid.isNotEmpty()) {
+                    // 2. Save to Firestore (Now we have the REAL Uid)
+                    repo.saveUser(UserData(newUid, userName, userEmail))
+
+                    // 3. Save to Local Room DB
+                    repo.localSaveUser(Users(userUid = newUid, name = userName, email = userEmail, imageUrl = ""))
 
                     isLoggedIn.value = UserStatus.Success
                     localDataSaver.saveUser(userEmail)
                     Log.e("AuthVM", "SuccessFul Sign In")
-                }.addOnFailureListener {
-                    isLoggedIn.value = UserStatus.Failure
-                    Log.e("AuthVM", "Failed Sign In")
                 }
+            } catch (e: Exception) {
+                isLoggedIn.value = UserStatus.Failure
+                Log.e("AuthVM", "Failed Sign In ${e.message}")
+            }
         }
     }
 
@@ -69,7 +73,7 @@ class AuthenticationViewModel @Inject constructor(
     }
 
 
-    private val userInfo = MutableStateFlow<UserData?>(null)
+    private val userInfo = MutableStateFlow<Users?>(null)
     val UserInformation = userInfo
 
     fun getUser() {

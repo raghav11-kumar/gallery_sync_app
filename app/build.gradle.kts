@@ -69,6 +69,11 @@ dependencies {
     implementation( "com.android.support:support-v4:19.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
+    val room_version = "3.0.2"
+
+    implementation("androidx.room3:room3-runtime:$room_version")
+    ksp("androidx.room3:room3-compiler:$room_version")
+
 
 
 }
