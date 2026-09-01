@@ -15,6 +15,4 @@ private const val ARG_PARAM2 = "param2"
  * Use the [GalleryScreen.newInstance] factory method to
  * create an instance of this fragment.
  */
-class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
-
-}
+class GalleryScreen : Fragment(R.layout.fragment_gallery_screen)

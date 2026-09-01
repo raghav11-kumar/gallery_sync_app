@@ -46,11 +46,9 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
 
                     UserStatus.Failure -> {
                         // Show the ACTUAL reason from Firebase
-                        Toast.makeText(context, "Something Wrong", Toast.LENGTH_LONG).show()
                     }
 
                     else -> {
-                        Toast.makeText(context, "Something Wrong", Toast.LENGTH_LONG).show()
                     }
                 }
             }

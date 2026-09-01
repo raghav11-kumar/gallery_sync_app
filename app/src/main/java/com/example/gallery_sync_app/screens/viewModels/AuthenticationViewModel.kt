@@ -1,11 +1,13 @@
 package com.example.gallery_sync_app.screens.viewModels
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gallery_sync_app.screens.constants.UserStatus
+import com.example.gallery_sync_app.screens.data.ImagBBResponse
+import com.example.gallery_sync_app.screens.data.UserData
 import com.example.gallery_sync_app.screens.data.local.LocalDataSaver
-import com.example.gallery_sync_app.screens.data.userData
 import com.example.gallery_sync_app.screens.repository.DataBaseRepository
 import com.example.gallery_sync_app.screens.services.NotificationService
 import com.google.firebase.auth.FirebaseAuth
@@ -24,23 +26,24 @@ class AuthenticationViewModel @Inject constructor(
     private val repo: DataBaseRepository,
     private val notification: NotificationService,
 
-) : ViewModel() {
+    ) : ViewModel() {
     private val isLoggedIn = MutableStateFlow<UserStatus>(UserStatus.Unknown)
     val isIn = isLoggedIn.asStateFlow()
-    private fun CurrUserUid()=fbAuth.uid?:""
+    private fun CurrUserUid() = fbAuth.uid ?: ""
 
     fun signIn(userName: String, userEmail: String, passWord: String) {
         viewModelScope.launch {
             fbAuth.createUserWithEmailAndPassword(userEmail.trim(), passWord.trim())
                 .addOnSuccessListener {
-                    val currUid=CurrUserUid()
-                    repo.saveUser(userData(
-                        currUid,
-                        userName,
-                        userEmail
+                    val currUid = CurrUserUid()
+                    repo.saveUser(
+                        UserData(
+                            currUid,
+                            userName,
+                            userEmail
 
-                    ))
-
+                        )
+                    )
 
                     isLoggedIn.value = UserStatus.Success
                     localDataSaver.saveUser(userEmail)
@@ -66,7 +69,7 @@ class AuthenticationViewModel @Inject constructor(
     }
 
 
-    private val userInfo = MutableStateFlow<userData?>(null)
+    private val userInfo = MutableStateFlow<UserData?>(null)
     val UserInformation = userInfo
 
     fun getUser() {
@@ -76,6 +79,29 @@ class AuthenticationViewModel @Inject constructor(
             if (uid.isNotEmpty()) {
                 val user = repo.getUser(uid)
                 userInfo.value = user
+            }
+        }
+    }
+
+    private val imageInfo = MutableStateFlow<ImagBBResponse?>(null)
+    val ImageInformation = imageInfo
+    fun saveImage(uri: Uri) {
+        val apiKey = "f06041a98c3e3556f51266c55a27e4b6"
+        val multipartData = repo.convertUriToImage(uri)
+        multipartData.onSuccess {
+            viewModelScope.launch {
+                val response = repo.sendImage(
+                    apiKey = apiKey,
+                    it
+                )
+                response.onSuccess {
+                    Log.e("AuthVm", "SuccessFully Retrieved Image ${it}")
+                    imageInfo.value = it
+                }
+                response.onFailure {
+                    Log.e("AuthVm", "Failed TO Send IMage ${it.message}")
+                }
+
             }
         }
     }

@@ -1,14 +1,13 @@
 package com.example.gallery_sync_app.screens.mainApp
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentButtonsHolderBinding
-import com.example.gallery_sync_app.screens.services.NotificationService
 import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import com.example.gallery_sync_app.screens.viewModels.AuthenticationViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,20 +36,20 @@ class ButtonsHolder : Fragment(R.layout.fragment_buttons_holder) {
         val galleryBut = binding.GalleryButton
         val webBut = binding.webSocketButton
         val fmc_but = binding.fcmButton
-        val userLogo=binding.userLogo
-        val name=authVm.UserInformation
+        val userLogo = binding.userLogo
+        val cardViewCon = binding.buttonProfileImageView
+        val name = authVm.UserInformation
         viewLifecycleOwner.lifecycleScope.launch {
-            authVm.UserInformation.collect { user ->
-                user?.userName?.let { userName ->
-                    if (userName.isNotEmpty()) {
-                        userLogo.text = userName[0].uppercaseChar().toString()
-                        Log.d("ButtonsHolder", "User name loaded: $userName")
-                    }
+            authVm.UserInformation.collect { it ->
+                it?.let {
+                    Glide.with(requireContext()).load(it.imageUrl).centerCrop().into(userLogo)
                 }
             }
         }
-        userLogo.setOnClickListener {
-            ReusableFunctions.navigateSrcToDest(it,R.id.navigateMainToUserProfile)
+
+
+        cardViewCon.setOnClickListener {
+            ReusableFunctions.navigateSrcToDest(it, R.id.navigateMainToUserProfile)
         }
 
         bleBut.setOnClickListener {

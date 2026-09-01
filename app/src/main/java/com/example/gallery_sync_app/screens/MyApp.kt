@@ -3,7 +3,6 @@ package com.example.gallery_sync_app.screens
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.os.Build
 import com.example.gallery_sync_app.screens.services.NotificationService.Companion.counter_notif_id
 import dagger.hilt.android.HiltAndroidApp
@@ -21,8 +20,7 @@ class MyApp : Application() {
             val channel = NotificationChannel(
                 "${counter_notif_id}", "notiChannel", NotificationManager.IMPORTANCE_HIGH
             )
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }
