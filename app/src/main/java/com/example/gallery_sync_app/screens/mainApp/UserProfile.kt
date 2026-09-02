@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -26,6 +27,9 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
         Log.e("UserProfileFrag", "Its Called")
         super.onViewCreated(view, savedInstanceState)
         bindingEx = FragmentUserProfileBinding.bind(view)
+        (requireActivity() as AppCompatActivity)
+            .supportActionBar
+            ?.title = "User Profile"
         val textId = bindingEx.userProfileName
         val emailId = bindingEx.userProfileEmail
         val imageId = bindingEx.userProfileImage

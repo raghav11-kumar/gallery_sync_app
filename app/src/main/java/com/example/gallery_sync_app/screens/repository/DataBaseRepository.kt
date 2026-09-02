@@ -5,13 +5,17 @@ import android.net.Uri
 import android.util.Log
 import com.example.gallery_sync_app.screens.apis.ImageBBApi
 import com.example.gallery_sync_app.screens.data.ImagBBResponse
+import com.example.gallery_sync_app.screens.data.ImageInfo
+import com.example.gallery_sync_app.screens.data.Images
 import com.example.gallery_sync_app.screens.data.UserData
 import com.example.gallery_sync_app.screens.data.roomDataBase.UserDao
 import com.example.gallery_sync_app.screens.data.roomDataBase.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
+import okhttp3.Dispatcher
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -92,14 +96,20 @@ class DataBaseRepository @Inject constructor(
                 apiKey,
                 image
             )
+
             fbStore.collection("users")
                 .document(getCurrUid())
-                .update("imageUrl", response.data.display_url)
+                .update("imageUrl",response.data.display_url)
                 .addOnSuccessListener {
-                    Log.e("DataBaseRep", "SuccessFully Added the ImageUrl")
+                    Log.e("DataBaseRep","SuccessFully Image Saved In FireStore ${it}")
+
+                }.addOnFailureListener {
+                    Log.e("DataBaseRep","Failed To Save Image in FireStore")
                 }
-            localDB.updateImageUrl(getCurrUid(), response.data.display_url)
-            Log.e("DataBaseRep", "The Retrival Of Image ${response}")
+            localDB.updateImageUrl(
+                getCurrUid(),
+                response.data.display_url
+            )
             Result.success(response)
 
         } catch (e: HttpException) {
@@ -136,6 +146,43 @@ class DataBaseRepository @Inject constructor(
             Result.failure(e)
         }
     }
+   suspend fun sendImageForRecyclerView(apiKey: String,image: MultipartBody.Part):Result<ImagBBResponse> {
+     return  try {
+           val response = api.postImage(
+               key = apiKey,
+               image = image
+           )
+           val info = mapOf(
+               "id" to response.data.id,
+               "url" to response.data.display_url,
+               "title" to response.data.title
+           )
+           fbStore.collection("Images")
+               .document(getCurrUid())
+               .set(info)
+               .addOnSuccessListener {
+                   Log.e("DataBaseRep", "Saved Image SuccessFully in FireStore ${it}")
+               }
+               .addOnFailureListener {
+                   Log.e("DataBaseRep", "Failed To Save Image In FireStore ${it.message}")
+               }.await()
+         kotlinx.coroutines.withContext(Dispatchers.IO) {
+             localDB.saveImage(
+                 Images(
+                     url = response.data.display_url,
+                     imageId = response.data.id,
+                     title = response.data.title
+                 )
+             )
+         }
+           Result.success(response)
+
+       } catch (ex: Exception) {
+           Log.e("DataBaseRep", "Failed TO send Imagr TO Server ${ex.message}")
+           Result.failure(ex)
+       }
+   }
+
 
 
     suspend fun localSaveUser(userData: Users) {
@@ -147,5 +194,20 @@ class DataBaseRepository @Inject constructor(
         }
     }
 
+    fun getImagesList()=localDB.getSavedImages()
+    suspend fun deleteImage(image: Images){
+        localDB.delete(image)
+
+        kotlinx.coroutines.withContext(Dispatchers.IO){
+        fbStore.collection("Images")
+            .document(getCurrUid())
+            .delete()
+            .addOnFailureListener {
+                Log.e("DataBaseRep","Cannot Delete Image ${it}")
+            }.addOnSuccessListener {
+                Log.e("DataBaseRep","SuccessFully Deleted")
+            }.await()
+            }
+    }
 
 }

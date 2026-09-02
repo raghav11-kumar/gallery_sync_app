@@ -80,7 +80,7 @@ class AuthenticationViewModel @Inject constructor(
     }
 
 
-    //Gets The Data From Room by Flow .  When Changes Occur In Db  Even Autmatically Updates it
+    //Gets The Data From Room by Flow .  When Changes Occur In Db   Automatically Updates ui
     val UserInformation = repo.getUser(uid = CurrUserUid())
 
 

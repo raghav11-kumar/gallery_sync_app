@@ -37,7 +37,7 @@
     <string name="webSockets">WebSockets</string>
     <string name="log_in">Log In</string>
     <string name="add">Add</string>
-    <string name="edit_img">Enter Image Name</string>a
+    <string name="edit_img">Enter Image Name</string>
     <string name="gal_">Gallery</string>
     <string name="email">Enter Your GMail</string>
     <string name="logo">Logo</string>
@@ -46,8 +46,10 @@
     <string name="userName">UserName</string>
     <string name="Email">Email</string>
     <string name="logOut">LOGOUT</string>
-
+    <string name="openGallery">Open Gallery</string>
     <string name="nameLoading">Name Loading ....</string>
     <string name="emailLoading">Email Loading ....</string>
+    <string name="delete">Delete</string>
+    <string name="loading">Loading....</string>
 
 </resources>

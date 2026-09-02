@@ -35,21 +35,11 @@ class ButtonsHolder : Fragment(R.layout.fragment_buttons_holder) {
         val galleryBut = binding.GalleryButton
         val webBut = binding.webSocketButton
         val fmc_but = binding.fcmButton
-        val userLogo = binding.userLogo
-        val cardViewCon = binding.buttonProfileImageView
-        val name = authVm.UserInformation
-        viewLifecycleOwner.lifecycleScope.launch {
-            authVm.UserInformation.collect { it ->
-                it.let {
-                    Glide.with(requireContext()).load(it.imageUrl).centerCrop().into(userLogo)
-                }
-            }
-        }
 
 
-        cardViewCon.setOnClickListener {
-            ReusableFunctions.navigateSrcToDest(it, R.id.navigateMainToUserProfile)
-        }
+
+
+
 
         bleBut.setOnClickListener {
             ReusableFunctions.navigateSrcToDest(it, R.id.navigateMainToBle)

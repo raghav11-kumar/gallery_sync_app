@@ -6,6 +6,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".screens.mainApp.MainScreen">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/crisp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            app:menu="@menu/app_menu"
+            android:layout_height="?attr/actionBarSize"
+         >
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/buttonProfileImageView"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="0dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/edit_img"
+                app:strokeColor="@color/white"
+                app:strokeWidth="2dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/userLogo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/outline_article_person_24" />
+            </com.google.android.material.card.MaterialCardView>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frag_cont"
         android:name="androidx.navigation.fragment.NavHostFragment"
@@ -15,7 +57,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
         app:navGraph="@navigation/nav_graph" />
 
 
