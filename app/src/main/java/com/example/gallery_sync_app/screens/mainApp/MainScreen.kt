@@ -78,6 +78,9 @@ class MainScreen : AppCompatActivity() {
                     binding.appBarLayout.visibility= View.VISIBLE
                     binding.buttonProfileImageView.visibility= View.VISIBLE
                     supportActionBar?.title = "Main Screen"
+                    binding.toolbar.menu.findItem(R.id.addIcon)?.isVisible = false
+
+
                     lifecycleScope.launch {
                         userInfo.collect {
                             Glide.with(context)
