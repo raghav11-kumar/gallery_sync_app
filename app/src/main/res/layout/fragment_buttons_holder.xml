@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/crisp">
+    android:background="@color/black">
 
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_marginTop="64dp"
+        android:text="@string/main_screen_header"
+        app:layout_constraintEnd_toStartOf="@+id/buttonProfileImageView"
+        app:layout_constraintHorizontal_bias="0.263"
+        app:layout_constraintStart_toStartOf="parent"
+        android:backgroundTint="@color/black"
+        android:background="@drawable/button_selector"
+        android:backgroundTintMode="screen"
+        android:gravity="center"
+        android:textSize="19sp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/buttonProfileImageView"
         android:layout_width="60dp"
         android:layout_height="60dp"
-        android:layout_marginTop="46dp"
+        android:layout_marginTop="64dp"
         app:cardCornerRadius="60dp"
         app:cardElevation="4dp"
         android:clickable="true"
@@ -36,8 +51,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/main_container_border"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:orientation="vertical"
         android:padding="24dp"
         android:id="@+id/ll"
@@ -46,32 +60,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonProfileImageView">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:text="@string/main_screen_header"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/ble_button"
             android:layout_width="200dp"
             android:layout_height="60dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="24dp"
             android:backgroundTint="@color/black"
             android:text="@string/ble"
             android:textColor="@color/white"
+            android:backgroundTintMode="screen"
+            android:background="@drawable/main_container_border"
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/Gallery_button"
             android:layout_width="200dp"
             android:layout_height="60dp"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="24dp"
             android:backgroundTint="@color/black"
             android:text="@string/gallery_"
+            android:backgroundTintMode="screen"
+            android:background="@drawable/main_container_border"
+
             android:textColor="@color/white"
             android:textStyle="bold" />
 
@@ -79,7 +91,12 @@
             android:id="@+id/webSocket_button"
             android:layout_width="200dp"
             android:layout_height="60dp"
+
             android:backgroundTint="@color/black"
+            android:layout_marginBottom="24dp"
+            android:backgroundTintMode="screen"
+            android:background="@drawable/main_container_border"
+
             android:text="@string/webSockets"
             android:textColor="@color/white"
             android:textStyle="bold" />
@@ -89,6 +106,11 @@
             android:layout_height="60dp"
             android:backgroundTint="@color/black"
             android:text="@string/FcmButton"
+            android:layout_marginBottom="24dp"
+            android:backgroundTintMode="screen"
+            android:background="@drawable/main_container_border"
+
+
             android:textColor="@color/white"
             android:textStyle="bold" />
 

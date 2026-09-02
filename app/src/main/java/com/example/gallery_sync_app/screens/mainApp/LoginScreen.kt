@@ -68,8 +68,6 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
             } else {
                 authVm.signIn(userName,userEmail, passWord)
             }
-
-
         }
     }
 

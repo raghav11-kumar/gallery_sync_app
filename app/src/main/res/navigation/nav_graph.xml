@@ -68,7 +68,7 @@
     </fragment>
     <fragment
         android:id="@+id/galleryFragScreen"
-        android:name="com.example.gallery_sync_app.screens.mainApp.GalleryScreen"
+        android:name="com.example.gallery_sync_app.screens.gallery.GalleryScreen"
         android:label="@string/gallery_"
         tools:layout="@layout/fragment_gallery_screen"
         >

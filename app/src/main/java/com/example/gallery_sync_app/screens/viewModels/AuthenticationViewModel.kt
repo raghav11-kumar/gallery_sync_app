@@ -38,7 +38,8 @@ class AuthenticationViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 // 1. Wait for Firebase to create the user
-                val authResult = fbAuth.createUserWithEmailAndPassword(userEmail.trim(), passWord.trim()).await()
+                val authResult =
+                    fbAuth.createUserWithEmailAndPassword(userEmail.trim(), passWord.trim()).await()
                 val newUid = authResult.user?.uid ?: ""
 
                 if (newUid.isNotEmpty()) {
@@ -46,10 +47,16 @@ class AuthenticationViewModel @Inject constructor(
                     repo.saveUser(UserData(newUid, userName, userEmail))
 
                     // 3. Save to Local Room DB
-                    repo.localSaveUser(Users(userUid = newUid, name = userName, email = userEmail, imageUrl = ""))
+                    repo.localSaveUser(
+                        Users(
+                            userUid = newUid, name = userName, email = userEmail, imageUrl = ""
+                        )
+                    )
 
-                    isLoggedIn.value = UserStatus.Success
                     localDataSaver.saveUser(userEmail)
+                    repo.syncRoomToFireStore(uid = newUid)
+                    isLoggedIn.value = UserStatus.Success
+
                     Log.e("AuthVM", "SuccessFul Sign In")
                 }
             } catch (e: Exception) {
@@ -73,19 +80,10 @@ class AuthenticationViewModel @Inject constructor(
     }
 
 
-    private val userInfo = MutableStateFlow<Users?>(null)
-    val UserInformation = userInfo
+    //Gets The Data From Room by Flow .  When Changes Occur In Db  Even Autmatically Updates it
+    val UserInformation = repo.getUser(uid = CurrUserUid())
 
-    fun getUser() {
-        viewModelScope.launch {
-            // Optional: Check if uid is not empty
-            val uid = CurrUserUid()
-            if (uid.isNotEmpty()) {
-                val user = repo.getUser(uid)
-                userInfo.value = user
-            }
-        }
-    }
+
 
     private val imageInfo = MutableStateFlow<ImagBBResponse?>(null)
     val ImageInformation = imageInfo
@@ -95,8 +93,7 @@ class AuthenticationViewModel @Inject constructor(
         multipartData.onSuccess {
             viewModelScope.launch {
                 val response = repo.sendImage(
-                    apiKey = apiKey,
-                    it
+                    apiKey = apiKey, it
                 )
                 response.onSuccess {
                     Log.e("AuthVm", "SuccessFully Retrieved Image ${it}")

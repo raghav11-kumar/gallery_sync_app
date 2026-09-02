@@ -15,6 +15,8 @@ class FCMService : FirebaseMessagingService() {
         Log.e("FCMNewToken", "The new Token ${token}")
     }
 
+
+
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
         var title = message.notification?.title

@@ -1,13 +1,15 @@
 package com.example.gallery_sync_app.screens.data.roomDataBase
 
+import androidx.annotation.ReplaceWith
 import androidx.room3.Dao
 import androidx.room3.Insert
+import androidx.room3.OnConflictStrategy
 import androidx.room3.Query
 import com.example.gallery_sync_app.screens.data.UserData
 import kotlinx.coroutines.flow.Flow
 @Dao
 interface UserDao{
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun InsertUser(userData: Users)
 
     @Query("UPDATE users  SET imageUrl=:imageUrl WHERE userUid=:userId ")
@@ -16,7 +18,8 @@ interface UserDao{
         imageUrl: String
     )
     @Query("SELECT * FROM users WHERE  userUid=:uid")
-    suspend fun getUser(uid: String): Users
+     fun getUser(uid: String): Flow<Users>
+
 
 
 

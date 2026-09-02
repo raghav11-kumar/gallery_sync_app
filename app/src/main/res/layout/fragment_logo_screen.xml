@@ -5,18 +5,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/crisp"
+    android:background="@color/black"
     >
 
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="211dp"
-        android:layout_height="219dp"
-        android:contentDescription="@string/logo"
-        android:src="@drawable/blaze"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/buttonProfileImageView"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginTop="330dp"
+        app:cardCornerRadius="60dp"
+        app:cardElevation="4dp"
+        android:clickable="true"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:contentDescription="@string/home_icon"
+        android:focusable="true"
+        app:strokeColor="@color/white"
+        app:strokeWidth="4dp">
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/userLogo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/blaze" />
+    </com.google.android.material.card.MaterialCardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

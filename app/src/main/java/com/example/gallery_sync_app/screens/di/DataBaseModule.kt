@@ -44,7 +44,9 @@ class DataBaseModule {
             context,
             RoomDataBaseImp::class.java,
             "app_database"
-        ).build()
+        )
+            .fallbackToDestructiveMigration() // Add this for development
+    .build()
     }
 
     @Provides

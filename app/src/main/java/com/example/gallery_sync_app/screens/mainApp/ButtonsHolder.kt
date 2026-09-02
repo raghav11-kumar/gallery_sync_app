@@ -30,7 +30,6 @@ class ButtonsHolder : Fragment(R.layout.fragment_buttons_holder) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentButtonsHolderBinding.bind(view)
-        authVm.getUser()
         super.onViewCreated(view, savedInstanceState)
         val bleBut = binding.bleButton
         val galleryBut = binding.GalleryButton
@@ -41,7 +40,7 @@ class ButtonsHolder : Fragment(R.layout.fragment_buttons_holder) {
         val name = authVm.UserInformation
         viewLifecycleOwner.lifecycleScope.launch {
             authVm.UserInformation.collect { it ->
-                it?.let {
+                it.let {
                     Glide.with(requireContext()).load(it.imageUrl).centerCrop().into(userLogo)
                 }
             }

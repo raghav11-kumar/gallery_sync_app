@@ -26,7 +26,6 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
         Log.e("UserProfileFrag", "Its Called")
         super.onViewCreated(view, savedInstanceState)
         bindingEx = FragmentUserProfileBinding.bind(view)
-        authVm.getUser()
         val textId = bindingEx.userProfileName
         val emailId = bindingEx.userProfileEmail
         val imageId = bindingEx.userProfileImage
@@ -38,22 +37,18 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
                 imageUri = it
                 authVm.saveImage(imageUri)
             }
-
         }
         imageId.setOnClickListener {
             launcher.launch("image/*")
-
         }
-
-
 
         viewLifecycleOwner.lifecycleScope.launch {
             authVm
                 .UserInformation.collect { user ->
-                    user?.let {
+                    user.let {
                         Log.e("UserProfileFrag", "The Info has Been called${it}")
-                        textId.setText(it.name)
-                        emailId.setText(it.email)
+                        textId.text = it.name
+                        emailId.text = it.email
                         Glide.with(requireContext())
                             .load(it.imageUrl)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -62,10 +57,11 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
                     }
 
                 }
-
-
         }
 
-
+        bindingEx.logoutButton.setOnClickListener {
+            // ReusableFunctions.navigateSrcToDest(it, R.id.navigateProfileToLogin)
+            // You should also call authVm.signOut() here once implemented
+        }
     }
 }

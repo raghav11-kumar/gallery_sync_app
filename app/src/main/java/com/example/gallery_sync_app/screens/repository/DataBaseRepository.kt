@@ -10,7 +10,7 @@ import com.example.gallery_sync_app.screens.data.roomDataBase.UserDao
 import com.example.gallery_sync_app.screens.data.roomDataBase.Users
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.auth.User
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -19,12 +19,13 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 class DataBaseRepository @Inject constructor(
-   private val fbStore: FirebaseFirestore,
-   private val fbAuth: FirebaseAuth,
+    private val fbStore: FirebaseFirestore,
+    private val fbAuth: FirebaseAuth,
     private val api: ImageBBApi,
-   private val context: Context,
-   private val localDB: UserDao
+    private val context: Context,
+    private val localDB: UserDao
 ) {
+    //Saves User Info In FireStore
     fun saveUser(userData: UserData) {
         val user = mapOf(
             "userName" to userData.userName,
@@ -44,21 +45,41 @@ class DataBaseRepository @Inject constructor(
         }
 
     }
+    //Gets User Info From Room Which is source truth for show in The Ui
 
-    suspend fun getUser(uid: String): Users {
-        val user = fbStore.collection("users")
-            .document(uid)
-            .get()
-            .addOnSuccessListener {
-                Log.e("DataBaseRep", "SuccessFully Got The User ${it}")
-            }.addOnFailureListener {
-                Log.e("DataBaseRep", "Failed To Get The User Cuz Of ${it.message}")
-
-            }
-            .await()
-
-//        return user.toObject(UserData::class.java) // or toObject<UserData>()
+     fun getUser(uid: String): Flow<Users> {
         return localDB.getUser(uid)
+    }
+    //Syncing The FireStore Data TO Room InCase User Updates
+    suspend fun syncRoomToFireStore(uid: String){
+        try {
+            val user = fbStore.collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener {
+                    Log.e("DataBaseRep", "SuccessFully Got The User ${it}")
+                }.addOnFailureListener {
+                    Log.e("DataBaseRep", "Failed To Get The User Cuz Of ${it.message}")
+
+                }
+                .await()
+
+            val info = user.toObject(UserData::class.java) // or toObject<UserData>()
+
+
+            if(info!=null){
+                localDB.InsertUser(userData = Users(
+                    uid,
+                    name = info.userName,
+                    email = info.email,
+                    imageUrl = info.imageUrl
+                ))
+            }
+
+        }catch (exception: Exception){
+            Log.e("DataBaseRep","Failed To Sync Cuz ${exception.message}")
+        }
+
     }
 
     private fun getCurrUid() = fbAuth.uid ?: ""
@@ -77,7 +98,7 @@ class DataBaseRepository @Inject constructor(
                 .addOnSuccessListener {
                     Log.e("DataBaseRep", "SuccessFully Added the ImageUrl")
                 }
-            localDB.updateImageUrl(getCurrUid(),response.data.display_url)
+            localDB.updateImageUrl(getCurrUid(), response.data.display_url)
             Log.e("DataBaseRep", "The Retrival Of Image ${response}")
             Result.success(response)
 
@@ -115,15 +136,16 @@ class DataBaseRepository @Inject constructor(
             Result.failure(e)
         }
     }
-    suspend fun localSaveUser(userData: Users){
+
+
+    suspend fun localSaveUser(userData: Users) {
         try {
             localDB.InsertUser(userData)
 
-        }catch (e: Exception){
-            Log.e("DataBaseRep","Failed To Save The User lOcally ${e.message}")
+        } catch (e: Exception) {
+            Log.e("DataBaseRep", "Failed To Save The User lOcally ${e.message}")
         }
     }
-
 
 
 }

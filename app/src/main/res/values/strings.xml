@@ -45,4 +45,9 @@
     <string name="FcmButton">Notification</string>
     <string name="userName">UserName</string>
     <string name="Email">Email</string>
+    <string name="logOut">LOGOUT</string>
+
+    <string name="nameLoading">Name Loading ....</string>
+    <string name="emailLoading">Email Loading ....</string>
+
 </resources>

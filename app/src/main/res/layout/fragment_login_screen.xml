@@ -12,12 +12,33 @@
         android:orientation="vertical"
         android:padding="20dp"
         android:gravity="center"
-        android:background="@color/crisp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintWidth_percent="0.85">
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/buttonProfileImageView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="46dp"
+            android:layout_marginBottom="24dp"
+            app:cardCornerRadius="60dp"
+            app:cardElevation="4dp"
+            android:clickable="true"
+            android:contentDescription="@string/home_icon"
+            android:focusable="true"
+            app:strokeColor="@color/white"
+            app:strokeWidth="4dp">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/userLogo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/blaze" />
+        </com.google.android.material.card.MaterialCardView>
+
 
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -26,7 +47,7 @@
             android:layout_marginBottom="32dp"
             android:gravity="center"
             android:text="@string/log_in"
-            android:textColor="@android:color/black"
+            android:textColor="@android:color/white"
             android:textSize="22sp"
             android:textStyle="bold" />
         <androidx.appcompat.widget.AppCompatEditText
@@ -70,6 +91,8 @@
             android:backgroundTint="@android:color/black"
             android:text="@string/loginHeading"
             android:textColor="@android:color/white"
+            android:background="@drawable/main_container_border"
+android:backgroundTintMode="screen"
             android:textStyle="bold" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
