@@ -8,5 +8,13 @@
         android:title="@string/add"
         app:showAsAction="always"
         />
+    <item
+        android:id="@+id/editIcon"
+        android:icon="@drawable/edit_icon"
+        android:contentDescription="@string/edit"
+        android:title="@string/edit"
+        app:showAsAction="always"
+
+        />
 
 </menu>

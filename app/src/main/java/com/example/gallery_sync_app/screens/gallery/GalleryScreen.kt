@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,7 +17,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
     private lateinit var binding: FragmentGalleryScreenBinding
-    private val galleryVm: GalleryViewModel by viewModels()
+    private val galleryVm: GalleryViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentGalleryScreenBinding.bind(view)
@@ -27,7 +28,6 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
         }
         binding.recView.layoutManager = LinearLayoutManager(requireContext())
         binding.recView.adapter = adapter
-
         viewLifecycleOwner.lifecycleScope.launch {
             galleryVm.imageList.collect { list ->
                 adapter.updateList(list)
@@ -40,10 +40,23 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
                 galleryVm.saveImage(it)
             }
         }
-        binding.openGall.setOnClickListener {
-            launcher.launch("image/*")
+        viewLifecycleOwner.lifecycleScope.launch {
+            galleryVm.editClickOpen.collect { isEditMode ->
+                adapter.setEditMode(isEditMode)
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            galleryVm.galleryOpen.collect { isOpen ->
+                if (isOpen) {
+                    launcher.launch("image/*")
+                    galleryVm.closeGallery() // Reset it to false after launching
+                }
+            }
         }
 
 
+   }
+
+
     }
-}
+

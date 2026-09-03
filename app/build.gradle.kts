@@ -65,7 +65,7 @@ dependencies {
     implementation(libs.retrofit.converter.gson)
 
     implementation(libs.okhttp.logging.interceptor)
-    implementation("com.github.bumptech.glide:glide:3.3.+")
+    implementation(libs.glide)
     implementation( "com.android.support:support-v4:19.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 

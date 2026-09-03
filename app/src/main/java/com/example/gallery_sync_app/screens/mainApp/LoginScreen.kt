@@ -63,8 +63,11 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
             Log.e("Fragment", "loginButton is clickable")
             if (ReusableFunctions.areStringsEmpty(userName, passWord,userEmail)) {
                 ReusableFunctions.DefaultAlertDialog(
-                    context, "Fill The Email ,Name And PassWord", "Sure", "No"
-                ).show()
+                    context, "Fill The Email ,Name And PassWord", "Sure", "No",
+
+                ){
+
+                }
             } else {
                 authVm.signIn(userName,userEmail, passWord)
             }

@@ -16,6 +16,21 @@ import javax.inject.Inject
 @HiltViewModel
 class GalleryViewModel @Inject constructor(val repository: DataBaseRepository) : ViewModel(){
     val imageList: MutableStateFlow<List<Images>> = MutableStateFlow(emptyList())
+    private val galleryOpenClicked= MutableStateFlow<Boolean>(false)
+    val galleryOpen=galleryOpenClicked
+    fun openGallery(){
+        galleryOpenClicked.value=true
+    }
+    fun closeGallery(){
+        galleryOpenClicked.value=false
+    }
+    private val editClick= MutableStateFlow<Boolean>(false)
+    val editClickOpen=editClick
+    fun openEdit(){
+        editClick.value = !editClick.value
+    }
+
+
 
     init {
         viewModelScope.launch {

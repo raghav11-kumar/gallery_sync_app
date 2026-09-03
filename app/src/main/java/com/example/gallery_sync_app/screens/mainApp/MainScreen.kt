@@ -7,24 +7,20 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.view.menu.MenuView
 import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.Navigation
-import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.ActivityMainScreenBinding
-import com.example.gallery_sync_app.screens.utils.ReusableFunctions
+import com.example.gallery_sync_app.screens.gallery.GalleryViewModel
 import com.example.gallery_sync_app.screens.viewModels.AuthenticationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -33,14 +29,25 @@ import kotlinx.coroutines.launch
 class MainScreen : AppCompatActivity() {
     private lateinit var binding: ActivityMainScreenBinding
     private val authVm: AuthenticationViewModel by viewModels()
+    private val galleryVm: GalleryViewModel by viewModels()
+
+    private var showMenu = false
+    private var isEditMode = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val userInfo=authVm.UserInformation
         binding = ActivityMainScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         setSupportActionBar(binding.toolbar)
+
+        lifecycleScope.launch {
+            galleryVm.editClickOpen.collect { editMode ->
+                isEditMode = editMode
+                invalidateOptionsMenu()
+            }
+        }
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.appBarLayout) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -60,23 +67,24 @@ class MainScreen : AppCompatActivity() {
                 ),
                 101
             )
-
         }
-        val context=this
+
+        val userInfo = authVm.UserInformation
+        val context = this
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.frag_cont) as NavHostFragment
-
         val navController = navHostFragment.navController
-        navController.addOnDestinationChangedListener { controller, destination, bundle ->
-            when (destination.id){
-                R.id.logoScreen ->{
-                    binding.appBarLayout.visibility= View.GONE
-                }
-                R.id.buttonHolderFragScreen->{
-                    binding.appBarLayout.visibility= View.VISIBLE
-                    binding.buttonProfileImageView.visibility= View.VISIBLE
-                    supportActionBar?.title = "Main Screen"
 
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            showMenu = false
+            when (destination.id) {
+                R.id.logoScreen -> {
+                    binding.appBarLayout.visibility = View.GONE
+                }
+                R.id.buttonHolderFragScreen -> {
+                    binding.appBarLayout.visibility = View.VISIBLE
+                    binding.buttonProfileImageView.visibility = View.VISIBLE
+                    supportActionBar?.title = "Main Screen"
 
                     lifecycleScope.launch {
                         userInfo.collect {
@@ -90,35 +98,61 @@ class MainScreen : AppCompatActivity() {
                         navController.navigate(R.id.navigateMainToUserProfile)
                     }
                 }
-                R.id.galleryFragScreen->{
-                    supportActionBar?.title="Gallery"
-                    binding.buttonProfileImageView.visibility= View.GONE
-                    binding.toolbar.inflateMenu(R.menu.app_menu)
-
-
-
+                R.id.galleryFragScreen -> {
+                    supportActionBar?.title = "Gallery"
+                    binding.buttonProfileImageView.visibility = View.GONE
+                    
+                    showMenu = true
                 }
-                R.id.userProfile ->{
-                    binding.buttonProfileImageView.visibility= View.GONE
-
+                R.id.userProfile -> {
+                    binding.buttonProfileImageView.visibility = View.GONE
                 }
-                R.id.webSocketFragScreen->{
-                    supportActionBar?.title="WebSockets"
-                    binding.buttonProfileImageView.visibility= View.GONE
+                R.id.webSocketFragScreen -> {
+                    supportActionBar?.title = "WebSockets"
+                    binding.buttonProfileImageView.visibility = View.GONE
                 }
-                R.id.bleFragScreen->{
-                    binding.buttonProfileImageView.visibility= View.GONE
+                R.id.bleFragScreen -> {
+                    binding.buttonProfileImageView.visibility = View.GONE
                 }
-                else ->{
-                    binding.appBarLayout.visibility= View.VISIBLE
+                else -> {
+                    binding.appBarLayout.visibility = View.VISIBLE
                 }
-
             }
-
+            invalidateOptionsMenu()
         }
+    }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.app_menu, menu)
+        return true
+    }
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        val editItem = menu?.findItem(R.id.editIcon)
 
+        menu?.findItem(R.id.addIcon)?.isVisible = showMenu
+        editItem?.isVisible = showMenu
+        
+        if (isEditMode) {
+            editItem?.setIcon(R.drawable.outline_close_24)
+        } else {
+            editItem?.setIcon(R.drawable.edit_icon)
+        }
+        
+        return super.onPrepareOptionsMenu(menu)
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.addIcon -> {
+                galleryVm.openGallery()
+                true
+            }
+            R.id.editIcon -> {
+                galleryVm.openEdit()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

@@ -1,6 +1,8 @@
 package com.example.gallery_sync_app.screens.utils
 
 import android.content.Context
+import android.content.DialogInterface
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -13,17 +15,22 @@ object ReusableFunctions {
     fun areStringsEmpty(vararg text: String): Boolean{
         return text.any { it.isEmpty()}
     }
-    fun DefaultAlertDialog(context: Context,message: String,pos: String,neg: String): AlertDialog{
+    fun DefaultAlertDialog(context: Context,message: String,pos: String,neg: String,onDelete:()-> Unit): AlertDialog{
+        Log.e("REUSABLEFUN","ITS CALLED")
         val alertDi= AlertDialog.Builder(context)
             .setMessage(message)
-            .setPositiveButton(pos){_,_->
-                Toast.makeText(context,pos, Toast.LENGTH_LONG).show()
-            }
-            .setNegativeButton(neg){_,_->
-                Toast.makeText(context,pos, Toast.LENGTH_LONG).show()
+            .setPositiveButton(pos
+            ) { _, _ ->
+                onDelete()
+                Log.e("REUSABLEFUN","ITS CALLED")
 
             }
-            .create()
-        return alertDi
+            .setNegativeButton(neg) { _, _ ->
+                Log.e("REUSABLEFUNS","neg CAlled")
+            }.show()
+
+
+
+        return  alertDi
     }
 }

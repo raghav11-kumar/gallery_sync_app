@@ -6,21 +6,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".screens.mainApp.MainScreen">
+
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/crisp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            app:menu="@menu/app_menu"
-            android:layout_height="?attr/actionBarSize"
-         >
+            android:layout_height="?attr/actionBarSize">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/buttonProfileImageView"
@@ -28,11 +27,11 @@
                 android:layout_height="40dp"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="16dp"
+                android:clickable="true"
+                android:contentDescription="@string/edit_img"
+                android:focusable="true"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="@string/edit_img"
                 app:strokeColor="@color/white"
                 app:strokeWidth="2dp">
 
@@ -42,6 +41,7 @@
                     android:layout_height="match_parent"
                     android:scaleType="centerCrop"
                     android:src="@drawable/outline_article_person_24" />
+
             </com.google.android.material.card.MaterialCardView>
 
         </com.google.android.material.appbar.MaterialToolbar>
