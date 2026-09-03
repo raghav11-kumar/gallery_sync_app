@@ -136,7 +136,7 @@ class MainScreen : AppCompatActivity() {
         if (isEditMode) {
             editItem?.setIcon(R.drawable.outline_close_24)
         } else {
-            editItem?.setIcon(R.drawable.edit_icon)
+            editItem?.setIcon(R.drawable.outline_edit_24)
         }
         
         return super.onPrepareOptionsMenu(menu)
