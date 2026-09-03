@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +21,7 @@ import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.ActivityMainScreenBinding
 import com.example.gallery_sync_app.screens.gallery.GalleryViewModel
 import com.example.gallery_sync_app.screens.viewModels.AuthenticationViewModel
+import com.example.gallery_sync_app.screens.websockets.WebSocketsManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -33,6 +33,7 @@ class MainScreen : AppCompatActivity() {
 
     private var showMenu = false
     private var isEditMode = false
+    private val webSocketsManager = WebSocketsManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,16 +57,13 @@ class MainScreen : AppCompatActivity() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.POST_NOTIFICATIONS
+                this, Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
+                this, arrayOf(
                     Manifest.permission.POST_NOTIFICATIONS,
-                ),
-                101
+                ), 101
             )
         }
 
@@ -81,16 +79,15 @@ class MainScreen : AppCompatActivity() {
                 R.id.logoScreen -> {
                     binding.appBarLayout.visibility = View.GONE
                 }
+
                 R.id.buttonHolderFragScreen -> {
                     binding.appBarLayout.visibility = View.VISIBLE
                     binding.buttonProfileImageView.visibility = View.VISIBLE
-                    supportActionBar?.title = "Main Screen"
+                    supportActionBar?.title = "Main"
 
                     lifecycleScope.launch {
                         userInfo.collect {
-                            Glide.with(context)
-                                .load(it.imageUrl)
-                                .centerCrop()
+                            Glide.with(context).load(it.imageUrl).centerCrop()
                                 .into(binding.userLogo)
                         }
                     }
@@ -98,22 +95,30 @@ class MainScreen : AppCompatActivity() {
                         navController.navigate(R.id.navigateMainToUserProfile)
                     }
                 }
+
                 R.id.galleryFragScreen -> {
                     supportActionBar?.title = "Gallery"
                     binding.buttonProfileImageView.visibility = View.GONE
-                    
+
                     showMenu = true
                 }
+
                 R.id.userProfile -> {
                     binding.buttonProfileImageView.visibility = View.GONE
                 }
+
                 R.id.webSocketFragScreen -> {
                     supportActionBar?.title = "WebSockets"
                     binding.buttonProfileImageView.visibility = View.GONE
                 }
+
                 R.id.bleFragScreen -> {
                     binding.buttonProfileImageView.visibility = View.GONE
                 }
+                R.id.loginFragScreen->{
+                    binding.appBarLayout.visibility=View.GONE
+                }
+
                 else -> {
                     binding.appBarLayout.visibility = View.VISIBLE
                 }
@@ -132,13 +137,13 @@ class MainScreen : AppCompatActivity() {
 
         menu?.findItem(R.id.addIcon)?.isVisible = showMenu
         editItem?.isVisible = showMenu
-        
+
         if (isEditMode) {
             editItem?.setIcon(R.drawable.outline_close_24)
         } else {
             editItem?.setIcon(R.drawable.outline_edit_24)
         }
-        
+
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -148,11 +153,17 @@ class MainScreen : AppCompatActivity() {
                 galleryVm.openGallery()
                 true
             }
+
             R.id.editIcon -> {
                 galleryVm.openEdit()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        galleryVm.closeGallery()
     }
 }

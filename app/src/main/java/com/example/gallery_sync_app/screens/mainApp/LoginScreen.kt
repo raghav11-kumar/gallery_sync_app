@@ -3,7 +3,6 @@ package com.example.gallery_sync_app.screens.mainApp
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -57,19 +56,19 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
 
         val context = view.context
         loginButton.setOnClickListener {
-            val userName:String=binding.nameCred.text.toString()
+            val userName: String = binding.nameCred.text.toString()
             val userEmail: String = binding.userEmail.text.toString()
             val passWord: String = binding.passInput.text.toString()
             Log.e("Fragment", "loginButton is clickable")
-            if (ReusableFunctions.areStringsEmpty(userName, passWord,userEmail)) {
+            if (ReusableFunctions.areStringsEmpty(userName, passWord, userEmail)) {
                 ReusableFunctions.DefaultAlertDialog(
                     context, "Fill The Email ,Name And PassWord", "Sure", "No",
 
-                ){
+                    ) {
 
                 }
             } else {
-                authVm.signIn(userName,userEmail, passWord)
+                authVm.signIn(userName, userEmail, passWord)
             }
         }
     }

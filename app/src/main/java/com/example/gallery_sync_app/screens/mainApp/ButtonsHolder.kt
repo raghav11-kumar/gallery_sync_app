@@ -4,14 +4,11 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import com.bumptech.glide.Glide
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentButtonsHolderBinding
 import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import com.example.gallery_sync_app.screens.viewModels.AuthenticationViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,12 +32,6 @@ class ButtonsHolder : Fragment(R.layout.fragment_buttons_holder) {
         val galleryBut = binding.GalleryButton
         val webBut = binding.webSocketButton
         val fmc_but = binding.fcmButton
-
-
-
-
-
-
         bleBut.setOnClickListener {
             ReusableFunctions.navigateSrcToDest(it, R.id.navigateMainToBle)
         }

@@ -27,9 +27,7 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
         Log.e("UserProfileFrag", "Its Called")
         super.onViewCreated(view, savedInstanceState)
         bindingEx = FragmentUserProfileBinding.bind(view)
-        (requireActivity() as AppCompatActivity)
-            .supportActionBar
-            ?.title = "User Profile"
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = "User Profile"
         val textId = bindingEx.userProfileName
         val emailId = bindingEx.userProfileEmail
         val imageId = bindingEx.userProfileImage
@@ -47,20 +45,16 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            authVm
-                .UserInformation.collect { user ->
-                    user.let {
-                        Log.e("UserProfileFrag", "The Info has Been called${it}")
-                        textId.text = it.name
-                        emailId.text = it.email
-                        Glide.with(requireContext())
-                            .load(it.imageUrl)
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .centerCrop()
-                            .into(imageId)
-                    }
-
+            authVm.UserInformation.collect { user ->
+                user.let {
+                    Log.e("UserProfileFrag", "The Info has Been called${it}")
+                    textId.text = it.name
+                    emailId.text = it.email
+                    Glide.with(requireContext()).load(it.imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop().into(imageId)
                 }
+
+            }
         }
 
         bindingEx.logoutButton.setOnClickListener {
@@ -68,4 +62,5 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
             // You should also call authVm.signOut() here once implemented
         }
     }
+
 }

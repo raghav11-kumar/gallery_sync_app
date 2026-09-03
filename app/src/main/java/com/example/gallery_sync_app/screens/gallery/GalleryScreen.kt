@@ -5,13 +5,11 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentGalleryScreenBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -23,7 +21,7 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
         binding = FragmentGalleryScreenBinding.bind(view)
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = RecyclerAdapterImp(emptyList()){
+        val adapter = RecyclerAdapterImp(emptyList()) {
             galleryVm.deleteImage(it)
         }
         binding.recView.layoutManager = LinearLayoutManager(requireContext())
@@ -55,8 +53,8 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
         }
 
 
-   }
-
-
     }
+
+
+}
 

@@ -76,7 +76,7 @@
     </fragment>
     <fragment
         android:id="@+id/webSocketFragScreen"
-        android:name="com.example.gallery_sync_app.screens.mainApp.WebSocketScreen"
+        android:name="com.example.gallery_sync_app.screens.websockets.WebSocketScreen"
         android:label="@string/webSockets"
         tools:layout="@layout/fragment_web_socket_screen"
         >

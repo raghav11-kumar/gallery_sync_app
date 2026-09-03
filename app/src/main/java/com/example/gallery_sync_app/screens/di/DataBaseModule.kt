@@ -1,9 +1,7 @@
 package com.example.gallery_sync_app.screens.di
 
 import android.content.Context
-import androidx.room3.Database
 import androidx.room3.Room
-import androidx.sqlite.driver.AndroidSQLiteDriver
 import com.example.gallery_sync_app.screens.apis.ImageBBApi
 import com.example.gallery_sync_app.screens.data.roomDataBase.RoomDataBaseImp
 import com.example.gallery_sync_app.screens.data.roomDataBase.UserDao
@@ -15,7 +13,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.internal.platform.PlatformRegistry.applicationContext
 import javax.inject.Singleton
 
 @Module
@@ -28,10 +25,10 @@ class DataBaseModule {
         api: ImageBBApi,
         @ApplicationContext context: Context,
         fbAuth: FirebaseAuth,
-        userDao: UserDao
+        userDao: UserDao,
     ) = DataBaseRepository(
         fireBase, fbAuth, api, context,
-        localDB = userDao
+        localDB = userDao,
     )
 
 
@@ -45,7 +42,7 @@ class DataBaseModule {
             RoomDataBaseImp::class.java,
             "app_database"
         )
-            .fallbackToDestructiveMigration() // Add this for development
+            .fallbackToDestructiveMigration()
     .build()
     }
 
