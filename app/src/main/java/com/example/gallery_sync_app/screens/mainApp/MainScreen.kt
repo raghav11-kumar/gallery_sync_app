@@ -37,8 +37,6 @@ class MainScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val userInfo=authVm.UserInformation
-
-
         binding = ActivityMainScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -78,7 +76,6 @@ class MainScreen : AppCompatActivity() {
                     binding.appBarLayout.visibility= View.VISIBLE
                     binding.buttonProfileImageView.visibility= View.VISIBLE
                     supportActionBar?.title = "Main Screen"
-                    binding.toolbar.menu.findItem(R.id.addIcon)?.isVisible = false
 
 
                     lifecycleScope.launch {
