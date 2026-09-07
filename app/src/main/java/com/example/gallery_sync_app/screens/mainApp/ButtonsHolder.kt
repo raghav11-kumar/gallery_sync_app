@@ -9,17 +9,6 @@ import com.example.gallery_sync_app.databinding.FragmentButtonsHolderBinding
 import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import com.example.gallery_sync_app.screens.Authentication.AuthenticationViewModel
 import dagger.hilt.android.AndroidEntryPoint
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ButtonsHolder.newInstance] factory method to
- * create an instance of this fragment.
- */
 @AndroidEntryPoint
 class ButtonsHolder : Fragment(R.layout.fragment_buttons_holder) {
     private lateinit var binding: FragmentButtonsHolderBinding

@@ -1,7 +1,7 @@
 package com.example.gallery_sync_app.screens.websockets
 
 data class WebSocketResponse(
-    val v: String,
+    val V: String,
     val I: String,
     val P: String,
     val S: String,

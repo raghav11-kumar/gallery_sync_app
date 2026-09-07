@@ -39,7 +39,6 @@ class MainScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        webSocketsManager.connect()
         binding = ActivityMainScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -85,12 +84,11 @@ class MainScreen : AppCompatActivity() {
                 R.id.buttonHolderFragScreen -> {
                     binding.appBarLayout.visibility = View.VISIBLE
                     binding.buttonProfileImageView.visibility = View.VISIBLE
-                    supportActionBar?.title = "Main"
+                    supportActionBar?.title =getString(R.string.main_screen_header)
 
                     lifecycleScope.launch {
                         userInfo.collect {
                             Glide.with(context).load(it?.imageUrl)
-                                .diskCacheStrategy(DiskCacheStrategy.ALL)
                                 .centerCrop()
                                 .into(binding.userLogo)
                         }

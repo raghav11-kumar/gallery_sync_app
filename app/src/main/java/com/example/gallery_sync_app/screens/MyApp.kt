@@ -11,20 +11,9 @@ import dagger.hilt.android.HiltAndroidApp
 @HiltAndroidApp
 
 class MyApp : Application() {
-    val webSocketsManager= WebSocketsManager()
     override fun onCreate() {
         super.onCreate()
-
-        createNotificationChannel()
     }
 
-    private fun createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            val channel = NotificationChannel(
-                "${counter_notif_id}", "notiChannel", NotificationManager.IMPORTANCE_HIGH
-            )
-            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.createNotificationChannel(channel)
-        }
-    }
+
 }

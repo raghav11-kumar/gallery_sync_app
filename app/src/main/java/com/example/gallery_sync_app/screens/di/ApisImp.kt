@@ -5,6 +5,7 @@ import com.example.gallery_sync_app.screens.apis.KtorSeverApi
 import com.example.gallery_sync_app.screens.constants.DefaultValues
 import com.example.gallery_sync_app.screens.di.customAnnotations.ImgBBRetrofit
 import com.example.gallery_sync_app.screens.di.customAnnotations.KtorRetrofit
+import com.example.gallery_sync_app.screens.websockets.WebSocketsManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -62,5 +63,8 @@ class ApisImp {
     fun provideKtorApi( @KtorRetrofit retrofit: Retrofit): KtorSeverApi{
 return retrofit.create<KtorSeverApi>(KtorSeverApi::class.java)
     }
+    @Singleton
+    @Provides
+    fun provideWebSocketManager()= WebSocketsManager()
 
 }

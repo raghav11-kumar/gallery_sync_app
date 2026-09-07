@@ -55,6 +55,17 @@
     <string name="signIn">SignIn</string>
     <string name="logInHeadLine">Already A User ?</string>
     <string name="signInHeadLine">New User ?</string>
+    <string name="connected">Connected</string>
+    <string name="voltage">Voltage (V)</string>
+    <string name="vValue">Value</string>
+    <string name="current">Current (I)</string>
+    <string name="actPower">Active Power (P)</string>
+    <string name="apparPower">Apparent Power (S)</string>
+    <string name="Rp">Reactive Power (Q)</string>
+    <string name="enHead">Energy Totals</string>
+    <string name="dsHead">Device State</string>
+    <string name="etHead">Event Type</string>
+    <string name="lpHead">Last Update</string>
 
 
 </resources>

@@ -32,7 +32,19 @@ class AuthenticationViewModel @Inject constructor(
     //keeps track User Login Status
     private val isLoggedIn = MutableStateFlow<UserStatus>(UserStatus.Unknown)
     val isIn = isLoggedIn.asStateFlow()
-    private fun CurrUserUid() = fbAuth.uid ?: ""
+
+    private val _userId = MutableStateFlow(fbAuth.uid ?: "")
+    //Gets The Data From Room by Flow .  When Changes Occur In Db   Automatically Updates ui
+
+    val UserInformation = _userId.flatMapLatest { uid ->
+        repo.getUser(uid)
+    }
+
+    private val imageInfo = MutableStateFlow<ImagBBResponse?>(null)
+    val ImageInformation = imageInfo
+
+
+
 
 
     fun signIn(userName: String, userEmail: String, passWord: String) {
@@ -96,16 +108,7 @@ class AuthenticationViewModel @Inject constructor(
         }
     }
 
-    private val _userId = MutableStateFlow(fbAuth.uid ?: "")
-    //Gets The Data From Room by Flow .  When Changes Occur In Db   Automatically Updates ui
 
-    val UserInformation = _userId.flatMapLatest { uid ->
-        repo.getUser(uid)
-    }
-
-
-    private val imageInfo = MutableStateFlow<ImagBBResponse?>(null)
-    val ImageInformation = imageInfo
 
     //sends Image To ImgBB And gets The Response
     fun saveImage(uri: Uri) {

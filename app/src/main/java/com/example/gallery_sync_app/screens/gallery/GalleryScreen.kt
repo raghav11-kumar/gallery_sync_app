@@ -11,6 +11,7 @@ import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentGalleryScreenBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlin.collections.emptyList
 
 @AndroidEntryPoint
 class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
