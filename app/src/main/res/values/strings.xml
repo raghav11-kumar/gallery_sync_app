@@ -52,5 +52,9 @@
     <string name="delete">Delete</string>
     <string name="loading">Loading....</string>
     <string name="edit">Edit</string>
+    <string name="signIn">SignIn</string>
+    <string name="logInHeadLine">Already A User ?</string>
+    <string name="signInHeadLine">New User ?</string>
+
 
 </resources>

@@ -1,7 +1,10 @@
 package com.example.gallery_sync_app.screens.di
 
 import com.example.gallery_sync_app.screens.apis.ImageBBApi
+import com.example.gallery_sync_app.screens.apis.KtorSeverApi
 import com.example.gallery_sync_app.screens.constants.DefaultValues
+import com.example.gallery_sync_app.screens.di.customAnnotations.ImgBBRetrofit
+import com.example.gallery_sync_app.screens.di.customAnnotations.KtorRetrofit
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,6 +32,7 @@ class ApisImp {
 
     @Singleton
     @Provides
+    @ImgBBRetrofit
     fun provideRetrofit(client: OkHttpClient): Retrofit {
         return Retrofit.Builder()
             .baseUrl(DefaultValues.baseUrl)
@@ -36,11 +40,27 @@ class ApisImp {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
+    @Singleton
+    @Provides
+    @KtorRetrofit
+    fun provideKtorRetrofit(client: OkHttpClient): Retrofit{
+        return Retrofit.Builder()
+            .baseUrl(DefaultValues.baseUrl2)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+    }
 
     @Singleton
     @Provides
-    fun provideApi(retrofit: Retrofit): ImageBBApi {
+    fun provideApi( @ImgBBRetrofit retrofit: Retrofit): ImageBBApi {
         return retrofit.create<ImageBBApi>(ImageBBApi::class.java)
+    }
+    @Singleton
+    @Provides
+    fun provideKtorApi( @KtorRetrofit retrofit: Retrofit): KtorSeverApi{
+return retrofit.create<KtorSeverApi>(KtorSeverApi::class.java)
     }
 
 }

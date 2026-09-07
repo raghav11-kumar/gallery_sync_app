@@ -17,10 +17,11 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.ActivityMainScreenBinding
 import com.example.gallery_sync_app.screens.gallery.GalleryViewModel
-import com.example.gallery_sync_app.screens.viewModels.AuthenticationViewModel
+import com.example.gallery_sync_app.screens.Authentication.AuthenticationViewModel
 import com.example.gallery_sync_app.screens.websockets.WebSocketsManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -38,6 +39,7 @@ class MainScreen : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        webSocketsManager.connect()
         binding = ActivityMainScreenBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -87,7 +89,9 @@ class MainScreen : AppCompatActivity() {
 
                     lifecycleScope.launch {
                         userInfo.collect {
-                            Glide.with(context).load(it.imageUrl).centerCrop()
+                            Glide.with(context).load(it?.imageUrl)
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .centerCrop()
                                 .into(binding.userLogo)
                         }
                     }
@@ -117,6 +121,10 @@ class MainScreen : AppCompatActivity() {
                 }
                 R.id.loginFragScreen->{
                     binding.appBarLayout.visibility=View.GONE
+                }
+                R.id.signInFragScreen->{
+                    binding.appBarLayout.visibility=View.GONE
+
                 }
 
                 else -> {

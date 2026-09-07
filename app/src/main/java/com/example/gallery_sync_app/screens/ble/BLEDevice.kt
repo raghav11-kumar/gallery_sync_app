@@ -1,4 +1,4 @@
-package com.example.gallery_sync_app.screens.mainApp
+package com.example.gallery_sync_app.screens.ble
 
 import android.os.Bundle
 import android.util.Log
@@ -6,11 +6,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentBLEDeviceBinding
-import com.example.gallery_sync_app.screens.gallery.GalleryViewModel
-import com.example.gallery_sync_app.screens.viewModels.AuthenticationViewModel
+import com.example.gallery_sync_app.screens.Authentication.AuthenticationViewModel
 import kotlin.getValue
 
 // TODO: Rename parameter arguments, choose names that match
@@ -25,6 +23,7 @@ private const val ARG_PARAM2 = "param2"
  */
 class BLEDevice : Fragment(R.layout.fragment_b_l_e_device){
     private val autVm: AuthenticationViewModel by activityViewModels()
+    private val bleVm: BLEViewModel by activityViewModels()
     private lateinit var binding: FragmentBLEDeviceBinding
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,6 +34,7 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device){
         val bleId=binding.bleText
         bleId.setOnClickListener {
             Log.e("BLE","is Clickable")
+            bleVm.getInfo()
 
         }
     }

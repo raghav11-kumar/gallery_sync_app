@@ -19,6 +19,12 @@ class LocalDataSaver @Inject constructor(private val sharedPreferences: SharedPr
     fun isUserActive(userEmail: String): Boolean{
        return sharedPreferences.getBoolean(userEmail,false)
     }
+    fun clearUser(){
+        sharedPreferences.edit {
+            clear()
+        }
+    }
+
 
 
 

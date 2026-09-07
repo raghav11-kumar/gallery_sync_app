@@ -17,12 +17,7 @@ interface ImageBBApi {
     @POST("/1/upload")
     suspend fun postImage(
         @Query("key") key: String,
-        @Part image: MultipartBody.Part
+        @Part image: MultipartBody.Part,
     ): ImagBBResponse
 
 }
-@Serializable
-data class res(
-    val data: String,
-    val d2: String
-)

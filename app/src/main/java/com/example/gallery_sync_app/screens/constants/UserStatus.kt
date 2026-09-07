@@ -1,6 +1,6 @@
 package com.example.gallery_sync_app.screens.constants
 
-enum class UserStatus {
+enum class UserStatus (){
     Active,
     AlreadyLogged,
     Offline,

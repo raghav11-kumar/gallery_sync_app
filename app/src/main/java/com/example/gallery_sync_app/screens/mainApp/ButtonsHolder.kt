@@ -7,7 +7,7 @@ import androidx.fragment.app.viewModels
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentButtonsHolderBinding
 import com.example.gallery_sync_app.screens.utils.ReusableFunctions
-import com.example.gallery_sync_app.screens.viewModels.AuthenticationViewModel
+import com.example.gallery_sync_app.screens.Authentication.AuthenticationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Rename parameter arguments, choose names that match

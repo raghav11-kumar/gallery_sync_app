@@ -19,11 +19,16 @@
             app:destination="@+id/buttonHolderFragScreen"
             app:popUpTo="@id/logoScreen"
             app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/navigateLogoToSignIn"
+            app:destination="@+id/signInFragScreen"
+            app:popUpTo="@id/logoScreen"
+            app:popUpToInclusive="true"
+            />
     </fragment>
     <fragment
-
         android:id="@+id/loginFragScreen"
-        android:name="com.example.gallery_sync_app.screens.mainApp.LoginScreen"
+        android:name="com.example.gallery_sync_app.screens.Authentication.LoginScreen"
         android:label="@string/loginHeading"
         tools:layout="@layout/fragment_login_screen"
         >
@@ -31,6 +36,11 @@
             android:id="@+id/navigateLoginToButtonHolder"
             app:destination="@+id/buttonHolderFragScreen"
             app:popUpTo="@id/loginFragScreen"
+            app:popUpToInclusive="true"/>
+        <action
+            android:id="@+id/navigateLoginToSignIN"
+            app:destination="@+id/signInFragScreen"
+            app:popUpTo="@id/signInFragScreen"
             app:popUpToInclusive="true"/>
     </fragment>
     <fragment
@@ -60,7 +70,7 @@
     <fragment
         android:id="@+id/bleFragScreen"
         android:label="@string/ble"
-        android:name="com.example.gallery_sync_app.screens.mainApp.BLEDevice"
+        android:name="com.example.gallery_sync_app.screens.ble.BLEDevice"
         tools:layout="@layout/fragment_b_l_e_device">
         <action
             android:id="@+id/navigateBleToButtonHolder"
@@ -92,6 +102,23 @@
             app:destination="@+id/loginFragScreen"
             app:popUpTo="@id/nav_graph"
             app:popUpToInclusive="true"/>
+    </fragment>
+    <fragment
+        android:id="@+id/signInFragScreen"
+        android:name="com.example.gallery_sync_app.screens.Authentication.SignInScreen"
+        tools:layout="@layout/fragment_sign_in_screen">
+        <action
+            android:id="@+id/navigateSignInToLoginScreen"
+            app:destination="@id/loginFragScreen"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"
+            />
+        <action
+            android:id="@+id/navigateSignInToButtonHolder"
+            app:destination="@id/buttonHolderFragScreen"
+            app:popUpTo="@id/nav_graph"
+            app:popUpToInclusive="true"
+            />
     </fragment>
 
 

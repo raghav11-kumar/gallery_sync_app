@@ -3,6 +3,7 @@ package com.example.gallery_sync_app.screens.di
 import android.content.Context
 import androidx.room3.Room
 import com.example.gallery_sync_app.screens.apis.ImageBBApi
+import com.example.gallery_sync_app.screens.apis.KtorSeverApi
 import com.example.gallery_sync_app.screens.data.roomDataBase.RoomDataBaseImp
 import com.example.gallery_sync_app.screens.data.roomDataBase.UserDao
 import com.example.gallery_sync_app.screens.repository.DataBaseRepository
@@ -26,9 +27,11 @@ class DataBaseModule {
         @ApplicationContext context: Context,
         fbAuth: FirebaseAuth,
         userDao: UserDao,
+        ktorSeverApi: KtorSeverApi
     ) = DataBaseRepository(
         fireBase, fbAuth, api, context,
         localDB = userDao,
+        ktorSeverApi
     )
 
 

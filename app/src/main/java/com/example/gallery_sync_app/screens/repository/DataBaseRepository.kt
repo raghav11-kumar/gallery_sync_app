@@ -4,7 +4,8 @@ import android.content.Context
 import android.net.Uri
 import android.util.Log
 import com.example.gallery_sync_app.screens.apis.ImageBBApi
-import com.example.gallery_sync_app.screens.apis.res
+import com.example.gallery_sync_app.screens.apis.KtorSeverApi
+import com.example.gallery_sync_app.screens.apis.Res
 import com.example.gallery_sync_app.screens.data.ImagBBResponse
 import com.example.gallery_sync_app.screens.data.Images
 import com.example.gallery_sync_app.screens.data.UserData
@@ -15,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -27,9 +29,10 @@ class DataBaseRepository @Inject constructor(
     private val api: ImageBBApi,
     private val context: Context,
     private val localDB: UserDao,
+    private val ktorApi: KtorSeverApi
 ) {
     //Saves User Info In FireStore
-    fun saveUser(userData: UserData) {
+    suspend fun saveUser(userData: UserData) {
         val user = mapOf(
             "userName" to userData.userName, "uid" to userData.uid, "email" to userData.email
         )
@@ -38,13 +41,18 @@ class DataBaseRepository @Inject constructor(
                     Log.e("DataBaseRep", "Saved SuccessFully")
                 }.addOnFailureListener {
                     Log.e("DataBaseRep", "Failed SuccessFully ${it.message}")
-                }
+                }.await()
+            localDB.InsertUser(
+                userData = Users(
+                    userUid = userData.uid, name = userData.userName, email = userData.email
+                )
+            )
         }
 
     }
     //Gets User Info From Room Which is source truth for show in The Ui
 
-    fun getUser(uid: String): Flow<Users> {
+    fun getUser(uid: String): Flow<Users?> {
         return localDB.getUser(uid)
     }
 
@@ -183,6 +191,43 @@ class DataBaseRepository @Inject constructor(
                     Log.e("DataBaseRep", "SuccessFully Deleted")
                 }.await()
         }
+    }
+
+
+    suspend fun clearAllData() {
+        val uid = getCurrUid() // Capture UID while user is still "logged in"
+        if (uid.isEmpty()) return
+
+        withContext(Dispatchers.IO) {
+            // 1. Clear Room Database
+            localDB.deleteAllUsers()
+            localDB.deleteAllImages()
+
+
+        }
+    }
+
+    suspend fun getKtorRes(): Result<Res>{
+       return try {
+            val response = ktorApi.check()
+           Log.e("DataBaseRep","The Response From KTOR Server ${response}")
+             Result.success(response)
+        }catch (e: Exception){
+           Log.e("DataBaseRep","The Response From KTOR Server Failed DUE TO  ${e.localizedMessage}")
+           Result.failure(e)
+        }
+
+    }
+    suspend fun updateUserName(name: String) {
+        fbStore.collection("users").document(getCurrUid())
+            .update("userName", name).addOnSuccessListener {
+                Log.e("DataBaseRep","SuccessFully Updated User Name")
+
+            }.addOnFailureListener {
+                Log.e("DataBaseRep", "Failed To Update User Name ${it.message}")
+            }.await()
+        localDB.updateUserName(name, getCurrUid())
+
     }
 
 
