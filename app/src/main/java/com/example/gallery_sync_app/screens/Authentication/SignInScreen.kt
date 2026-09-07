@@ -13,9 +13,10 @@ import com.example.gallery_sync_app.screens.constants.DefaultValues
 import com.example.gallery_sync_app.screens.constants.UserStatus
 import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import com.example.gallery_sync_app.screens.websockets.WebSocketsManager
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
-
+@AndroidEntryPoint
 class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
     lateinit var binding: FragmentSignInScreenBinding
      var webSocketsManager= WebSocketsManager()
@@ -25,6 +26,15 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
         binding = FragmentSignInScreenBinding.bind(view)
         val signInButton = binding.SignInButton
         val loginButton = binding.sigInLog
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            authVm.errorFlow.collect { message ->
+                ReusableFunctions.DefaultAlertDialog(
+                    view.context, message, "OK", "Cancel"
+                ) {}
+            }
+        }
+
         viewLifecycleOwner.lifecycleScope.launch {
             authVm.isIn.collect { state ->
                 when (state) {
@@ -33,7 +43,7 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
                     }
 
                     UserStatus.Failure -> {
-                        Toast.makeText(view.context, "Failed To SignIn", Toast.LENGTH_LONG).show()
+                        // Handled by errorFlow
                     }
 
                     else -> {
@@ -54,11 +64,14 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
                     view.context, "Fill The Email ,Name And PassWord", "Sure", "No",
                 ) {}
             } else if (pass.length < 6) {
-                Toast.makeText(
-                    view.context, "Password Must Be At Least 6 Characters", Toast.LENGTH_LONG
-                ).show()
+                ReusableFunctions.DefaultAlertDialog(view.context,"Password Must Be At Least 6 Characters","Sure","No"){
+                //do some Action On positive Button Click
+            }
+
             } else if (!email.matches(DefaultValues.emailRegex)) {
-                Toast.makeText(view.context, "Please Enter A Valid Email", Toast.LENGTH_LONG).show()
+                ReusableFunctions.DefaultAlertDialog(view.context,"Please Enter Valid Email","Sure","No"){
+                    //do some Action On positive Button Click
+                }
             } else {
                 authVm.signIn(name, email, pass)
             }

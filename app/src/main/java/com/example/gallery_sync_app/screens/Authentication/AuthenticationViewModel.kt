@@ -13,7 +13,9 @@ import com.example.gallery_sync_app.screens.services.NotificationService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
@@ -30,8 +32,11 @@ class AuthenticationViewModel @Inject constructor(
 
     ) : ViewModel() {
     //keeps track User Login Status
-    private val isLoggedIn = MutableStateFlow<UserStatus>(UserStatus.Unknown)
+    private val isLoggedIn = MutableStateFlow(UserStatus.Unknown)
     val isIn = isLoggedIn.asStateFlow()
+
+    private val _errorFlow = MutableSharedFlow<String>()
+    val errorFlow = _errorFlow.asSharedFlow()
 
     private val _userId = MutableStateFlow(fbAuth.uid ?: "")
     //Gets The Data From Room by Flow .  When Changes Occur In Db   Automatically Updates ui
@@ -52,7 +57,8 @@ class AuthenticationViewModel @Inject constructor(
             try {
                 // 1. Wait for Firebase to create the user
                 val authResult =
-                    fbAuth.createUserWithEmailAndPassword(userEmail.trim(), passWord.trim()).await()
+                    fbAuth.createUserWithEmailAndPassword(userEmail.trim(), passWord.trim())
+                        .await()
                 val newUid = authResult.user?.uid ?: ""
 
                 if (newUid.isNotEmpty()) {
@@ -66,6 +72,7 @@ class AuthenticationViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 isLoggedIn.value = UserStatus.Failure
+                _errorFlow.emit(e.message ?: "Failed Sign In")
                 Log.e("AuthVM", "Failed Sign In ${e.message}")
             }
         }
@@ -87,6 +94,7 @@ class AuthenticationViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e("AuthVm", "Failed To Login ${e.message}")
                 isLoggedIn.value = UserStatus.Failure
+                _errorFlow.emit(e.message ?: "Failed To Login")
             }
 
         }

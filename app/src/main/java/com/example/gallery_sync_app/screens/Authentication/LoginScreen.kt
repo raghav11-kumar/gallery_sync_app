@@ -9,6 +9,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentLoginScreenBinding
+import com.example.gallery_sync_app.screens.constants.DefaultValues
 import com.example.gallery_sync_app.screens.constants.UserStatus
 import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,6 +29,14 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
         val loginButton = binding.loginButton
 
         viewLifecycleOwner.lifecycleScope.launch {
+            authVm.errorFlow.collect { message ->
+                ReusableFunctions.DefaultAlertDialog(
+                    view.context, message, "OK", "Cancel"
+                ) {}
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
             authVm.isIn.collect { state ->
                 when (state) {
                     UserStatus.Success -> {
@@ -35,8 +44,7 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
                     }
 
                     UserStatus.Failure -> {
-                        Toast.makeText(view.context, "Login Failed", Toast.LENGTH_SHORT).show()
-                        // will Show  the ACTUAL reason from Firebase
+                        // Handled by errorFlow
                     }
 
                     UserStatus.NotLogged -> {
@@ -51,18 +59,21 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
         }
 
 
-        val context = view.context
         loginButton.setOnClickListener {
             val userEmail: String = binding.userEmail.text.toString()
             val passWord: String = binding.passInput.text.toString()
             Log.e("Fragment", "loginButton is clickable")
-            if (ReusableFunctions.areStringsEmpty(passWord, userEmail)) {
+            if (ReusableFunctions.areStringsEmpty(userEmail, passWord)) {
                 ReusableFunctions.DefaultAlertDialog(
-                    context, "Fill The Email ,Name And PassWord", "Sure", "No",
-
-                    ) {
-                    //action that can be Performed By Clicking On Positive Button
-
+                    view.context, "Fill The Email ,Name And PassWord", "Sure", "No",
+                ) {}
+            } else if (passWord.length < 6) {
+                ReusableFunctions.DefaultAlertDialog(view.context,"Password Must Be At Least 6 Characters","Sure","No"){
+                    //do some Action On positive Button Click
+                }
+            } else if (!userEmail.matches(DefaultValues.emailRegex)) {
+                ReusableFunctions.DefaultAlertDialog(view.context,"Please Enter Valid Email","Sure","No"){
+                    //do some Action On positive Button Click
                 }
             } else {
                 authVm.login(userEmail, passWord)

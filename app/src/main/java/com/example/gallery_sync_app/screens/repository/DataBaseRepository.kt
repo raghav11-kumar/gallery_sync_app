@@ -52,8 +52,9 @@ class DataBaseRepository @Inject constructor(
     }
     //Gets User Info From Room Which is source truth for show in The Ui
 
-    fun getUser(uid: String): Flow<Users?> {
-        return localDB.getUser(uid)
+   suspend fun getUser(uid: String): Flow<Users?> {
+        val response=localDB.getUser(uid = uid)
+       return response
     }
 
     //Syncing The FireStore Data TO Room InCase User Updates
