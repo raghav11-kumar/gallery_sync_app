@@ -73,6 +73,14 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
+            authVm.errorFlowing.collect { message ->
+                ReusableFunctions.DefaultAlertDialog(
+                    view.context, message, "OK", "Cancel"
+                ) {}
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
             authVm.UserInformation.collect { user ->
                 if (user != null) {
                     Log.e("UserProfileFrag", "The Info has Been called${user}")

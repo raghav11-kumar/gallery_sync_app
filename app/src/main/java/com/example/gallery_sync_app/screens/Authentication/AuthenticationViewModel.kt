@@ -35,8 +35,8 @@ class AuthenticationViewModel @Inject constructor(
     private val isLoggedIn = MutableStateFlow(UserStatus.Unknown)
     val isIn = isLoggedIn.asStateFlow()
 
-    private val _errorFlow = MutableSharedFlow<String>()
-    val errorFlow = _errorFlow.asSharedFlow()
+    private val errorFlow = MutableSharedFlow<String>()
+    val errorFlowing = errorFlow.asSharedFlow()
 
     private val _isImageLoading = MutableStateFlow(false)
     val isImageLoading = _isImageLoading.asStateFlow()
@@ -76,7 +76,7 @@ class AuthenticationViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 isLoggedIn.value = UserStatus.Failure
-                _errorFlow.emit(e.message ?: "Failed Sign In")
+                errorFlow.emit(e.message ?: "Failed Sign In")
                 Log.e("AuthVM", "Failed Sign In ${e.message}")
             }
         }
@@ -100,7 +100,7 @@ class AuthenticationViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e("AuthVm", "Failed To Login ${e.message}")
                 isLoggedIn.value = UserStatus.Failure
-                _errorFlow.emit(e.message ?: "Failed To Login")
+                errorFlow.emit(e.message ?: "Failed To Login")
             }
 
         }
@@ -142,13 +142,13 @@ class AuthenticationViewModel @Inject constructor(
                 response.onFailure {
                     Log.e("AuthVm", "Failed TO Send IMage ${it.message}")
                     _isImageLoading.value = false
-                    _errorFlow.emit(it.message ?: "Failed to upload image")
+                    errorFlow.emit(it.message ?: "Failed to upload image")
                 }
 
             }
         }.onFailure {
             viewModelScope.launch {
-                _errorFlow.emit(it.message ?: "Failed to process image")
+                errorFlow.emit(it.message ?: "Failed to process image")
             }
         }
     }
@@ -163,10 +163,12 @@ class AuthenticationViewModel @Inject constructor(
             _userId.value = ""
         }
     }
-
     fun updateUserName(name: String) {
         viewModelScope.launch {
-            repo.updateUserName(name)
+            val result = repo.updateUserName(name)
+            result.onFailure {
+                errorFlow.emit(it.message ?: "Update Failed")
+            }
         }
     }
 

@@ -28,7 +28,7 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
         val loginButton = binding.sigInLog
 
         viewLifecycleOwner.lifecycleScope.launch {
-            authVm.errorFlow.collect { message ->
+            authVm.errorFlowing.collect { message ->
                 ReusableFunctions.DefaultAlertDialog(
                     view.context, message, "OK", "Cancel"
                 ) {}

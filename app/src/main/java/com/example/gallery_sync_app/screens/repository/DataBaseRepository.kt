@@ -11,6 +11,7 @@ import com.example.gallery_sync_app.screens.data.Images
 import com.example.gallery_sync_app.screens.data.UserData
 import com.example.gallery_sync_app.screens.data.roomDataBase.UserDao
 import com.example.gallery_sync_app.screens.data.roomDataBase.Users
+import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Dispatchers
@@ -65,8 +66,6 @@ class DataBaseRepository @Inject constructor(
                )
            )
        }
-
-
     }
 
     //Gets User Info From Room Which is source truth for show in The Ui
@@ -232,16 +231,23 @@ class DataBaseRepository @Inject constructor(
         }
 
     }
-    suspend fun updateUserName(name: String) {
-        fbStore.collection("users").document(getCurrUid())
-            .update("userName", name).addOnSuccessListener {
-                Log.e("DataBaseRep","SuccessFully Updated User Name")
+    suspend fun updateUserName(name: String): Result<Unit> {
+        if (!ReusableFunctions.isNetworkAvailable(context)) {
+            return Result.failure(Exception("No Internet Connection. Please check your network settings."))
+        }
+        return try {
+            fbStore.collection("users").document(getCurrUid())
+                .update("userName", name).addOnSuccessListener {
+                    Log.e("DataBaseRep", "SuccessFully Updated User Name")
 
-            }.addOnFailureListener {
-                Log.e("DataBaseRep", "Failed To Update User Name ${it.message}")
-            }.await()
-        localDB.updateUserName(name, getCurrUid())
-
+                }.addOnFailureListener {
+                    Log.e("DataBaseRep", "Failed To Update User Name ${it.message}")
+                }.await()
+            localDB.updateUserName(name, getCurrUid())
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
 

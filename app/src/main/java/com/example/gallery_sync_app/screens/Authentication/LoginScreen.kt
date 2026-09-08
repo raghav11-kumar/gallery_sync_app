@@ -29,7 +29,7 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
         val loginButton = binding.loginButton
 
         viewLifecycleOwner.lifecycleScope.launch {
-            authVm.errorFlow.collect { message ->
+            authVm.errorFlowing.collect { message ->
                 ReusableFunctions.DefaultAlertDialog(
                     view.context, message, "OK", "Cancel"
                 ) {}
