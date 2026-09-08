@@ -9,7 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class UserProfile : Fragment(R.layout.fragment_user_profile) {
     private lateinit var bindingEx: FragmentUserProfileBinding
-    private val authVm: AuthenticationViewModel by viewModels()
+    private val authVm: AuthenticationViewModel by activityViewModels()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,15 +65,30 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            authVm.UserInformation.collect { user ->
-                user?.let {
-                    Log.e("UserProfileFrag", "The Info has Been called${it}")
-                    textId.setText(it.name)
-                    emailId.text = it.email
-                    Glide.with(requireContext()).load(it.imageUrl)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop().into(imageId)
-                }
+            authVm.isImageLoading.collect { isLoading ->
+                bindingEx.imageProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                bindingEx.editImageFab.isEnabled = !isLoading
+                bindingEx.userProfileImage.alpha = if (isLoading) 0.5f else 1.0f
+            }
+        }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            authVm.UserInformation.collect { user ->
+                if (user != null) {
+                    Log.e("UserProfileFrag", "The Info has Been called${user}")
+                    textId.setText(user.name)
+                    emailId.text = user.email
+                    Glide.with(requireContext())
+                        .load(user.imageUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .placeholder(R.drawable.outline_article_person_24)
+                        .centerCrop()
+                        .into(imageId)
+                } else {
+                    textId.setText("")
+                    emailId.text = ""
+                    imageId.setImageResource(R.drawable.outline_article_person_24)
+                }
             }
         }
 

@@ -50,9 +50,28 @@ class DataBaseRepository @Inject constructor(
         }
 
     }
+   suspend fun saveUserLocally(uid: String){
+      val data= fbStore.collection("users").document(uid).get().addOnSuccessListener {
+          Log.d("DataBaseRep","SuccessFully Got The User ${it}")
+
+      }.addOnFailureListener {
+          Log.e("DataBaseRep","Failed To Get The User Cuz Of ${it.message}")
+      }.await()
+       val info=data.toObject(UserData::class.java)
+       if (info != null) {
+           localDB.InsertUser(
+               userData = Users(
+                   uid, name = info.userName, email = info.email, imageUrl = info.imageUrl
+               )
+           )
+       }
+
+
+    }
+
     //Gets User Info From Room Which is source truth for show in The Ui
 
-   suspend fun getUser(uid: String): Flow<Users?> {
+    fun getUser(uid: String): Flow<Users?> {
         val response=localDB.getUser(uid = uid)
        return response
     }
@@ -196,15 +215,9 @@ class DataBaseRepository @Inject constructor(
 
 
     suspend fun clearAllData() {
-        val uid = getCurrUid() // Capture UID while user is still "logged in"
-        if (uid.isEmpty()) return
-
         withContext(Dispatchers.IO) {
-            // 1. Clear Room Database
             localDB.deleteAllUsers()
             localDB.deleteAllImages()
-
-
         }
     }
 

@@ -38,6 +38,9 @@ class AuthenticationViewModel @Inject constructor(
     private val _errorFlow = MutableSharedFlow<String>()
     val errorFlow = _errorFlow.asSharedFlow()
 
+    private val _isImageLoading = MutableStateFlow(false)
+    val isImageLoading = _isImageLoading.asStateFlow()
+
     private val _userId = MutableStateFlow(fbAuth.uid ?: "")
     //Gets The Data From Room by Flow .  When Changes Occur In Db   Automatically Updates ui
 
@@ -66,6 +69,7 @@ class AuthenticationViewModel @Inject constructor(
                     repo.saveUser(UserData(newUid, userName, userEmail))
 
                     localDataSaver.saveUser(userEmail)
+                    _userId.value = newUid
                     isLoggedIn.value = UserStatus.Success
 
                     Log.e("AuthVM", "SuccessFul Sign In")
@@ -87,7 +91,9 @@ class AuthenticationViewModel @Inject constructor(
 
                 if (newUid.isNotEmpty()) {
                     localDataSaver.saveUser(email)
+                    _userId.value = newUid
                     isLoggedIn.value = UserStatus.Success
+                    repo.saveUserLocally(newUid)
                     Log.e("AuthVM", "SuccessFul Sign In")
                 }
 
@@ -124,27 +130,36 @@ class AuthenticationViewModel @Inject constructor(
         val multipartData = repo.convertUriToImage(uri)
         multipartData.onSuccess {
             viewModelScope.launch {
+                _isImageLoading.value = true
                 val response = repo.sendImage(
                     apiKey = apiKey, it
                 )
                 response.onSuccess {
                     Log.e("AuthVm", "SuccessFully Retrieved Image ${it}")
                     imageInfo.value = it
+                    _isImageLoading.value = false
                 }
                 response.onFailure {
                     Log.e("AuthVm", "Failed TO Send IMage ${it.message}")
+                    _isImageLoading.value = false
+                    _errorFlow.emit(it.message ?: "Failed to upload image")
                 }
 
+            }
+        }.onFailure {
+            viewModelScope.launch {
+                _errorFlow.emit(it.message ?: "Failed to process image")
             }
         }
     }
 
     fun logOut() {
         viewModelScope.launch {
-            isLoggedIn.value = UserStatus.NotLogged
+            repo.clearAllData()
             fbAuth.signOut()
             //clears the users Log State
             localDataSaver.clearUser()
+            isLoggedIn.value = UserStatus.NotLogged
             _userId.value = ""
         }
     }

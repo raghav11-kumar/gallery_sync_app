@@ -29,6 +29,13 @@
             android:focusable="true"
             android:scaleType="centerCrop"
             android:src="@drawable/outline_article_person_24" />
+
+        <ProgressBar
+            android:id="@+id/imageProgressBar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center"
+            android:visibility="gone" />
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -82,6 +83,15 @@ class MainScreen : AppCompatActivity() {
                 }
 
                 R.id.buttonHolderFragScreen -> {
+                    lifecycleScope.launch {
+                        authVm.UserInformation.collect {user->
+                            user?.let {
+                                Toast.makeText(context,"Welcome ${it.name}",Toast.LENGTH_SHORT).show()
+
+                            }
+
+                        }
+                    }
                     binding.appBarLayout.visibility = View.VISIBLE
                     binding.buttonProfileImageView.visibility = View.VISIBLE
                     supportActionBar?.title =getString(R.string.main_screen_header)
