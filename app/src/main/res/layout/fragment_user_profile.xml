@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/black"
     android:padding="24dp"
-    tools:context=".screens.mainApp.UserProfile">
+    tools:context=".screens.screens.UserProfile">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/profileImageCard"

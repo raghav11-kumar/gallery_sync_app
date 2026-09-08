@@ -1,4 +1,4 @@
-package com.example.gallery_sync_app.screens.mainApp
+package com.example.gallery_sync_app.screens.screens
 
 import android.content.Context
 import android.net.Uri
@@ -25,8 +25,6 @@ import kotlinx.coroutines.launch
 class UserProfile : Fragment(R.layout.fragment_user_profile) {
     private lateinit var bindingEx: FragmentUserProfileBinding
     private val authVm: AuthenticationViewModel by activityViewModels()
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.e("UserProfileFrag", "Its Called")
         super.onViewCreated(view, savedInstanceState)

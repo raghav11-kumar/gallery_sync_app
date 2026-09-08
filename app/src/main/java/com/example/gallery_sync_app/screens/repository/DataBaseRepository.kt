@@ -68,7 +68,7 @@ class DataBaseRepository @Inject constructor(
        }
     }
 
-    //Gets User Info From Room Which is source truth for show in The Ui
+    //Gets User Info From Room Which is source truth to show in Ui
 
     fun getUser(uid: String): Flow<Users?> {
         val response=localDB.getUser(uid = uid)

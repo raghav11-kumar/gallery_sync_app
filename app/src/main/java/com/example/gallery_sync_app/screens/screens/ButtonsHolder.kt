@@ -1,4 +1,4 @@
-package com.example.gallery_sync_app.screens.mainApp
+package com.example.gallery_sync_app.screens.screens
 
 import android.os.Bundle
 import android.view.View

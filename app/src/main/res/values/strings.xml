@@ -66,6 +66,7 @@
     <string name="dsHead">Device State</string>
     <string name="etHead">Event Type</string>
     <string name="lpHead">Last Update</string>
+    <string name="sub">Subscribe</string>
 
 
 </resources>

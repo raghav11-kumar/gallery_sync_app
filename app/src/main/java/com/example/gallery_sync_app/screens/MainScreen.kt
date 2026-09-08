@@ -1,28 +1,17 @@
-package com.example.gallery_sync_app.screens.mainApp
+package com.example.gallery_sync_app.screens
 
-import android.Manifest
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.NavHostFragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.ActivityMainScreenBinding
-import com.example.gallery_sync_app.screens.gallery.GalleryViewModel
 import com.example.gallery_sync_app.screens.Authentication.AuthenticationViewModel
+import com.example.gallery_sync_app.screens.gallery.GalleryViewModel
 import com.example.gallery_sync_app.screens.websockets.WebSocketsManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -38,6 +27,7 @@ class MainScreen : AppCompatActivity() {
     private val webSocketsManager = WebSocketsManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityMainScreenBinding.inflate(layoutInflater)
@@ -58,13 +48,15 @@ class MainScreen : AppCompatActivity() {
             insets
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && ActivityCompat.checkSelfPermission(
-                this, Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU && androidx.core.app.ActivityCompat.checkSelfPermission(
+                this, android.Manifest.permission.POST_NOTIFICATIONS
+            ) != android.content.pm.PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(
+            androidx.core.app.ActivityCompat.requestPermissions(
                 this, arrayOf(
-                    Manifest.permission.POST_NOTIFICATIONS,
+                    android.Manifest.permission.POST_NOTIFICATIONS,
+                    android.Manifest.permission.BLUETOOTH_SCAN,
+                    android.Manifest.permission.BLUETOOTH
                 ), 101
             )
         }
@@ -72,105 +64,106 @@ class MainScreen : AppCompatActivity() {
         val userInfo = authVm.UserInformation
         val context = this
         val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.frag_cont) as NavHostFragment
+            supportFragmentManager.findFragmentById(com.example.gallery_sync_app.R.id.frag_cont) as androidx.navigation.fragment.NavHostFragment
         val navController = navHostFragment.navController
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             showMenu = false
             when (destination.id) {
-                R.id.logoScreen -> {
-                    binding.appBarLayout.visibility = View.GONE
+                com.example.gallery_sync_app.R.id.logoScreen -> {
+                    binding.appBarLayout.visibility = android.view.View.GONE
                 }
 
-                R.id.buttonHolderFragScreen -> {
+                com.example.gallery_sync_app.R.id.buttonHolderFragScreen -> {
                     lifecycleScope.launch {
                         authVm.UserInformation.collect {user->
                             user?.let {
-                                Toast.makeText(context,"Welcome ${it.name}",Toast.LENGTH_SHORT).show()
+                                android.widget.Toast.makeText(context,"Welcome ${it.name}",
+                                    android.widget.Toast.LENGTH_SHORT).show()
 
                             }
 
                         }
                     }
-                    binding.appBarLayout.visibility = View.VISIBLE
-                    binding.buttonProfileImageView.visibility = View.VISIBLE
-                    supportActionBar?.title =getString(R.string.main_screen_header)
+                    binding.appBarLayout.visibility = android.view.View.VISIBLE
+                    binding.buttonProfileImageView.visibility = android.view.View.VISIBLE
+                    supportActionBar?.title =getString(com.example.gallery_sync_app.R.string.main_screen_header)
 
                     lifecycleScope.launch {
                         userInfo.collect {
-                            Glide.with(context).load(it?.imageUrl)
+                            com.bumptech.glide.Glide.with(context).load(it?.imageUrl)
                                 .centerCrop()
                                 .into(binding.userLogo)
                         }
                     }
                     binding.buttonProfileImageView.setOnClickListener {
-                        navController.navigate(R.id.navigateMainToUserProfile)
+                        navController.navigate(com.example.gallery_sync_app.R.id.navigateMainToUserProfile)
                     }
                 }
 
-                R.id.galleryFragScreen -> {
+                com.example.gallery_sync_app.R.id.galleryFragScreen -> {
                     supportActionBar?.title = "Gallery"
-                    binding.buttonProfileImageView.visibility = View.GONE
+                    binding.buttonProfileImageView.visibility = android.view.View.GONE
 
                     showMenu = true
                 }
 
-                R.id.userProfile -> {
-                    binding.buttonProfileImageView.visibility = View.GONE
+                com.example.gallery_sync_app.R.id.userProfile -> {
+                    binding.buttonProfileImageView.visibility = android.view.View.GONE
                 }
 
-                R.id.webSocketFragScreen -> {
+                com.example.gallery_sync_app.R.id.webSocketFragScreen -> {
                     supportActionBar?.title = "WebSockets"
-                    binding.buttonProfileImageView.visibility = View.GONE
+                    binding.buttonProfileImageView.visibility = android.view.View.GONE
                 }
 
-                R.id.bleFragScreen -> {
-                    binding.buttonProfileImageView.visibility = View.GONE
+                com.example.gallery_sync_app.R.id.bleFragScreen -> {
+                    binding.buttonProfileImageView.visibility = android.view.View.GONE
                 }
-                R.id.loginFragScreen->{
-                    binding.appBarLayout.visibility=View.GONE
+                com.example.gallery_sync_app.R.id.loginFragScreen->{
+                    binding.appBarLayout.visibility= android.view.View.GONE
                 }
-                R.id.signInFragScreen->{
-                    binding.appBarLayout.visibility=View.GONE
+                com.example.gallery_sync_app.R.id.signInFragScreen->{
+                    binding.appBarLayout.visibility= android.view.View.GONE
 
                 }
 
                 else -> {
-                    binding.appBarLayout.visibility = View.VISIBLE
+                    binding.appBarLayout.visibility = android.view.View.VISIBLE
                 }
             }
             invalidateOptionsMenu()
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.app_menu, menu)
+    override fun onCreateOptionsMenu(menu: android.view.Menu?): Boolean {
+        menuInflater.inflate(com.example.gallery_sync_app.R.menu.app_menu, menu)
         return true
     }
 
-    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
-        val editItem = menu?.findItem(R.id.editIcon)
+    override fun onPrepareOptionsMenu(menu: android.view.Menu?): Boolean {
+        val editItem = menu?.findItem(com.example.gallery_sync_app.R.id.editIcon)
 
-        menu?.findItem(R.id.addIcon)?.isVisible = showMenu
+        menu?.findItem(com.example.gallery_sync_app.R.id.addIcon)?.isVisible = showMenu
         editItem?.isVisible = showMenu
 
         if (isEditMode) {
-            editItem?.setIcon(R.drawable.outline_close_24)
+            editItem?.setIcon(com.example.gallery_sync_app.R.drawable.outline_close_24)
         } else {
-            editItem?.setIcon(R.drawable.outline_edit_24)
+            editItem?.setIcon(com.example.gallery_sync_app.R.drawable.outline_edit_24)
         }
 
         return super.onPrepareOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.addIcon -> {
+            com.example.gallery_sync_app.R.id.addIcon -> {
                 galleryVm.openGallery()
                 true
             }
 
-            R.id.editIcon -> {
+            com.example.gallery_sync_app.R.id.editIcon -> {
                 galleryVm.openEdit()
                 true
             }

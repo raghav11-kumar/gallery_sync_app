@@ -7,7 +7,7 @@
     >
     <fragment
         android:id="@+id/logoScreen"
-        android:name="com.example.gallery_sync_app.screens.mainApp.LogoScreen"
+        android:name="com.example.gallery_sync_app.screens.screens.LogoScreen"
         android:label="@string/logo">
         <action
             android:id="@+id/navigateLogoToLogin"
@@ -45,7 +45,7 @@
     </fragment>
     <fragment
         android:id="@+id/buttonHolderFragScreen"
-        android:name="com.example.gallery_sync_app.screens.mainApp.ButtonsHolder"
+        android:name="com.example.gallery_sync_app.screens.screens.ButtonsHolder"
         android:label="@string/home_icon"
         tools:layout="@layout/fragment_buttons_holder"
         >
@@ -94,7 +94,7 @@
     </fragment>
     <fragment
         android:id="@+id/userProfile"
-        android:name="com.example.gallery_sync_app.screens.mainApp.UserProfile"
+        android:name="com.example.gallery_sync_app.screens.screens.UserProfile"
         tools:layout="@layout/fragment_user_profile"
         >
         <action
