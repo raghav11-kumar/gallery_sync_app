@@ -74,6 +74,19 @@
 
             android:textColor="@color/white"
             android:textStyle="bold" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/mqqtButton"
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            android:backgroundTint="@color/black"
+            android:text="@string/mqqt"
+            android:layout_marginBottom="24dp"
+            android:backgroundTintMode="screen"
+            android:background="@drawable/main_container_border"
+
+
+            android:textColor="@color/white"
+            android:textStyle="bold" />
 
 
 

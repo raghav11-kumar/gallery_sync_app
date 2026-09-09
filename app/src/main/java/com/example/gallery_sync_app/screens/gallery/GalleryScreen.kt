@@ -48,7 +48,7 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
             galleryVm.galleryOpen.collect { isOpen ->
                 if (isOpen) {
                     launcher.launch("image/*")
-                    galleryVm.closeGallery() // Reset it to false after launching
+                    galleryVm.closeGallery()
                 }
             }
         }

@@ -63,6 +63,14 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
+            authVm.isLoading.collect { isLoading ->
+                bindingEx.mainProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                bindingEx.logoutButton.isEnabled = !isLoading
+                bindingEx.editNameIcon.isEnabled = !isLoading
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
             authVm.isImageLoading.collect { isLoading ->
                 bindingEx.imageProgressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
                 bindingEx.editImageFab.isEnabled = !isLoading

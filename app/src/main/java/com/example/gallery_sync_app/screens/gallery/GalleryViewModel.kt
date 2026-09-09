@@ -18,6 +18,9 @@ class GalleryViewModel @Inject constructor(val repository: DataBaseRepository) :
     val imageList: MutableStateFlow<List<Images>> = MutableStateFlow(emptyList())
     private val galleryOpenClicked= MutableStateFlow<Boolean>(false)
     val galleryOpen=galleryOpenClicked
+
+    private val _isUploading = MutableStateFlow(false)
+    val isUploading = _isUploading
     fun openGallery(){
         galleryOpenClicked.value=true
     }
@@ -45,15 +48,19 @@ class GalleryViewModel @Inject constructor(val repository: DataBaseRepository) :
         val multipartData = repository.convertUriToImage(uri)
         multipartData.onSuccess {
             viewModelScope.launch {
+                _isUploading.value = true
                 val response = repository.sendImageForRecyclerView(apiKey = apiKey, it)
                 response.onFailure { error ->
                     Log.e("AuthVm", "Failed TO Send Image${error.message}")
+                    _isUploading.value = false
                 }
                 response.onSuccess {
                     Log.e("GalleryVm","SuccessFully Send The Image ${it}")
-
+                    _isUploading.value = false
                 }
             }
+        }.onFailure {
+             Log.e("GalleryVm","Failed TO Convert Image ${it.message}")
         }
     }
     fun deleteImage(image: Images){

@@ -20,7 +20,7 @@ class ButtonsHolder : Fragment(R.layout.fragment_buttons_holder) {
         val bleBut = binding.bleButton
         val galleryBut = binding.GalleryButton
         val webBut = binding.webSocketButton
-        val fmc_but = binding.fcmButton
+        val fmcBut = binding.fcmButton
         bleBut.setOnClickListener {
             ReusableFunctions.navigateSrcToDest(it, R.id.navigateMainToBle)
         }
@@ -31,9 +31,10 @@ class ButtonsHolder : Fragment(R.layout.fragment_buttons_holder) {
             ReusableFunctions.navigateSrcToDest(it, R.id.navigateMainToWebSocket)
 
         }
-        fmc_but.setOnClickListener {
+        fmcBut.setOnClickListener {
             authVm.showPushNotification()
         }
+        binding.mqqtButton.visibility= View.GONE
     }
 
 }

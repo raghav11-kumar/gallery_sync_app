@@ -63,6 +63,9 @@
 
             android:id="@+id/navigateMainToUserProfile"
             app:destination="@+id/userProfile"/>
+        <action
+            android:id="@+id/navigateButtonToMqqt"
+            app:destination="@+id/mqqtFragScreen"/>
 
 
 
@@ -120,6 +123,12 @@
             app:popUpToInclusive="true"
             />
     </fragment>
+    <fragment
+        android:id="@+id/mqqtFragScreen"
+        android:name="com.example.gallery_sync_app.screens.mqtt.MQTTFragment"
+        android:label="@string/mqqt"
+        tools:layout="@layout/fragment_mqtt_frag"/>
+
 
 
 

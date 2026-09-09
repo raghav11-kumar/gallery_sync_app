@@ -67,6 +67,13 @@
     <string name="etHead">Event Type</string>
     <string name="lpHead">Last Update</string>
     <string name="sub">Subscribe</string>
+    <string name="mqqt">Mqqt</string>
+    <string name="scanner">Scan Devices</string>
+    <string name="deviceName">DeviceName</string>
+    <string name="macAdd">Mac Address</string>
+    <string name="rssi">Rssi</string>
+    <string name="none">Not Found</string>
+    <string name="uploading_please_wait">Uploading, please wait...</string>
 
 
 </resources>
