@@ -127,6 +127,10 @@ class MainScreen : AppCompatActivity() {
                     binding.appBarLayout.visibility= android.view.View.GONE
 
                 }
+                com.example.gallery_sync_app.R.id.bleInfo->{
+                    binding.appBarLayout.visibility= android.view.View.GONE
+
+                }
 
                 else -> {
                     binding.appBarLayout.visibility = android.view.View.VISIBLE

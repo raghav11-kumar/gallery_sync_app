@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentGalleryScreenBinding
+import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import kotlin.collections.emptyList
@@ -31,6 +32,14 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
             galleryVm.imageList.collect { list ->
                 adapter.updateList(list)
             }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            galleryVm.errorFlowing.collect { message ->
+                ReusableFunctions.DefaultAlertDialog(
+                    view.context, message, "OK", "Cancel"
+                ) {}
+            }
+
         }
         val launcher = registerForActivityResult(
             ActivityResultContracts.GetContent()

@@ -158,6 +158,9 @@ class DataBaseRepository @Inject constructor(
         apiKey: String,
         image: MultipartBody.Part
     ): Result<ImagBBResponse> {
+        if (!ReusableFunctions.isNetworkAvailable(context)) {
+            return Result.failure(Exception("No Internet Connection. Please check your network settings."))
+        }
         return try {
             val response = api.postImage(
                 key = apiKey, image = image

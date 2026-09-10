@@ -1,5 +1,6 @@
 package com.example.gallery_sync_app.screens.gallery
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -8,8 +9,11 @@ import com.example.gallery_sync_app.screens.data.ImagBBResponse
 import com.example.gallery_sync_app.screens.data.ImageInfo
 import com.example.gallery_sync_app.screens.data.Images
 import com.example.gallery_sync_app.screens.repository.DataBaseRepository
+import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import java.net.URI
 import javax.inject.Inject
@@ -42,6 +46,9 @@ class GalleryViewModel @Inject constructor(val repository: DataBaseRepository) :
             }
         }
     }
+    private val errorFlow = MutableSharedFlow<String>()
+    val errorFlowing = errorFlow.asSharedFlow()
+
 
     fun saveImage(uri: Uri) {
         val apiKey = "f06041a98c3e3556f51266c55a27e4b6"
@@ -53,6 +60,8 @@ class GalleryViewModel @Inject constructor(val repository: DataBaseRepository) :
                 response.onFailure { error ->
                     Log.e("AuthVm", "Failed TO Send Image${error.message}")
                     _isUploading.value = false
+                        errorFlow.emit(error.message ?: "Update Failed")
+
                 }
                 response.onSuccess {
                     Log.e("GalleryVm","SuccessFully Send The Image ${it}")

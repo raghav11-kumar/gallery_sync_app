@@ -57,7 +57,7 @@
     <string name="signInHeadLine">New User ?</string>
     <string name="connected">Connected</string>
     <string name="voltage">Voltage (V)</string>
-    <string name="vValue">Value</string>
+    <string name="vValue">-</string>
     <string name="current">Current (I)</string>
     <string name="actPower">Active Power (P)</string>
     <string name="apparPower">Apparent Power (S)</string>
