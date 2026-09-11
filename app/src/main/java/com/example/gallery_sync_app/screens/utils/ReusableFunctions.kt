@@ -1,8 +1,10 @@
 package com.example.gallery_sync_app.screens.utils
 
+import android.Manifest
 import android.R
 import android.content.Context
 import android.content.DialogInterface
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
@@ -12,6 +14,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 
 object ReusableFunctions {
@@ -63,5 +66,8 @@ val customView= LayoutInflater.from(context)
 
 
         return alertDi
+    }
+    fun checkPermission(context: Context): Boolean{
+        return ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT)== PackageManager.PERMISSION_GRANTED
     }
 }

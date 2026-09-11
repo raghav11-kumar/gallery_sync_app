@@ -21,6 +21,7 @@ class BluetoothAdapter(
     ): viewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.device_item, parent, false)
 
+
         return viewHolder(view)
     }
 

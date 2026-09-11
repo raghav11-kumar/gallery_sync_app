@@ -101,7 +101,6 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
 
             binding.bleClick.setOnClickListener {
                 startBleProcess()
-
             }
             viewLifecycleOwner.lifecycleScope.launch {
                 bluetoothService.writeSuccess.collect {
@@ -269,6 +268,7 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
 
             var device = result.device
 
+
             val macAddress = device.address
 
             val deviceName = device.name ?: "Unknown Device"
@@ -288,6 +288,9 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
                     )
                     bleDevices.add(
                         bleDevice
+                    )
+                    bleDevices.sortWith(
+                        compareByDescending { it.rssiText }
                     )
 
                     bleAdapter.notifyItemInserted(

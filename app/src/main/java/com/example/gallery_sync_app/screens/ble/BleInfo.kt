@@ -27,9 +27,7 @@ class BleInfo : Fragment(R.layout.fragment_ble_info) {
                     val displayText = """
                         Command: ${it.cmd_test_type ?: "N/A"}
                         Action: ${it.action ?: "N/A"}
-                        Status: ${it.status ?: "N/A"}
-                        Value: ${it.value ?: "N/A"}
-                        Message: ${it.message ?: "N/A"}
+                     
                     """.trimIndent()
                     binding.bleResponseText.text = displayText
                 }
