@@ -9,7 +9,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import okhttp3.OkHttpClient
@@ -23,13 +25,15 @@ import kotlin.getValue
 
 @Singleton
 class WebSocketsManager @Inject constructor() {
-    private val client= OkHttpClient()
-    private var webSocket: WebSocket?=null
-    private val gson= Gson()
+    private val client = OkHttpClient()
+    private var webSocket: WebSocket? = null
+    private val gson = Gson()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val socketMessages= MutableSharedFlow<WebSocketResponse?>(2)
-    val messageFlow=socketMessages.asSharedFlow()
-    fun connect(){
+    private val socketMessages = MutableSharedFlow<WebSocketResponse?>(2)
+    val messageFlow = socketMessages.asSharedFlow()
+    private val isConnected = MutableStateFlow(false)
+    val isConnectedInfo = isConnected.asStateFlow()
+    fun connect() {
         try {
             val request = Request.Builder()
                 .url("ws://10.30.41.123:8081")
@@ -51,7 +55,7 @@ class WebSocketsManager @Inject constructor() {
                 override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                     super.onFailure(webSocket, t, response)
                     Log.e("WebSockets", "Failed To Communicate${t.message}")
-                    webSocket.close(1000,"Failed")
+                    webSocket.close(1000, "Failed")
                     webSocket.cancel()
                     connect()
 
@@ -74,20 +78,23 @@ class WebSocketsManager @Inject constructor() {
 
                 override fun onOpen(webSocket: WebSocket, response: Response) {
                     super.onOpen(webSocket, response)
+                    isConnected.value = true
                     Log.e("WebSockets", "Communication is opened")
                 }
             })
-        }catch (webSocketException:Exception){
+        } catch (webSocketException: Exception) {
             Log.e("WebSockets", "Exception Occurred ${webSocketException.message}")
         }
     }
-    fun sendMessage(message: String){
+
+    fun sendMessage(message: String) {
 
         webSocket?.send(message)
     }
-    fun close(){
-        webSocket?.close(1000,"Closing")
-        webSocket=null
+
+    fun close() {
+        webSocket?.close(1000, "Closing")
+        webSocket = null
     }
 
 }

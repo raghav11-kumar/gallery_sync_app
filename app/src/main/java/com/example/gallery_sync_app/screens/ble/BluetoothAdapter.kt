@@ -32,7 +32,7 @@ class BluetoothAdapter(
         holder.itemView.apply {
             holder.devName.text = data.deviceName
             holder.macAdd.text = data.macAddress
-            holder.rxxi.text = data.rssiText.toString()
+            holder.rxxi.text = data.rssi.toString()
 
         }
         holder.itemView.setOnClickListener {

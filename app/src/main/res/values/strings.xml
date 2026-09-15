@@ -71,9 +71,17 @@
     <string name="scanner">Scan Devices</string>
     <string name="deviceName">DeviceName</string>
     <string name="macAdd">Mac Address</string>
-    <string name="rssi">Rssi</string>
+    <string name="rssi">RSSI</string>
     <string name="none">Not Found</string>
     <string name="uploading_please_wait">Uploading, please wait...</string>
+    <string name="Data">Data</string>
+    <string name="info">Info</string>
+    <string name="BleDevice">BleDevice</string>
+    <string name="notCon">Not Connected</string>
+    <string name="devStatus">Device Status</string>
+    <string name="charUUid">Characteristic UUID</string>
+    <string name="serUUID">Service UUID</string>
+    <string name="bondState">Bond State</string>
 
 
 </resources>

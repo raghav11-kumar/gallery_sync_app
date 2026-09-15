@@ -9,6 +9,7 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -17,22 +18,25 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.Navigation
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentBLEDeviceBinding
 import com.example.gallery_sync_app.screens.ble.data.BleDeviceInfo
-import kotlinx.coroutines.launch
-import androidx.navigation.findNavController
-import com.example.gallery_sync_app.screens.repository.DataBaseRepository
+import com.example.gallery_sync_app.screens.ble.data.DeviceInfo
+import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
 
     private lateinit var binding: FragmentBLEDeviceBinding
+    lateinit var ACTION_REQUEST_ENABLE: String
+
 
     private lateinit var bluetoothManager: BluetoothManager
     private lateinit var bluetoothAdapter: BluetoothAdapter
@@ -41,11 +45,14 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
     private lateinit var bleAdapter: com.example.gallery_sync_app.screens.ble.BluetoothAdapter
 
     private val bleDevices = mutableListOf<BleDeviceInfo>()
+
     @Inject
     lateinit var bluetoothService: BluetoothService
 
     private val handler = Handler(Looper.getMainLooper())
-    private lateinit var device: BluetoothDevice
+    private lateinit var targetDevice: BluetoothDevice
+    val bleVm: BLEViewModel by activityViewModels()
+
 
     private val enableBluetoothLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -92,9 +99,7 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
             super.onViewCreated(view, savedInstanceState)
 
             binding = FragmentBLEDeviceBinding.bind(view)
-
             setupBluetooth()
-
             setupRecyclerView()
             startBleProcess()
 
@@ -103,18 +108,19 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
                 startBleProcess()
             }
             viewLifecycleOwner.lifecycleScope.launch {
-                bluetoothService.writeSuccess.collect {
+                bluetoothService.writeSuccessInfo.collect {
                     if (it) {
                         view.findNavController().navigate(R.id.navigateBleToBleInfo)
                     }
 
                 }
             }
-        }catch (e: Exception){
-            Log.e("BLE","FAILED ONViewCreated ${e.message}")
+        } catch (e: Exception) {
+            Log.e("BLE", "FAILED ONViewCreated ${e.message}")
         }
 
     }
+
 
     private fun setupBluetooth() {
 
@@ -181,8 +187,7 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
 
     private fun requestBluetoothPermissions() {
         val permissions = mutableListOf(
-            Manifest.permission.BLUETOOTH_SCAN,
-            Manifest.permission.BLUETOOTH_CONNECT
+            Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT
         )
 
         // Add location permissions for backward compatibility / background BLE discovery support
@@ -195,11 +200,18 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
 
     private fun scanDevices() {
         // We check either BLUETOOTH_SCAN or ACCESS_FINE_LOCATION to support both Android 12+ and legacy versions securely.
-        val hasScanPermission = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.BLUETOOTH_SCAN) == PackageManager.PERMISSION_GRANTED
-        val hasLocationPermission = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        val hasScanPermission = ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.BLUETOOTH_SCAN
+        ) == PackageManager.PERMISSION_GRANTED
+        val hasLocationPermission = ContextCompat.checkSelfPermission(
+            requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
+        ) == PackageManager.PERMISSION_GRANTED
 
         if (!hasScanPermission && !hasLocationPermission) {
-            Log.e("BLEDevice", "No scanning permissions granted (BLUETOOTH_SCAN or ACCESS_FINE_LOCATION)")
+            Log.e(
+                "BLEDevice",
+                "No scanning permissions granted (BLUETOOTH_SCAN or ACCESS_FINE_LOCATION)"
+            )
             return
         }
 
@@ -266,7 +278,7 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
             }
 
 
-            var device = result.device
+            val device = result.device
 
 
             val macAddress = device.address
@@ -274,6 +286,9 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
             val deviceName = device.name ?: "Unknown Device"
 
             val rssi = result.rssi
+            Log.d(
+                "BLEDevice", "Device found: $deviceName - $macAddress"
+            )
 
 
             // Prevent duplicate devices
@@ -290,8 +305,7 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
                         bleDevice
                     )
                     bleDevices.sortWith(
-                        compareByDescending { it.rssiText }
-                    )
+                        compareByDescending { it.rssi })
 
                     bleAdapter.notifyItemInserted(
                         bleDevices.size - 1
@@ -327,6 +341,7 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
     override fun onDestroyView() {
 
         handler.removeCallbacksAndMessages(null)
+        stopScan()
 
         if (::bluetoothLeScanner.isInitialized && ContextCompat.checkSelfPermission(
                 requireContext(), Manifest.permission.BLUETOOTH_SCAN
@@ -342,20 +357,13 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
     }
 
     fun checkAndConnect(device: BluetoothDevice) {
-        try {
 
-            if (ContextCompat.checkSelfPermission(
-                    requireContext(), Manifest.permission.BLUETOOTH_CONNECT
-                ) == PackageManager.PERMISSION_GRANTED
-            ) {
-                bluetoothService.connect(device)
-            } else {
-                Log.e("Ble", "Need Bluetooth Connect Permission To Connect To That Device")
-                requestBluetoothPermissions()
-            }
-        } catch (e: Exception) {
-            Log.e("Ble", "Failed TO Check And Connect ${e.message}")
+        if (!ReusableFunctions.checkPermission(requireContext())) {
+            requestBluetoothPermissions()
+            return
         }
+
+        bluetoothService.connect(device)
     }
 
 }

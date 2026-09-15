@@ -31,6 +31,24 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
         viewLifecycleOwner.lifecycleScope.launch {
             galleryVm.imageList.collect { list ->
                 adapter.updateList(list)
+                if (list.isEmpty()) {
+                    binding.noImagesIcon.visibility = View.VISIBLE
+                    binding.noImagesText.visibility = View.VISIBLE
+                    binding.recView.visibility = View.GONE
+                } else {
+                    binding.noImagesIcon.visibility = View.GONE
+                    binding.noImagesText.visibility = View.GONE
+                    binding.recView.visibility = View.VISIBLE
+                }
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            galleryVm.isUploading.collect { isUploading ->
+                if (isUploading) {
+                    binding.screenProgressBar.visibility = View.VISIBLE
+                } else {
+                    binding.screenProgressBar.visibility = View.GONE
+                }
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {

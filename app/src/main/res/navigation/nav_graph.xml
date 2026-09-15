@@ -136,7 +136,7 @@
         tools:layout="@layout/fragment_mqtt_frag"/>
     <fragment
         android:id="@+id/bleInfo"
-        android:name="com.example.gallery_sync_app.screens.ble.BleInfo"
+        android:name="com.example.gallery_sync_app.screens.ble.ui.BleInfo"
         android:label="@string/ble"
         tools:layout="@layout/fragment_ble_info"
         />

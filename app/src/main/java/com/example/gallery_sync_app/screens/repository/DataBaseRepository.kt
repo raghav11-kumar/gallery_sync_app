@@ -39,10 +39,10 @@ class DataBaseRepository @Inject constructor(
         )
         userData.uid?.let {
             fbStore.collection("users").document(it).set(user).addOnSuccessListener {
-                    Log.e("DataBaseRep", "Saved SuccessFully")
-                }.addOnFailureListener {
-                    Log.e("DataBaseRep", "Failed SuccessFully ${it.message}")
-                }.await()
+                Log.e("DataBaseRep", "Saved SuccessFully")
+            }.addOnFailureListener {
+                Log.e("DataBaseRep", "Failed SuccessFully ${it.message}")
+            }.await()
             localDB.InsertUser(
                 userData = Users(
                     userUid = userData.uid, name = userData.userName, email = userData.email
@@ -51,39 +51,40 @@ class DataBaseRepository @Inject constructor(
         }
 
     }
-   suspend fun saveUserLocally(uid: String){
-      val data= fbStore.collection("users").document(uid).get().addOnSuccessListener {
-          Log.d("DataBaseRep","SuccessFully Got The User ${it}")
 
-      }.addOnFailureListener {
-          Log.e("DataBaseRep","Failed To Get The User Cuz Of ${it.message}")
-      }.await()
-       val info=data.toObject(UserData::class.java)
-       if (info != null) {
-           localDB.InsertUser(
-               userData = Users(
-                   uid, name = info.userName, email = info.email, imageUrl = info.imageUrl
-               )
-           )
-       }
+    suspend fun saveUserLocally(uid: String) {
+        val data = fbStore.collection("users").document(uid).get().addOnSuccessListener {
+            Log.d("DataBaseRep", "SuccessFully Got The User ${it}")
+
+        }.addOnFailureListener {
+            Log.e("DataBaseRep", "Failed To Get The User Cuz Of ${it.message}")
+        }.await()
+        val info = data.toObject(UserData::class.java)
+        if (info != null) {
+            localDB.InsertUser(
+                userData = Users(
+                    uid, name = info.userName, email = info.email, imageUrl = info.imageUrl
+                )
+            )
+        }
     }
 
     //Gets User Info From Room Which is source truth to show in Ui
 
     fun getUser(uid: String): Flow<Users?> {
-        val response=localDB.getUser(uid = uid)
-       return response
+        val response = localDB.getUser(uid = uid)
+        return response
     }
 
     //Syncing The FireStore Data TO Room InCase User Updates
     suspend fun syncRoomToFireStore(uid: String) {
         try {
             val user = fbStore.collection("users").document(uid).get().addOnSuccessListener {
-                    Log.e("DataBaseRep", "SuccessFully Got The User ${it}")
-                }.addOnFailureListener {
-                    Log.e("DataBaseRep", "Failed To Get The User Cuz Of ${it.message}")
+                Log.e("DataBaseRep", "SuccessFully Got The User ${it}")
+            }.addOnFailureListener {
+                Log.e("DataBaseRep", "Failed To Get The User Cuz Of ${it.message}")
 
-                }.await()
+            }.await()
 
             val info = user.toObject(UserData::class.java) // or toObject<UserData>()
 
@@ -155,8 +156,7 @@ class DataBaseRepository @Inject constructor(
     }
 
     suspend fun sendImageForRecyclerView(
-        apiKey: String,
-        image: MultipartBody.Part
+        apiKey: String, image: MultipartBody.Part
     ): Result<ImagBBResponse> {
         if (!ReusableFunctions.isNetworkAvailable(context)) {
             return Result.failure(Exception("No Internet Connection. Please check your network settings."))
@@ -171,10 +171,10 @@ class DataBaseRepository @Inject constructor(
                 "title" to response.data.title
             )
             fbStore.collection("Images").document(getCurrUid()).set(info).addOnSuccessListener {
-                    Log.e("DataBaseRep", "Saved Image SuccessFully in FireStore ${it}")
-                }.addOnFailureListener {
-                    Log.e("DataBaseRep", "Failed To Save Image In FireStore ${it.message}")
-                }.await()
+                Log.e("DataBaseRep", "Saved Image SuccessFully in FireStore ${it}")
+            }.addOnFailureListener {
+                Log.e("DataBaseRep", "Failed To Save Image In FireStore ${it.message}")
+            }.await()
             kotlinx.coroutines.withContext(Dispatchers.IO) {
                 localDB.saveImage(
                     Images(
@@ -208,10 +208,10 @@ class DataBaseRepository @Inject constructor(
 
         kotlinx.coroutines.withContext(Dispatchers.IO) {
             fbStore.collection("Images").document(getCurrUid()).delete().addOnFailureListener {
-                    Log.e("DataBaseRep", "Cannot Delete Image ${it}")
-                }.addOnSuccessListener {
-                    Log.e("DataBaseRep", "SuccessFully Deleted")
-                }.await()
+                Log.e("DataBaseRep", "Cannot Delete Image ${it}")
+            }.addOnSuccessListener {
+                Log.e("DataBaseRep", "SuccessFully Deleted")
+            }.await()
         }
     }
 
@@ -223,24 +223,27 @@ class DataBaseRepository @Inject constructor(
         }
     }
 
-    suspend fun getKtorRes(): Result<Res>{
-       return try {
+    suspend fun getKtorRes(): Result<Res> {
+        return try {
             val response = ktorApi.check()
-           Log.e("DataBaseRep","The Response From KTOR Server ${response}")
-             Result.success(response)
-        }catch (e: Exception){
-           Log.e("DataBaseRep","The Response From KTOR Server Failed DUE TO  ${e.localizedMessage}")
-           Result.failure(e)
+            Log.e("DataBaseRep", "The Response From KTOR Server ${response}")
+            Result.success(response)
+        } catch (e: Exception) {
+            Log.e(
+                "DataBaseRep", "The Response From KTOR Server Failed DUE TO  ${e.localizedMessage}"
+            )
+            Result.failure(e)
         }
 
     }
+
     suspend fun updateUserName(name: String): Result<Unit> {
         if (!ReusableFunctions.isNetworkAvailable(context)) {
             return Result.failure(Exception("No Internet Connection. Please check your network settings."))
         }
         return try {
-            fbStore.collection("users").document(getCurrUid())
-                .update("userName", name).addOnSuccessListener {
+            fbStore.collection("users").document(getCurrUid()).update("userName", name)
+                .addOnSuccessListener {
                     Log.e("DataBaseRep", "SuccessFully Updated User Name")
 
                 }.addOnFailureListener {

@@ -5,25 +5,39 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.util.Log
+import androidx.lifecycle.ViewModel
 import com.example.gallery_sync_app.screens.ble.data.BleResponse
 import com.example.gallery_sync_app.screens.ble.data.BleWrite
+import com.example.gallery_sync_app.screens.ble.data.DeviceInfo
 import com.example.gallery_sync_app.screens.utils.ReusableFunctions
+import com.example.gallery_sync_app.screens.websockets.WebSocketResponse
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.UUID
+import javax.inject.Inject
 
 class BluetoothService(val context: Context) {
-    private val _writeSuccess = MutableStateFlow(false)
-    val writeSuccess = _writeSuccess.asStateFlow()
+    private val writeSuccess = MutableStateFlow(false)
+    val writeSuccessInfo = writeSuccess.asStateFlow()
 
-    private val _notificationData = MutableStateFlow<BleWrite?>(null)
-    val notificationData = _notificationData.asStateFlow()
 
-    fun setWriteSuccess(success: Boolean) {
-        _writeSuccess.value = success
+    private val notificationData = MutableStateFlow<BleResponse?>(null)
+    val notificationDataInfo = notificationData.asStateFlow()
+    private val deviceInfo = MutableStateFlow<DeviceInfo?>(null)
+    val deviceInformation = deviceInfo.asStateFlow()
+    private fun setDeviceInfo(deviceInfo: DeviceInfo) {
+        this.deviceInfo.value = deviceInfo
+    }
+
+
+    private fun setWriteSuccess(success: Boolean) {
+        writeSuccess.value = success
     }
 
     private var bluetoothGatt: BluetoothGatt? = null
@@ -35,152 +49,204 @@ class BluetoothService(val context: Context) {
     fun bondDevice(device: BluetoothDevice) {
 
         if (!ReusableFunctions.checkPermission(context)) {
-            Log.e("BLE", "BLUETOOTH_CONNECT permission required")
+            Log.e(
+                "BLE", "BLUETOOTH_CONNECT permission required"
+            )
             return
         }
+
 
         when (device.bondState) {
 
             BluetoothDevice.BOND_NONE -> {
+
+                Log.d(
+                    "BLESERVICE", "Device not bonded. Starting bonding..."
+                )
+
                 val started = device.createBond()
 
                 Log.d(
-                    "BLE",
-                    "Bonding started = $started"
+                    "BLESERVICE", "createBond() returned: $started"
                 )
             }
 
             BluetoothDevice.BOND_BONDING -> {
-                Log.d("BLE", "Bonding already in progress")
+
+                Log.d(
+                    "BLESERVICE", "Bonding already in progress"
+                )
             }
 
             BluetoothDevice.BOND_BONDED -> {
-                Log.d("BLE", "Device is already bonded")
+
+                Log.d(
+                    "BLESERVICE", "Device already bonded. Connecting..."
+                )
+
             }
         }
     }
+
+    private var targetDevice: BluetoothDevice? = null
+    private var isConnected = MutableStateFlow(false)
+    val isConnectedInfo = isConnected.asStateFlow()
+
+
     fun connect(device: BluetoothDevice) {
         try {
+            setDeviceInfo(
+                DeviceInfo(
+                    device = device,
+                    deviceName = device.name,
+                    macAddress = device.address,
+                    charUUID = characteristicUUId.toString(),
+                    serviceUUID = serviceUuid.toString(),
+                    bondState = device.bondState.toString(),
+                    connected = device.bondState.toString()
+
+                )
+            )
 
             if (ReusableFunctions.checkPermission(context)) {
                 bluetoothGatt = device.connectGatt(
                     context, false, gattCallBack
                 )
                 Log.e(
-                    "BLE",
-                    "Connecting to Gatt Server: ${device.address}"
+                    "BLESERVICE", "Connecting to Gatt Server: ${device.address}"
                 )
             } else {
-                Log.e("Ble", "Need Bluetooth Connect Permission To Connect To That Device")
+                Log.e("BLESERVICE", "Need Bluetooth Connect Permission To Connect To That Device")
 
             }
         } catch (e: Exception) {
-            Log.e("BLE", "Failed To Connect Cuz :${e.message}")
+            Log.e("BLESERVICE", "Failed To Connect Cuz :${e.message}")
         }
     }
-    val responseBuffer = StringBuilder()
-private val gattCallBack=object : BluetoothGattCallback(){
 
-    override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-        super.onConnectionStateChange(gatt, status, newState)
-        if (newState == BluetoothGatt.STATE_CONNECTED) {
-            Log.e("BLESERVICE", "SUCCESSFULLY CONNECTED")
-            if (ReusableFunctions.checkPermission(context = context)) {
-                gatt?.requestMtu(512)
+    private val gattCallBack = object : BluetoothGattCallback() {
+
+        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
+            super.onConnectionStateChange(gatt, status, newState)
+            if (newState == BluetoothGatt.STATE_CONNECTED) {
+                val device = gatt?.device
+                Log.e("BLESERVICE", "SUCCESSFULLY CONNECTED To ${device?.name}")
+
+                isConnected.value = true
+                if (ReusableFunctions.checkPermission(context = context)) {
+                    gatt?.requestMtu(512)
+                }
+            }
+            if (newState == BluetoothGatt.STATE_DISCONNECTED) {
+                setWriteSuccess(false)
+                Log.e("BLESERVICE", "Disconnected${status}")
+            }
+
+        }
+
+        override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
+            super.onMtuChanged(gatt, mtu, status)
+            if (ReusableFunctions.checkPermission(context)) {
+                gatt?.discoverServices()
             }
         }
-        if (newState == BluetoothGatt.STATE_DISCONNECTED) {
-            setWriteSuccess(false)
-            Log.e("BLESERVICE", "Disconnected${status}")
-        }
 
-    }
+        private val responseBuffer = StringBuilder()
 
-    override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
-        super.onMtuChanged(gatt, mtu, status)
-        if(ReusableFunctions.checkPermission(context))
-        gatt?.discoverServices()
-    }
-    private val responseBuffer = StringBuilder()
+        override fun onCharacteristicChanged(
+            gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray
+        ) {
+            if (characteristic.uuid != meteringUUID) {
+                return
+            }
 
-    override fun onCharacteristicChanged(
-        gatt: BluetoothGatt,
-        characteristic: BluetoothGattCharacteristic,
-        value: ByteArray
-    ) {
-        if (characteristic.uuid != meteringUUID) {
-            return
-        }
+            // Convert ONLY this notification packet to String
+            val chunk = value.toString(Charsets.UTF_8)
 
-        // Convert ONLY this notification packet to String
-        val chunk = value.toString(Charsets.UTF_8)
+            Log.d(
+                "BLESERVICE", "CHUNK (${value.size} bytes): $chunk"
+            )
+            //complete notification packet
+            responseBuffer.append(chunk)
+            val fullJson = responseBuffer.toString()
 
-        Log.d(
-            "BLE_DATA",
-            "CHUNK (${value.size} bytes): $chunk"
-        )
+            val startIndex = responseBuffer.indexOf("{")
+            val endIndex = responseBuffer.lastIndexOf("}")
 
-        // Add this packet to the complete response
-        responseBuffer.append(chunk)
+            if (startIndex != -1 && endIndex != -1 && endIndex > startIndex) {
 
-        Log.d(
-            "BLE_DATA",
-            "BUFFER (${responseBuffer.length} chars): ${String(responseBuffer)})"
-        )
+                val fullJson = responseBuffer.substring(startIndex, endIndex + 1)
 
-        // Try to extract a complete JSON object
+                Log.d("BLESERVICE", "CLEAN JSON = [$fullJson]")
 
-    }
+                try {
+                    val response = Gson().fromJson(
+                        fullJson, BleResponse::class.java
+                    )
 
-    override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-        super.onServicesDiscovered(gatt, status)
-        if (status != BluetoothGatt.GATT_SUCCESS) {
-            Log.e("BLESERVICE", "NO SERVICE Discovered")
-            return
-        }
-        val service = gatt?.getService(serviceUuid)
-        if (service == null) {
-            Log.e("BLESERVICE", "No Service Found")
-            return
-        }
-        writeBlaze(gatt)
+                    Log.d("BLESERVICE", "Parsed response = $response")
 
-    }
-    override fun onDescriptorWrite(
-        gatt: BluetoothGatt?,
-        descriptor: BluetoothGattDescriptor?,
-        status: Int
-    ) {
-        super.onDescriptorWrite(gatt, descriptor, status)
-            if(status == BluetoothGatt.GATT_SUCCESS){
-                if(ReusableFunctions.checkPermission(context)){
-                val service = gatt?.getService(serviceUuid)
-                if (service == null) {
-                    Log.e("BLESERVICE", "No Service Found")
-                    return
+                    notificationData.value = response
+
+                } catch (e: Exception) {
+                    Log.e("BLESERVICE", "Gson parsing failed", e)
                 }
-                val meteringCharacteristic = service.getCharacteristic(meteringUUID)
 
-                Log.e("BLESERVICE", "Descriptor Write Success")
-                val data = BleWrite(
-                    "metering_check", "read"
-                )
-                val json = Gson().toJson(data)
-                val bytes = json.toByteArray(Charsets.UTF_8)
+                responseBuffer.delete(0, endIndex + 1)
+            }
 
-                meteringCharacteristic.writeType =
-                    BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-                meteringCharacteristic.value = bytes
-                gatt.writeCharacteristic(meteringCharacteristic)
 
-            }}
-    }
-    override fun onCharacteristicWrite(
-        gatt: BluetoothGatt?,
-        characteristic: BluetoothGattCharacteristic?,
-        status: Int
-    ) {
-        super.onCharacteristicWrite(gatt, characteristic, status)
+        }
+
+        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
+            super.onServicesDiscovered(gatt, status)
+
+            if (status != BluetoothGatt.GATT_SUCCESS) {
+                Log.e("BLESERVICE", "NO SERVICE Discovered")
+                return
+            }
+            val service = gatt?.getService(serviceUuid)
+            if (service == null) {
+                Log.e("BLESERVICE", "No Service Found")
+                return
+            }
+            writeBlaze(gatt)
+
+        }
+
+        override fun onDescriptorWrite(
+            gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int
+        ) {
+            super.onDescriptorWrite(gatt, descriptor, status)
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                if (ReusableFunctions.checkPermission(context)) {
+                    val service = gatt?.getService(serviceUuid)
+                    if (service == null) {
+                        Log.e("BLESERVICE", "No Service Found")
+                        return
+                    }
+                    val meteringCharacteristic = service.getCharacteristic(meteringUUID)
+
+                    Log.e("BLESERVICE", "Descriptor Write Success")
+                    val data = BleWrite(
+                        "insta_metering_check", "read"
+                    )
+                    val json = Gson().toJson(data)
+                    val bytes = json.toByteArray(Charsets.UTF_8)
+
+                    meteringCharacteristic.writeType =
+                        BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+                    meteringCharacteristic.value = bytes
+                    gatt.writeCharacteristic(meteringCharacteristic)
+
+                }
+            }
+        }
+
+        override fun onCharacteristicWrite(
+            gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int
+        ) {
+            super.onCharacteristicWrite(gatt, characteristic, status)
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 if (!ReusableFunctions.checkPermission(context = context)) {
                     return
@@ -192,193 +258,53 @@ private val gattCallBack=object : BluetoothGattCallback(){
                 if (characteristic?.uuid == characteristicUUId) {
 
 
-                Log.e("BLESERVICE", "Blaze characteristic written successfully")
-                val service = gatt?.getService(serviceUuid)
-                if (service == null) {
-                    Log.e("BLESERVICE", "No Service Found")
-                    return
+                    Log.e("BLESERVICE", "Blaze characteristic written successfully")
+                    val service = gatt?.getService(serviceUuid)
+                    if (service == null) {
+                        Log.e("BLESERVICE", "No Service Found")
+                        return
+                    }
+                    if (ReusableFunctions.checkPermission(context)) {
+                        val meteringCharacteristic = service.getCharacteristic(meteringUUID)
+                        val notificationEnabled = gatt.setCharacteristicNotification(
+                            meteringCharacteristic, true
+                        )
+
+                        Log.e(
+                            "BLESERVICE",
+                            "meteringCharacteristic Notification Enabled = $notificationEnabled"
+                        )
+                        val descriptor = meteringCharacteristic.getDescriptor(cccdUuid)
+                        descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+                        gatt.writeDescriptor(descriptor)
+
+                    }
+
+
+                } else if (characteristic?.uuid == meteringUUID) {
+                    Log.e("BLESERVICE", "Metering characteristic written successfully")
+                    setWriteSuccess(true)
+                } else {
+                    setWriteSuccess(false)
+
                 }
-                if(ReusableFunctions.checkPermission(context)) {
-                    val meteringCharacteristic = service.getCharacteristic(meteringUUID)
-                    val notificationEnabled = gatt.setCharacteristicNotification(
-                        meteringCharacteristic, true
-                    )
-
-                    Log.e("BLESERVICE","meteringCharacteristic Notification Enabled = $notificationEnabled")
-                    val descriptor =meteringCharacteristic.getDescriptor(cccdUuid)
-                    descriptor.value=BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                    gatt.writeDescriptor(descriptor)
-
-                }
-
-
-            }else if(characteristic?.uuid==meteringUUID){
-                Log.e("BLESERVICE", "Metering characteristic written successfully")
-                setWriteSuccess(true)
-            }else{
-                setWriteSuccess(false)
-
             }
         }
+
     }
 
-}
-
-
-//    private val gattCallback = object : BluetoothGattCallback() {
-//        //this is Where Notify Take Place
-//        override fun onCharacteristicChanged(
-//            gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic, value: ByteArray
-//        ) {
-//            super.onCharacteristicChanged(gatt, characteristic, value)
-//            if(characteristic.uuid == meteringUUID) {
-//                val chunk = String(value, Charsets.UTF_8)
-//                Log.d("BLESERVICE", "Chunk received: ${chunk}")
-//            }
-//
-//        }
-//
-//        //this is Where we get the Response iS the Write Operation was Success Or Not
-//        override fun onCharacteristicWrite(
-//            gatt: BluetoothGatt?, characteristic: BluetoothGattCharacteristic?, status: Int
-//        ) {
-//            super.onCharacteristicWrite(gatt, characteristic, status)
-//
-//            if (status == BluetoothGatt.GATT_SUCCESS) {
-//                if (!ReusableFunctions.checkPermission(context = context)) {
-//                    return
-//                }
-//                Log.e(
-//                    "BLESERVICE", "Write successful: ${characteristic?.uuid}"
-//                )
-//
-//                // First characteristic completed
-//                if (characteristic?.uuid == characteristicUUId) {
-//
-//                    Log.e(
-//                        "BLESERVICE", "Blaze characteristic written successfully"
-//                    )
-//                    val service = gatt?.getService(serviceUuid)
-//                    if (service == null) {
-//                        Log.e("BLESERVICE", "No Service Found")
-//                        return
-//                    }
-//                    val meteringCharacteristic = service.getCharacteristic(meteringUUID)
-//
-//                    // IMPORTANT: Enable notifications on BOTH Android and Device
-//                    enableMeteringNotifications(gatt,meteringCharacteristic)
-//
-//                    val data = BleWrite(
-//                        "metering_check", "read"
-//                    )
-//                    val json = Gson().toJson(data)
-//                    val bytes = json.toByteArray(Charsets.UTF_8)
-//
-//                    meteringCharacteristic.writeType =
-//                        BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
-//                    meteringCharacteristic.value = bytes
-//
-//                    gatt.writeCharacteristic(meteringCharacteristic)
-//                }
-//
-//                // Second characteristic completed
-//                else if (characteristic?.uuid == meteringUUID) {
-//
-//                    Log.e(
-//                        "BLESERVICE", "Metering characteristic written successfully"
-//                    )
-//
-//                    setWriteSuccess(true)
-//                } else {
-//
-//                    Log.e(
-//                        "BLESERVICE", "Unknown characteristic: ${characteristic?.uuid}"
-//                    )
-//                }
-//
-//            } else {
-//
-//                setWriteSuccess(false)
-//
-//                Log.e(
-//                    "BLESERVICE", "Write failed. UUID=${characteristic?.uuid}, status=$status"
-//                )
-//            }
-//        }
-//        //we can check out for the services and characteristics here
-//
-//        override fun onServicesDiscovered(gatt: BluetoothGatt?, status: Int) {
-//            super.onServicesDiscovered(gatt, status)
-//            if (status != BluetoothGatt.GATT_SUCCESS) {
-//                Log.e("BLESERVICE", "NO SERVICE Discovered")
-//                return
-//            }
-//            val service = gatt?.getService(serviceUuid)
-//            if (service == null) {
-//                Log.e("BLESERVICE", "No Service Found")
-//                return
-//            }
-//            writeBlaze(gatt!!)
-//        }
-//
-//
-//        //this Tells us if the Connection Was Success Or Not
-//
-//        override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
-//            super.onConnectionStateChange(gatt, status, newState)
-//            if (newState == BluetoothGatt.STATE_CONNECTED) {
-//                Log.e("BLESERVICE", "SUCCESSFULLY CONNECTED")
-//                if (ReusableFunctions.checkPermission(context)) {
-//                    gatt?.discoverServices()
-//                }
-//            }
-//            if (newState == BluetoothGatt.STATE_DISCONNECTED) {
-//                setWriteSuccess(false)
-//                Log.e("BLESERVICE", "Disconnected${status}")
-//            }
-//        }
-//    }
-//
-//
-//    private fun enableMeteringNotifications(
-//        gatt: BluetoothGatt, characteristic: BluetoothGattCharacteristic
-//    ) {
-//        if (!ReusableFunctions.checkPermission(context = context)) {
-//            return
-//        }
-//
-//
-//
-//        val notificationEnabled = gatt.setCharacteristicNotification(
-//            characteristic, true
-//        )
-//
-//        Log.e(
-//            "BLE", "setCharacteristicNotification = $notificationEnabled"
-//        )
-//        val descriptor = characteristic.getDescriptor(cccdUuid)
-//
-//        if (descriptor == null) {
-//            Log.e("BLE", "CCCD descriptor not found")
-//            return
-//        }
-//
-//        descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-//
-//        gatt.writeDescriptor(descriptor)
-//    }
 
     private fun writeBlaze(gatt: BluetoothGatt) {
         val service = gatt.getService(serviceUuid)
 
         if (service == null) {
-            Log.e("BLE", "Service not found")
+            Log.e("BLESERVICE", "Service not found")
             return
         }
         val blazeCharacteristic = service.getCharacteristic(characteristicUUId)
 
         if (blazeCharacteristic == null) {
-            Log.e("BLE", "Blaze characteristic not found")
+            Log.e("BLESERVICE", "Blaze characteristic not found")
             return
         }
         if (ReusableFunctions.checkPermission(context)) {
@@ -386,14 +312,13 @@ private val gattCallBack=object : BluetoothGattCallback(){
 
             val bytes = "BLAZE".toByteArray(Charsets.UTF_8)
 
-            blazeCharacteristic.writeType =
-                BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
+            blazeCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_NO_RESPONSE
 
             blazeCharacteristic.value = bytes
 
             gatt.writeCharacteristic(blazeCharacteristic)
 
-            Log.e("BLE", "Blaze sent bytes ${bytes.contentToString()}")
+            Log.e("BLESERVICE", "Blaze sent bytes ${bytes.contentToString()}")
         }
     }
 
@@ -404,15 +329,15 @@ private val gattCallBack=object : BluetoothGattCallback(){
             bluetoothGatt?.close()
             bluetoothGatt = null
             setWriteSuccess(false)
-            _notificationData.value = null
+            notificationData.value = null
 
         }
 
     }
+
     fun isDevicePaired(device: BluetoothDevice): Boolean {
         if (ReusableFunctions.checkPermission(context)) {
-            if (device.bondState == BluetoothDevice.BOND_BONDED)
-                return true
+            if (device.bondState == BluetoothDevice.BOND_BONDED) return true
         }
         return false
 

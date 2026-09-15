@@ -46,7 +46,7 @@ class DataBaseModule {
             "app_database"
         )
             .fallbackToDestructiveMigration()
-    .build()
+            .build()
     }
 
     @Provides

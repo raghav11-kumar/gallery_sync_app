@@ -1,9 +1,10 @@
 package com.example.gallery_sync_app.screens.ble.data
 
 data class BleResponse(
-    val cmd_test_type: String? = null,
-    val action: String? = null,
-    val status: String? = null,
-    val value: String? = null,
-    val message: String? = null
+    val V: List<Double>,
+    val I: List<Double>,
+    val P: List<Double>,
+    val S: List<Double>,
+    val Q: List<Double>,
+    val Fq: List<Double>
 )

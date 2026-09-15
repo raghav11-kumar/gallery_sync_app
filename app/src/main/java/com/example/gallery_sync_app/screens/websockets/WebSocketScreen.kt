@@ -14,28 +14,36 @@ import kotlinx.coroutines.launch
 import kotlin.math.log
 
 @AndroidEntryPoint
-class WebSocketScreen : Fragment(R.layout.fragment_web_socket_screen){
+class WebSocketScreen : Fragment(R.layout.fragment_web_socket_screen) {
     private lateinit var binding: FragmentWebSocketScreenBinding
     private val webSocketViewModel: WebSocketViewModel by viewModels()
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?){
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentWebSocketScreenBinding.bind(view)
 
-        
+        viewLifecycleOwner.lifecycleScope.launch {
+            webSocketViewModel.isConnected.collect {
+                if (it) {
+                    binding.conHead.text = getString(R.string.connected)
+                } else {
+                    binding.conHead.text = getString(R.string.notCon)
+                }
+            }
+        }
         viewLifecycleOwner.lifecycleScope.launch {
             webSocketViewModel.webSockResp.collect { response ->
                 if (response != null) {
                     binding.volDet.text = response.V
-                    binding.currDet.text=response.I
-                    binding.actPValue.text=response.P
-                    binding.apparValue.text=response.S
-                    binding.RpValue.text=response.Q
-                    binding.dsValue.text=response.device_state
-                    binding.lpValue.text=response.d_ts
-                    binding.actPValue.text=response.Pt
-                   binding.enValue.text=response.St
-                    binding.apparValue.text=response.St
-                    binding.RpValue.text=response.Qt
+                    binding.currDet.text = response.I
+                    binding.actPValue.text = response.P
+                    binding.apparValue.text = response.S
+                    binding.RpValue.text = response.Q
+                    binding.dsValue.text = response.device_state
+                    binding.lpValue.text = response.d_ts
+                    binding.actPValue.text = response.Pt
+                    binding.enValue.text = response.St
+                    binding.apparValue.text = response.St
+                    binding.RpValue.text = response.Qt
                 }
 
             }

@@ -21,5 +21,5 @@ class WebSocketViewModel @Inject constructor(
           started = SharingStarted.Lazily,
           initialValue = null
       )
-
+val isConnected=webSocketManager.isConnectedInfo
 }
