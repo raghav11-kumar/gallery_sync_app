@@ -307,11 +307,11 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
                     bleDevices.sortWith(
                         compareByDescending { it.rssi })
 
-                    bleAdapter.notifyItemInserted(
-                        bleDevices.size - 1
-                    )
+//                    bleAdapter.notifyItemInserted(
+//                        bleDevices.size - 1
+//                    )
 
-                    binding.emptyView.visibility = View.GONE
+//                    binding.emptyView.visibility = View.GONE
 
                     Log.d(
                         "BLEDevice", "Device found: $deviceName - $macAddress"

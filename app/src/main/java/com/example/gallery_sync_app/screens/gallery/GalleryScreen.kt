@@ -46,7 +46,11 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
             galleryVm.isUploading.collect { isUploading ->
                 if (isUploading) {
                     binding.screenProgressBar.visibility = View.VISIBLE
+                    binding.loadingOverlay.visibility = View.VISIBLE
+
                 } else {
+                    binding.loadingOverlay.visibility = View.GONE
+
                     binding.screenProgressBar.visibility = View.GONE
                 }
             }

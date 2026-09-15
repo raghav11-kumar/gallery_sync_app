@@ -76,10 +76,12 @@ class MainScreen : AppCompatActivity() {
 
                 com.example.gallery_sync_app.R.id.buttonHolderFragScreen -> {
                     lifecycleScope.launch {
-                        authVm.UserInformation.collect {user->
+                        authVm.UserInformation.collect { user ->
                             user?.let {
-                                android.widget.Toast.makeText(context,"Welcome ${it.name}",
-                                    android.widget.Toast.LENGTH_SHORT).show()
+                                android.widget.Toast.makeText(
+                                    context, "Welcome ${it.name}",
+                                    android.widget.Toast.LENGTH_SHORT
+                                ).show()
 
                             }
 
@@ -87,7 +89,8 @@ class MainScreen : AppCompatActivity() {
                     }
                     binding.appBarLayout.visibility = android.view.View.VISIBLE
                     binding.buttonProfileImageView.visibility = android.view.View.VISIBLE
-                    supportActionBar?.title =getString(com.example.gallery_sync_app.R.string.main_screen_header)
+                    supportActionBar?.title =
+                        getString(com.example.gallery_sync_app.R.string.main_screen_header)
 
                     lifecycleScope.launch {
                         userInfo.collect {
@@ -102,6 +105,12 @@ class MainScreen : AppCompatActivity() {
                 }
 
                 com.example.gallery_sync_app.R.id.galleryFragScreen -> {
+                    lifecycleScope.launch {
+                        galleryVm.isUploading.collect {
+                            binding.appBarLayout.visibility =
+                                if (it) android.view.View.GONE else android.view.View.VISIBLE
+                        }
+                    }
                     supportActionBar?.title = "Gallery"
                     binding.buttonProfileImageView.visibility = android.view.View.GONE
 
@@ -120,15 +129,18 @@ class MainScreen : AppCompatActivity() {
                 com.example.gallery_sync_app.R.id.bleFragScreen -> {
                     binding.buttonProfileImageView.visibility = android.view.View.GONE
                 }
-                com.example.gallery_sync_app.R.id.loginFragScreen->{
-                    binding.appBarLayout.visibility= android.view.View.GONE
+
+                com.example.gallery_sync_app.R.id.loginFragScreen -> {
+                    binding.appBarLayout.visibility = android.view.View.GONE
                 }
-                com.example.gallery_sync_app.R.id.signInFragScreen->{
-                    binding.appBarLayout.visibility= android.view.View.GONE
+
+                com.example.gallery_sync_app.R.id.signInFragScreen -> {
+                    binding.appBarLayout.visibility = android.view.View.GONE
 
                 }
-                com.example.gallery_sync_app.R.id.bleInfo->{
-                    binding.appBarLayout.visibility= android.view.View.GONE
+
+                com.example.gallery_sync_app.R.id.bleInfo -> {
+                    binding.appBarLayout.visibility = android.view.View.GONE
 
                 }
 
@@ -175,6 +187,7 @@ class MainScreen : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         galleryVm.closeGallery()

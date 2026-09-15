@@ -28,9 +28,9 @@
             android:layout_width="200dp"
             android:layout_height="60dp"
             android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="@color/crisp"
             android:text="@string/ble"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:backgroundTintMode="screen"
             android:background="@drawable/main_container_border"
             android:textStyle="bold" />
@@ -40,12 +40,12 @@
             android:layout_width="200dp"
             android:layout_height="60dp"
             android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="@color/crisp"
             android:text="@string/gallery_"
             android:backgroundTintMode="screen"
             android:background="@drawable/main_container_border"
 
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -53,39 +53,39 @@
             android:layout_width="200dp"
             android:layout_height="60dp"
 
-            android:backgroundTint="@color/black"
+            android:backgroundTint="@color/crisp"
             android:layout_marginBottom="24dp"
             android:backgroundTintMode="screen"
             android:background="@drawable/main_container_border"
 
             android:text="@string/webSockets"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textStyle="bold" />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/fcm_button"
             android:layout_width="200dp"
             android:layout_height="60dp"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="@color/crisp"
             android:text="@string/FcmButton"
             android:layout_marginBottom="24dp"
             android:backgroundTintMode="screen"
             android:background="@drawable/main_container_border"
 
 
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textStyle="bold" />
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/mqqtButton"
             android:layout_width="200dp"
             android:layout_height="60dp"
-            android:backgroundTint="@color/black"
+            android:backgroundTint="@color/crisp"
             android:text="@string/mqqt"
             android:layout_marginBottom="24dp"
             android:backgroundTintMode="screen"
             android:background="@drawable/main_container_border"
 
 
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textStyle="bold" />
 
 

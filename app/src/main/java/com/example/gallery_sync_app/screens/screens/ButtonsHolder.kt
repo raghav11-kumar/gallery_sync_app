@@ -9,6 +9,7 @@ import com.example.gallery_sync_app.databinding.FragmentButtonsHolderBinding
 import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import com.example.gallery_sync_app.screens.Authentication.AuthenticationViewModel
 import dagger.hilt.android.AndroidEntryPoint
+
 @AndroidEntryPoint
 class ButtonsHolder : Fragment(R.layout.fragment_buttons_holder) {
     private lateinit var binding: FragmentButtonsHolderBinding
@@ -34,7 +35,7 @@ class ButtonsHolder : Fragment(R.layout.fragment_buttons_holder) {
         fmcBut.setOnClickListener {
             authVm.showPushNotification()
         }
-        binding.mqqtButton.visibility= View.GONE
+        binding.mqqtButton.visibility = View.GONE
     }
 
 }

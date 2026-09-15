@@ -15,12 +15,12 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.338" />
 
-    <ImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/noImagesIcon"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:src="@android:drawable/ic_menu_gallery"
-        android:tint="?android:attr/textColorSecondary"
+        android:src="@drawable/noimage"
+        android:tint="@color/white"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/noImagesText"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,7 +28,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed" />
 
-    <TextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/noImagesText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,10 +47,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <View
+        android:id="@+id/loadingOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#80000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone"
+        android:elevation="9dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
