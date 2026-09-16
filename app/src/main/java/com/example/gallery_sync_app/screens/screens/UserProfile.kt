@@ -91,7 +91,9 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
         viewLifecycleOwner.lifecycleScope.launch {
             authVm.UserInformation.collect { user ->
                 if (user != null) {
+
                     Log.e("UserProfileFrag", "The Info has Been called${user}")
+
                     textId.setText(user.name)
                     emailId.text = user.email
                     Glide.with(requireContext())

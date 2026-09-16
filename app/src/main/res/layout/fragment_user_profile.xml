@@ -7,6 +7,7 @@
     android:padding="24dp"
     tools:context=".screens.screens.UserProfile">
 
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/profileImageCard"
         android:layout_width="140dp"
@@ -142,14 +143,14 @@
         android:layout_marginStart="128dp"
         android:layout_marginTop="32dp"
         android:text="@string/logOut"
-        android:textColor="@android:color/holo_red_light"
+        android:textColor="@color/crisp"
         android:textStyle="bold"
         app:cornerRadius="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/infoCard"
         app:layout_constraintVertical_bias="0.063"
-        app:strokeColor="@android:color/holo_red_light" />
+        app:strokeColor="@color/darkGrey" />
 
     <ProgressBar
         android:id="@+id/mainProgressBar"

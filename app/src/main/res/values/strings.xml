@@ -62,7 +62,7 @@
     <string name="actPower">Active Power (P)</string>
     <string name="apparPower">Apparent Power (S)</string>
     <string name="Rp">Reactive Power (Q)</string>
-    <string name="enHead">Energy Totals</string>
+    <string name="enHead">Event Type</string>
     <string name="dsHead">Device State</string>
     <string name="etHead">Event Type</string>
     <string name="lpHead">Last Update</string>
