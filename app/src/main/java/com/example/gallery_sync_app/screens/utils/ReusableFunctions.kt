@@ -7,6 +7,7 @@ import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.os.Build
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -66,6 +67,11 @@ val customView= LayoutInflater.from(context)
 
 
         return alertDi
+    }
+    fun checkApiPermission(context: Context): Boolean{
+        if(Build.VERSION.SDK_INT >=31)
+            return true
+        return false
     }
     fun checkPermission(context: Context): Boolean{
         return ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT)== PackageManager.PERMISSION_GRANTED

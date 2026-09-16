@@ -5,22 +5,25 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
-import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.os.Build
 import android.util.Log
-import androidx.lifecycle.ViewModel
 import com.example.gallery_sync_app.screens.ble.data.BleResponse
 import com.example.gallery_sync_app.screens.ble.data.BleWrite
+import com.example.gallery_sync_app.screens.ble.data.CombinedMeteringData
 import com.example.gallery_sync_app.screens.ble.data.DeviceInfo
+import com.example.gallery_sync_app.screens.ble.data.SecBleResponse
 import com.example.gallery_sync_app.screens.utils.ReusableFunctions
-import com.example.gallery_sync_app.screens.websockets.WebSocketResponse
 import com.google.gson.Gson
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.util.UUID
-import javax.inject.Inject
+import kotlin.time.Duration.Companion.milliseconds
 
 class BluetoothService(val context: Context) {
     private val writeSuccess = MutableStateFlow(false)
@@ -46,52 +49,51 @@ class BluetoothService(val context: Context) {
     private val meteringUUID = UUID.fromString("d43e0822-d5a5-d3e5-b13e-3922431410be")
     private val characteristicUUId = UUID.fromString("d43e0811-d5a5-d3e5-b13e-3922431410be")
     private val cccdUuid = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
-    fun bondDevice(device: BluetoothDevice) {
 
-        if (!ReusableFunctions.checkPermission(context)) {
-            Log.e(
-                "BLE", "BLUETOOTH_CONNECT permission required"
-            )
-            return
-        }
-
-
-        when (device.bondState) {
-
-            BluetoothDevice.BOND_NONE -> {
-
-                Log.d(
-                    "BLESERVICE", "Device not bonded. Starting bonding..."
-                )
-
-                val started = device.createBond()
-
-                Log.d(
-                    "BLESERVICE", "createBond() returned: $started"
-                )
-            }
-
-            BluetoothDevice.BOND_BONDING -> {
-
-                Log.d(
-                    "BLESERVICE", "Bonding already in progress"
-                )
-            }
-
-            BluetoothDevice.BOND_BONDED -> {
-
-                Log.d(
-                    "BLESERVICE", "Device already bonded. Connecting..."
-                )
-
-            }
-        }
-    }
 
     private var targetDevice: BluetoothDevice? = null
     private var isConnected = MutableStateFlow(false)
     val isConnectedInfo = isConnected.asStateFlow()
+    private var pollingJob: Job? = null
+    private val serviceScope = CoroutineScope(Dispatchers.IO)
 
+    private var firstMeteringResponse: BleResponse? = null
+    private var secondMeteringResponse: SecBleResponse? = null
+    private var waitingForSecondResponse = false
+    fun checkAndBond(device: BluetoothDevice) {
+
+        if (!ReusableFunctions.checkPermission(context)) {
+            return
+        }
+
+        when (device.bondState) {
+
+            BluetoothDevice.BOND_BONDED -> {
+                Log.d("BluetoothBond", "Device already bonded")
+                connect(device)
+            }
+
+            BluetoothDevice.BOND_BONDING -> {
+                Log.d("BluetoothBond", "Bonding already in progress")
+            }
+
+            BluetoothDevice.BOND_NONE -> {
+
+                Log.d(
+                    "BluetoothBond", "Device is not bonded. Calling createBond()..."
+                )
+                val result = if (Build.VERSION.SDK_INT >= 37) {
+                    device.createBond(BluetoothDevice.TRANSPORT_LE)
+                } else {
+                    device.createBond()
+                }
+
+                Log.d(
+                    "BluetoothBond", "createBond() returned = $result"
+                )
+            }
+        }
+    }
 
     fun connect(device: BluetoothDevice) {
         try {
@@ -110,7 +112,8 @@ class BluetoothService(val context: Context) {
 
             if (ReusableFunctions.checkPermission(context)) {
                 bluetoothGatt = device.connectGatt(
-                    context, false, gattCallBack
+                    context, false, gattCallBack, BluetoothDevice.TRANSPORT_LE
+
                 )
                 Log.e(
                     "BLESERVICE", "Connecting to Gatt Server: ${device.address}"
@@ -128,20 +131,23 @@ class BluetoothService(val context: Context) {
 
         override fun onConnectionStateChange(gatt: BluetoothGatt?, status: Int, newState: Int) {
             super.onConnectionStateChange(gatt, status, newState)
-            if (newState == BluetoothGatt.STATE_CONNECTED) {
-                val device = gatt?.device
-                Log.e("BLESERVICE", "SUCCESSFULLY CONNECTED To ${device?.name}")
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                if (newState == BluetoothGatt.STATE_CONNECTED) {
+                    val device = gatt?.device
+                    Log.e("BLESERVICE", "SUCCESSFULLY CONNECTED To ${device?.name}")
 
-                isConnected.value = true
-                if (ReusableFunctions.checkPermission(context = context)) {
-                    gatt?.requestMtu(512)
+                    isConnected.value = true
+                    if (ReusableFunctions.checkPermission(context = context)) {
+                        gatt?.requestMtu(512)
+                    }
+                }
+                if (newState == BluetoothGatt.STATE_DISCONNECTED) {
+
+                    pollingJob?.cancel()
+                    setWriteSuccess(false)
+                    Log.e("BLESERVICE", "Disconnected${status}")
                 }
             }
-            if (newState == BluetoothGatt.STATE_DISCONNECTED) {
-                setWriteSuccess(false)
-                Log.e("BLESERVICE", "Disconnected${status}")
-            }
-
         }
 
         override fun onMtuChanged(gatt: BluetoothGatt?, mtu: Int, status: Int) {
@@ -180,13 +186,52 @@ class BluetoothService(val context: Context) {
                 Log.d("BLESERVICE", "CLEAN JSON = [$fullJson]")
 
                 try {
-                    val response = Gson().fromJson(
-                        fullJson, BleResponse::class.java
-                    )
 
-                    Log.d("BLESERVICE", "Parsed response = $response")
+                    if (!waitingForSecondResponse) {
 
-                    notificationData.value = response
+                        // FIRST RESPONSE
+                        val response = Gson().fromJson(
+                            fullJson,
+                            BleResponse::class.java
+                        )
+
+                        Log.d(
+                            "BLESERVICE",
+                            "First metering response = $response"
+                        )
+
+                        firstMeteringResponse = response
+                        notificationData.value = response
+
+
+                        // Now we have first response.
+                        // Ask device for second response.
+                        waitingForSecondResponse = true
+
+                        sendSecondMeteringCommand()
+
+                    } else {
+
+                        // SECOND RESPONSE
+                        val response = Gson().fromJson(
+                            fullJson,
+                            SecBleResponse::class.java
+                        )
+
+                        Log.d(
+                            "BLESERVICE",
+                            "Second metering response = $response"
+                        )
+
+                        secondMeteringResponse = response
+
+                        // Now we have BOTH.
+                        combineResponses()
+
+                        // Next polling cycle should expect first response again.
+                        waitingForSecondResponse = false
+                    }
+
 
                 } catch (e: Exception) {
                     Log.e("BLESERVICE", "Gson parsing failed", e)
@@ -214,31 +259,20 @@ class BluetoothService(val context: Context) {
 
         }
 
+
         override fun onDescriptorWrite(
             gatt: BluetoothGatt?, descriptor: BluetoothGattDescriptor?, status: Int
         ) {
             super.onDescriptorWrite(gatt, descriptor, status)
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                if (ReusableFunctions.checkPermission(context)) {
-                    val service = gatt?.getService(serviceUuid)
-                    if (service == null) {
-                        Log.e("BLESERVICE", "No Service Found")
-                        return
+                Log.e("BLESERVICE", "Notification Descriptor Write Success")
+
+                pollingJob?.cancel()
+                pollingJob = serviceScope.launch {
+                    while (true) {
+                requestMeteringData()
+                        delay(6000.milliseconds) // Wait 3 seconds
                     }
-                    val meteringCharacteristic = service.getCharacteristic(meteringUUID)
-
-                    Log.e("BLESERVICE", "Descriptor Write Success")
-                    val data = BleWrite(
-                        "insta_metering_check", "read"
-                    )
-                    val json = Gson().toJson(data)
-                    val bytes = json.toByteArray(Charsets.UTF_8)
-
-                    meteringCharacteristic.writeType =
-                        BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
-                    meteringCharacteristic.value = bytes
-                    gatt.writeCharacteristic(meteringCharacteristic)
-
                 }
             }
         }
@@ -328,6 +362,7 @@ class BluetoothService(val context: Context) {
             bluetoothGatt?.disconnect()
             bluetoothGatt?.close()
             bluetoothGatt = null
+            pollingJob?.cancel()
             setWriteSuccess(false)
             notificationData.value = null
 
@@ -343,5 +378,73 @@ class BluetoothService(val context: Context) {
 
     }
 
+    private fun requestMeteringData() {
+        val gatt = bluetoothGatt ?: return
+        if (!ReusableFunctions.checkPermission(context)) return
 
+        val service = gatt.getService(serviceUuid) ?: return
+        val meteringCharacteristic = service.getCharacteristic(meteringUUID) ?: return
+
+        val data = BleWrite("insta_metering_check", "read")
+        val json = Gson().toJson(data)
+        val bytes = json.toByteArray(Charsets.UTF_8)
+
+        meteringCharacteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+        meteringCharacteristic.value = bytes
+        gatt.writeCharacteristic(meteringCharacteristic)
+        Log.d("BLESERVICE", "Periodic data request sent")
+    }
+
+    private fun sendSecondMeteringCommand() {
+        Log.e("BLESERVICE", "Secound Metering Command Sent")
+
+        val gatt = bluetoothGatt ?: return
+
+        if (!ReusableFunctions.checkPermission(context)) {
+            return
+        }
+
+        val service = gatt.getService(serviceUuid) ?: return
+
+        val characteristic = service.getCharacteristic(meteringUUID) ?: return
+
+        val data = BleWrite(
+            "enrg_metering_check", "read"
+        )
+
+        val bytes = Gson().toJson(data).toByteArray(Charsets.UTF_8)
+
+        characteristic.writeType = BluetoothGattCharacteristic.WRITE_TYPE_DEFAULT
+
+        characteristic.value = bytes
+
+        gatt.writeCharacteristic(characteristic)
+    }
+
+    private val combinedMeteringData =
+        MutableStateFlow<CombinedMeteringData?>(null)
+
+    val combinedMeteringDataInfo =
+        combinedMeteringData.asStateFlow()
+
+    private fun combineResponses() {
+
+        val first = firstMeteringResponse ?: return
+        val second = secondMeteringResponse ?: return
+
+        val combined = CombinedMeteringData(
+            voltage = first.V,
+            current = first.I,
+            activePower = first.P,
+            apparentPower = first.S,
+            reactivePower = first.Q,
+            frequency = first.Fq,
+
+            pf = second.Pt,
+            st = second.St,
+            qt = second.Qt
+        )
+
+        combinedMeteringData.value = combined
+    }
 }

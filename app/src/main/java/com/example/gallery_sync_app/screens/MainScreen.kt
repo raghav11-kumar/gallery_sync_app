@@ -80,8 +80,7 @@ class MainScreen : AppCompatActivity() {
                         authVm.UserInformation.collect { user ->
                             user?.let {
                                 android.widget.Toast.makeText(
-                                    context, "Welcome ${it.name}",
-                                    android.widget.Toast.LENGTH_SHORT
+                                    context, "Welcome ${it.name}", android.widget.Toast.LENGTH_SHORT
                                 ).show()
 
                             }
@@ -95,8 +94,7 @@ class MainScreen : AppCompatActivity() {
 
                     lifecycleScope.launch {
                         userInfo.collect {
-                            com.bumptech.glide.Glide.with(context).load(it?.imageUrl)
-                                .centerCrop()
+                            com.bumptech.glide.Glide.with(context).load(it?.imageUrl).centerCrop()
                                 .into(binding.userLogo)
                         }
                     }
@@ -128,6 +126,7 @@ class MainScreen : AppCompatActivity() {
                 }
 
                 com.example.gallery_sync_app.R.id.bleFragScreen -> {
+                    supportActionBar?.title = getString(R.string.ble)
                     binding.buttonProfileImageView.visibility = android.view.View.GONE
                 }
 
@@ -141,7 +140,9 @@ class MainScreen : AppCompatActivity() {
                 }
 
                 com.example.gallery_sync_app.R.id.bleInfo -> {
-                    binding.appBarLayout.visibility = android.view.View.GONE
+
+                    binding.buttonProfileImageView.visibility = android.view.View.GONE
+
 
                 }
 

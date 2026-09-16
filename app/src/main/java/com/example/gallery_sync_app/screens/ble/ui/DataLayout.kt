@@ -2,9 +2,7 @@ package com.example.gallery_sync_app.screens.ble.ui
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentDataLayoutBinding
@@ -31,18 +29,23 @@ class DataLayout : Fragment(R.layout.fragment_data_layout) {
                 }
             }
         }
+
         viewLifecycleOwner.lifecycleScope.launch {
-            bleService.notificationDataInfo.collect { data ->
-                data?.let {
-                    binding.volDet.text = it.V.toString()
-                    binding.currDet.text = it.I.toString()
-                    binding.actPValue.text = it.P.toString()
-                    binding.apparValue.text = it.S.toString()
-                    binding.RpValue.text = it.Q.toString()
-                    binding.lpValue.text = it.Fq.toString()
 
+            bleService.combinedMeteringDataInfo.collect { data ->
 
-                }
+                if (data == null) return@collect
+
+                binding.volDet.text = data.voltage.toString()
+                binding.currDet.text = data.current.toString()
+                binding.actPValue.text = data.activePower.toString()
+                binding.apparValue.text = data.apparentPower.toString()
+                binding.RpValue.text = data.reactivePower.toString()
+                binding.lpValue.text = data.frequency.toString()
+
+                binding.ptValue.text = data.st.toString()
+                binding.stVal.text = data.pf.toString()
+                binding.qtVal.text = data.qt.toString()
             }
         }
     }

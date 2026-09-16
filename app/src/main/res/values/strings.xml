@@ -30,7 +30,7 @@
     <string name="pos">Yes </string>
     <string name="neg">No </string>
     <string name="gallery_">Gallery</string>
-    <string name="ble">BLE DEVICE</string>
+    <string name="ble">BLE Device</string>
     <string name="loginHeading">Login</string>
     <string name="nameCred">Enter Your Name</string>
     <string name="passCred">Enter Your PassWord</string>
@@ -84,5 +84,11 @@
     <string name="bondState">Bond State</string>
 <string name="noImagesIcon">No Images Available</string>
     <string name="wait">Wait Until It Loads</string>
+    <string name="connecting_message">Connecting to device, please wait...</string>
+    <string name="connection_failed">Connection failed. Please try again.</string>
+    <string name="freq">Frequency (F)</string>
+    <string name="pt">PT</string>
+    <string name="st">ST</string>
+    <string name="qt">QT</string>
 
 </resources>

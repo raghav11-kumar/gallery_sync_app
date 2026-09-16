@@ -191,8 +191,6 @@ class DataBaseRepository @Inject constructor(
             Result.failure(ex)
         }
     }
-
-
     suspend fun localSaveUser(userData: Users) {
         try {
             localDB.InsertUser(userData)
@@ -203,15 +201,18 @@ class DataBaseRepository @Inject constructor(
     }
 
     fun getImagesList() = localDB.getSavedImages()
-    suspend fun deleteImage(image: Images) {
-        localDB.delete(image)
+    suspend fun deleteImage(image: Images): Result<Boolean> {
+      return  try {
 
-        kotlinx.coroutines.withContext(Dispatchers.IO) {
-            fbStore.collection("Images").document(getCurrUid()).delete().addOnFailureListener {
-                Log.e("DataBaseRep", "Cannot Delete Image ${it}")
-            }.addOnSuccessListener {
-                Log.e("DataBaseRep", "SuccessFully Deleted")
-            }.await()
+            kotlinx.coroutines.withContext(Dispatchers.IO) {
+                fbStore.collection("Images").document(getCurrUid()).delete().await()
+                localDB.delete(image)
+                Log.e("DataBaseRep", "SuccessFully Deleted The Image")
+                Result.success(true)
+            }
+        }catch (e: Exception){
+            Log.e("DataBaseRep", "Failed TO Delete Image ${e.message}")
+          Result.failure(e)
         }
     }
 

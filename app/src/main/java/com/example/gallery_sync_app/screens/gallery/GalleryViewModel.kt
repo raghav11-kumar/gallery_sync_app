@@ -1,22 +1,18 @@
 package com.example.gallery_sync_app.screens.gallery
 
-import android.content.Context
 import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.gallery_sync_app.screens.data.ImagBBResponse
-import com.example.gallery_sync_app.screens.data.ImageInfo
 import com.example.gallery_sync_app.screens.data.Images
 import com.example.gallery_sync_app.screens.repository.DataBaseRepository
-import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
-import java.net.URI
 import javax.inject.Inject
+
 @HiltViewModel
 class GalleryViewModel @Inject constructor(val repository: DataBaseRepository) : ViewModel(){
     val imageList: MutableStateFlow<List<Images>> = MutableStateFlow(emptyList())
@@ -74,10 +70,19 @@ class GalleryViewModel @Inject constructor(val repository: DataBaseRepository) :
              Log.e("GalleryVm","Failed TO Convert Image ${it.message}")
         }
     }
+    private val deleteImageRes= MutableStateFlow(false)
+    val deleteImageSuccessOrNot=deleteImageRes.asSharedFlow()
     fun deleteImage(image: Images){
         viewModelScope.launch {
-
+val response=
             repository.deleteImage(image)
+            response.onSuccess {
+                deleteImageRes.value=it
+            }
+            response.onFailure {
+                deleteImageRes.value=false
+                errorFlow.emit(it.message?:"Delete Failed")
+            }
 
         }
     }

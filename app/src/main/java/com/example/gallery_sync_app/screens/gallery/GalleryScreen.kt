@@ -84,7 +84,6 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
             }
         }
 
-
     }
 
 

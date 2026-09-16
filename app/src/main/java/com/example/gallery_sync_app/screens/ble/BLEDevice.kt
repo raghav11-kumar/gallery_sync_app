@@ -7,7 +7,9 @@ import android.bluetooth.BluetoothManager
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -18,6 +20,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -25,9 +28,9 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentBLEDeviceBinding
+import com.example.gallery_sync_app.screens.ble.broadCast.BluetoothBondStateListener
+import com.example.gallery_sync_app.screens.ble.broadCast.BluetoothReceiver
 import com.example.gallery_sync_app.screens.ble.data.BleDeviceInfo
-import com.example.gallery_sync_app.screens.ble.data.DeviceInfo
-import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -45,6 +48,9 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
     private lateinit var bleAdapter: com.example.gallery_sync_app.screens.ble.BluetoothAdapter
 
     private val bleDevices = mutableListOf<BleDeviceInfo>()
+    private lateinit var bluetoothReceiver: BluetoothReceiver
+    private lateinit var bluetoothBondStateListener: BluetoothBondStateListener
+
 
     @Inject
     lateinit var bluetoothService: BluetoothService
@@ -58,13 +64,9 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
         ActivityResultContracts.StartActivityForResult()
     ) {
         if (bluetoothAdapter.isEnabled) {
-
             Log.d("BLEDevice", "Bluetooth enabled")
-
             requestBluetoothPermissions()
-
         } else {
-
             Log.d("BLEDevice", "Bluetooth was not enabled")
         }
     }
@@ -73,20 +75,23 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
     private val bluetoothPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
-        val scanGranted = permissions[Manifest.permission.BLUETOOTH_SCAN] == true
-        val connectGranted = permissions[Manifest.permission.BLUETOOTH_CONNECT] == true
-        val fineLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
-        val coarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+        if (Build.VERSION.SDK_INT >= 31) {
+            val scanGranted = permissions[Manifest.permission.BLUETOOTH_SCAN] == true
+            val connectGranted = permissions[Manifest.permission.BLUETOOTH_CONNECT] == true
+            val fineLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true
+            val coarseLocationGranted =
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
 
-        // On Android 11 and below, location permission is strictly required for BLE scanning.
-        // On Android 12+, BLUETOOTH_SCAN is required.
-        val canScan = scanGranted || fineLocationGranted || coarseLocationGranted
+            // On Android 11 and below, location permission is strictly required for BLE scanning.
+            // On Android 12+, BLUETOOTH_SCAN is required.
+            val canScan = scanGranted || fineLocationGranted || coarseLocationGranted
 
-        if (canScan && connectGranted) {
-            Log.d("BLEDevice", "Bluetooth / Location permissions granted")
-            scanDevices()
-        } else {
-            Log.e("BLEDevice", "Bluetooth / Location permissions denied")
+            if (canScan && connectGranted) {
+                Log.d("BLEDevice", "Bluetooth / Location permissions granted")
+                scanDevices()
+            } else {
+                Log.e("BLEDevice", "Bluetooth / Location permissions denied")
+            }
         }
     }
 
@@ -97,6 +102,67 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
         try {
 
             super.onViewCreated(view, savedInstanceState)
+            bluetoothReceiver = BluetoothReceiver { state ->
+                when (state) {
+                    BluetoothAdapter.STATE_OFF -> {
+                        Log.e("BluetoothReceiver", "Bluetooth StateOff ")
+                        Toast.makeText(requireContext(), "Bluetooth StateOff ", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+
+                    BluetoothAdapter.STATE_ON -> {
+                        Log.e("BluetoothReceiver", "Bluetooth StateOn ")
+
+                    }
+
+                    BluetoothAdapter.STATE_TURNING_OFF -> {
+                        Log.e("BluetoothReceiver", "Bluetooth TurningOff ")
+                    }
+
+                    BluetoothAdapter.STATE_TURNING_ON -> {
+                        Log.e("BluetoothReceiver", "Bluetooth TurningOn ")
+                    }
+
+                    BluetoothAdapter.STATE_CONNECTED -> {
+                        Log.e("BluetoothReceiver", "Bluetooth Connected ")
+                    }
+
+                    BluetoothAdapter.STATE_DISCONNECTED -> {
+                        Log.e("BluetoothReceiver", "Bluetooth Disconnected ")
+                    }
+
+                    else -> {
+                        Log.e("BluetoothReceiver", "Bluetooth Else ")
+                    }
+                }
+
+            }
+
+            bluetoothBondStateListener = BluetoothBondStateListener { device, bondState ->
+
+                when (bondState) {
+
+                    BluetoothDevice.BOND_BONDING -> {
+                        Log.d(
+                            "BluetoothBond", "${device.address} is bonding"
+                        )
+                    }
+
+                    BluetoothDevice.BOND_BONDED -> {
+                        Log.d(
+                            "BluetoothBond", "${device.address} successfully bonded"
+                        )
+
+                        bluetoothService.connect(device)
+                    }
+
+                    BluetoothDevice.BOND_NONE -> {
+                        Log.d(
+                            "BluetoothBond", "${device.address} is not bonded"
+                        )
+                    }
+                }
+            }
 
             binding = FragmentBLEDeviceBinding.bind(view)
             setupBluetooth()
@@ -110,9 +176,26 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
             viewLifecycleOwner.lifecycleScope.launch {
                 bluetoothService.writeSuccessInfo.collect {
                     if (it) {
+                        binding.connectingOverlay.visibility = View.GONE
+                        binding.connectingContainer.visibility = View.GONE
                         view.findNavController().navigate(R.id.navigateBleToBleInfo)
                     }
 
+                }
+            }
+
+            // Collect connection failure or state updates to show "cannot connect" or hide loading if it drops
+            viewLifecycleOwner.lifecycleScope.launch {
+                bluetoothService.isConnectedInfo.collect { isConnected ->
+                    if (!isConnected && binding.connectingOverlay.isVisible) {
+                        // If it fails to maintain connection
+                        binding.connectingProgress.visibility = View.GONE
+                        binding.connectingText.text = getString(R.string.connection_failed)
+                        handler.postDelayed({
+                            binding.connectingOverlay.visibility = View.GONE
+                            binding.connectingContainer.visibility = View.GONE
+                        }, 2500)
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -130,15 +213,6 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
 
         bluetoothAdapter = bluetoothManager.adapter
 
-        if (bluetoothAdapter == null) {
-
-            Log.e(
-                "BLEDevice", "Bluetooth is not supported on this device"
-            )
-
-            return
-        }
-
         bluetoothLeScanner = bluetoothAdapter.bluetoothLeScanner!!
     }
 
@@ -146,7 +220,11 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
     private fun setupRecyclerView() {
 
         bleAdapter = BluetoothAdapter(bleDevices, requireContext()) {
-            checkAndConnect(it)
+            binding.connectingOverlay.visibility = View.VISIBLE
+            binding.connectingContainer.visibility = View.VISIBLE
+            binding.connectingProgress.visibility = View.VISIBLE
+            binding.connectingText.text = getString(R.string.connecting_message)
+            bluetoothService.checkAndBond(device = it)
         }
 
 
@@ -220,8 +298,8 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
         bleAdapter.notifyDataSetChanged()
         binding.scanProgress.visibility = View.VISIBLE
         binding.emptyView.visibility = View.GONE
-        binding.noScanText.visibility=View.VISIBLE
-        binding.noImagesIcon.visibility= View.VISIBLE
+        binding.noScanText.visibility = View.VISIBLE
+        binding.noImagesIcon.visibility = View.VISIBLE
 
         Log.d("BLEDevice", "Starting BLE scan...")
         bluetoothLeScanner.startScan(scanCallback)
@@ -247,13 +325,11 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
         )
 
         binding.scanProgress.visibility = View.GONE
-        binding.noScanText.visibility=View.GONE
-        binding.noImagesIcon.visibility= View.GONE
+        binding.noScanText.visibility = View.GONE
+        binding.noImagesIcon.visibility = View.GONE
 
 
         if (bleDevices.isEmpty()) {
-            binding.noScanText.visibility=View.VISIBLE
-            binding.noImagesIcon.visibility= View.VISIBLE
             binding.emptyView.visibility = View.VISIBLE
         }
 
@@ -364,14 +440,32 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
         super.onDestroyView()
     }
 
-    fun checkAndConnect(device: BluetoothDevice) {
-
-        if (!ReusableFunctions.checkPermission(requireContext())) {
-            requestBluetoothPermissions()
-            return
+    override fun onStart() {
+        super.onStart()
+        val intentFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requireActivity().registerReceiver(
+                bluetoothReceiver, intentFilter, Context.RECEIVER_EXPORTED
+            )
+            requireActivity().registerReceiver(
+                bluetoothBondStateListener,
+                IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED),
+                Context.RECEIVER_EXPORTED
+            )
+        } else {
+            requireActivity().registerReceiver(bluetoothReceiver, intentFilter)
+            requireActivity().registerReceiver(
+                bluetoothBondStateListener, IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
+            )
         }
 
-        bluetoothService.connect(device)
     }
+
+    override fun onStop() {
+        super.onStop()
+        requireActivity().unregisterReceiver(bluetoothReceiver)
+        requireActivity().unregisterReceiver(bluetoothBondStateListener)
+    }
+
 
 }
