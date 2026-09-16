@@ -82,6 +82,7 @@
     <string name="charUUid">Characteristic UUID</string>
     <string name="serUUID">Service UUID</string>
     <string name="bondState">Bond State</string>
-
+<string name="noImagesIcon">No Images Available</string>
+    <string name="wait">Wait Until It Loads</string>
 
 </resources>

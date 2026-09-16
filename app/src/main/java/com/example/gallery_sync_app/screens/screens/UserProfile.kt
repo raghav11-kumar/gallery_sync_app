@@ -59,7 +59,9 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
             }
         }
         editId.setOnClickListener {
+            it.isEnabled=false
             launcher.launch("image/*")
+            it.postDelayed({it.isEnabled=true},1000)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {

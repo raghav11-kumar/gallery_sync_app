@@ -9,6 +9,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
+import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.ActivityMainScreenBinding
 import com.example.gallery_sync_app.screens.Authentication.AuthenticationViewModel
 import com.example.gallery_sync_app.screens.gallery.GalleryViewModel
@@ -111,7 +112,7 @@ class MainScreen : AppCompatActivity() {
                                 if (it) android.view.View.GONE else android.view.View.VISIBLE
                         }
                     }
-                    supportActionBar?.title = "Gallery"
+                    supportActionBar?.title = getString(R.string.gallery_)
                     binding.buttonProfileImageView.visibility = android.view.View.GONE
 
                     showMenu = true
@@ -122,7 +123,7 @@ class MainScreen : AppCompatActivity() {
                 }
 
                 com.example.gallery_sync_app.R.id.webSocketFragScreen -> {
-                    supportActionBar?.title = "WebSockets"
+                    supportActionBar?.title = getString(R.string.webSockets)
                     binding.buttonProfileImageView.visibility = android.view.View.GONE
                 }
 

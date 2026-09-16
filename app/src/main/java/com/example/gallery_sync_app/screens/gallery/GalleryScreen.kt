@@ -78,8 +78,8 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
         viewLifecycleOwner.lifecycleScope.launch {
             galleryVm.galleryOpen.collect { isOpen ->
                 if (isOpen) {
-                    launcher.launch("image/*")
                     galleryVm.closeGallery()
+                    launcher.launch("image/*")
                 }
             }
         }

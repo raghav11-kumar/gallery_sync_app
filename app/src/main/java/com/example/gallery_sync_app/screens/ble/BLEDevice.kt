@@ -15,6 +15,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -35,7 +36,6 @@ import javax.inject.Inject
 class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
 
     private lateinit var binding: FragmentBLEDeviceBinding
-    lateinit var ACTION_REQUEST_ENABLE: String
 
 
     private lateinit var bluetoothManager: BluetoothManager
@@ -215,10 +215,13 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
             return
         }
 
+
         bleDevices.clear()
         bleAdapter.notifyDataSetChanged()
         binding.scanProgress.visibility = View.VISIBLE
         binding.emptyView.visibility = View.GONE
+        binding.noScanText.visibility=View.VISIBLE
+        binding.noImagesIcon.visibility= View.VISIBLE
 
         Log.d("BLEDevice", "Starting BLE scan...")
         bluetoothLeScanner.startScan(scanCallback)
@@ -244,9 +247,13 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
         )
 
         binding.scanProgress.visibility = View.GONE
+        binding.noScanText.visibility=View.GONE
+        binding.noImagesIcon.visibility= View.GONE
+
 
         if (bleDevices.isEmpty()) {
-
+            binding.noScanText.visibility=View.VISIBLE
+            binding.noImagesIcon.visibility= View.VISIBLE
             binding.emptyView.visibility = View.VISIBLE
         }
 
@@ -274,6 +281,7 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
                     requireContext(), Manifest.permission.BLUETOOTH_CONNECT
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
+
                 return
             }
 

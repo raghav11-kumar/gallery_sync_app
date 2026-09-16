@@ -26,10 +26,12 @@ class GalleryViewModel @Inject constructor(val repository: DataBaseRepository) :
     private val _isUploading = MutableStateFlow(false)
     val isUploading = _isUploading
     fun openGallery(){
-        galleryOpenClicked.value=true
+        if (!galleryOpenClicked.value) {
+            galleryOpenClicked.value = true
+        }
     }
     fun closeGallery(){
-        galleryOpenClicked.value=false
+        galleryOpenClicked.value = false
     }
     private val editClick= MutableStateFlow<Boolean>(false)
     val editClickOpen=editClick
