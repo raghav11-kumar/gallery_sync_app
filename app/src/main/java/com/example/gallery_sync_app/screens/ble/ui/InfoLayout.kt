@@ -26,29 +26,13 @@ import kotlin.getValue
 class InfoLayout : Fragment(R.layout.fragment_info_layout) {
     lateinit var binding: FragmentInfoLayoutBinding
     private val bleVm: BLEViewModel by activityViewModels()
-    private lateinit var bluetoothReceiver: BluetoothReceiver
 
     @Inject
     lateinit var bluetoothService: BluetoothService
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        bluetoothReceiver = BluetoothReceiver {
-            ReusableFunctions.DefaultAlertDialog(
-                requireContext(),
-                "Bluetooth Has Turned Down",
-                "Ok",
-                "Close"
-            ) {
-                val navOptions = androidx.navigation.NavOptions.Builder()
-                    .setPopUpTo(
-                        R.id.buttonHolderFragScreen,
-                        true
-                    ) // Clears intermediate historical screens completely
-                    .build()
-                view.findNavController().navigate(R.id.buttonHolderFragScreen, null, navOptions)
-            }
-        }
+
         binding = FragmentInfoLayoutBinding.bind(view)
 
         viewLifecycleOwner.lifecycleScope.launch {

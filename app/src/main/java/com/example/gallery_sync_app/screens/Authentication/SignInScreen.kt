@@ -80,6 +80,11 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
             view.findNavController().navigate(R.id.navigateSignInToLoginScreen)
 
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            authVm.isLoading.collect {
+                binding.loadingOverlay.visibility = if (it) View.VISIBLE else View.GONE
+            }
+        }
 
     }
 

@@ -27,28 +27,11 @@ class DataLayout : Fragment(R.layout.fragment_data_layout) {
 
     @Inject
     lateinit var bleService: BluetoothService
-    lateinit var bluetoothReceiver: BluetoothReceiver
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         try {
 
-            bluetoothReceiver = BluetoothReceiver {
-                ReusableFunctions.DefaultAlertDialog(
-                    requireContext(),
-                    "Bluetooth Has Turned Down",
-                    "Ok",
-                    "Close"
-                ) {
-                    val navOptions = androidx.navigation.NavOptions.Builder()
-                        .setPopUpTo(
-                            R.id.buttonHolderFragScreen,
-                            true
-                        ) // Clears intermediate historical screens completely
-                        .build()
-                    view.findNavController().navigate(R.id.buttonHolderFragScreen, null, navOptions)
-                }
-                bleService.disConnect()
-            }
+
             binding = FragmentDataLayoutBinding.bind(view)
             viewLifecycleOwner.lifecycleScope.launch {
                 bleService.isConnectedInfo.collect {
@@ -92,22 +75,11 @@ class DataLayout : Fragment(R.layout.fragment_data_layout) {
 
     override fun onStart() {
         super.onStart()
-        val intentFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            requireActivity().registerReceiver(
-                bluetoothReceiver, intentFilter, Context.RECEIVER_EXPORTED
-            )
-
-        } else {
-            requireActivity().registerReceiver(bluetoothReceiver, intentFilter)
-
-        }
     }
 
     override fun onStop() {
         super.onStop()
-        requireActivity().unregisterReceiver(bluetoothReceiver)
         bleService.disConnect()
 
     }

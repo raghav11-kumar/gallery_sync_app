@@ -83,6 +83,11 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
         signInButton.setOnClickListener {
             ReusableFunctions.navigateSrcToDest(view, R.id.navigateLoginToSignIN)
         }
+        viewLifecycleOwner.lifecycleScope.launch {
+            authVm.isLoading.collect {
+                binding.loadingOverlay.visibility = if (it) View.VISIBLE else View.GONE
+            }
+        }
     }
 
 

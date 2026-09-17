@@ -1,12 +1,19 @@
 package com.example.gallery_sync_app.screens.ble.ui
 
+import android.bluetooth.BluetoothAdapter
+import android.content.Context
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentBleInfoBinding
 import com.example.gallery_sync_app.screens.ble.BluetoothService
+import com.example.gallery_sync_app.screens.ble.broadCast.BluetoothReceiver
+import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,6 +25,8 @@ class BleInfo : Fragment(R.layout.fragment_ble_info) {
 
     @Inject
     lateinit var bluetoothService: BluetoothService
+    private lateinit var bluetoothReceiver: BluetoothReceiver
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -29,6 +38,22 @@ class BleInfo : Fragment(R.layout.fragment_ble_info) {
             R.drawable.bmth,
             R.drawable.ic_launcher_foreground
         )
+        bluetoothReceiver = BluetoothReceiver {
+            ReusableFunctions.DefaultAlertDialog(
+                requireContext(),
+                "Bluetooth Has Turned Down",
+                "Ok",
+                "Close"
+            ) {
+                val navOptions = androidx.navigation.NavOptions.Builder()
+                    .setPopUpTo(
+                        R.id.buttonHolderFragScreen,
+                        true
+                    ) // Clears intermediate historical screens completely
+                    .build()
+                view.findNavController().navigate(R.id.buttonHolderFragScreen, null, navOptions)
+            }
+        }
    ViewPagerAdapter(listOfImages)
         val tabLayout: TabLayout = binding.tabLayout
         val viewPager2 = binding.viewPager
@@ -47,5 +72,26 @@ when(position){
     override fun onDestroy() {
         super.onDestroy()
         bluetoothService.disConnect()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireActivity().unregisterReceiver(bluetoothReceiver)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val intentFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requireActivity().registerReceiver(
+                bluetoothReceiver, intentFilter, Context.RECEIVER_EXPORTED
+            )
+
+        } else {
+            requireActivity().registerReceiver(bluetoothReceiver, intentFilter)
+
+        }
+
     }
 }

@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/grey"
     tools:context=".screens.MainScreen">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -32,7 +33,7 @@
                 android:focusable="true"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/white"
+                app:strokeColor="@color/darkGrey"
                 app:strokeWidth="2dp">
 
                 <androidx.appcompat.widget.AppCompatImageView
