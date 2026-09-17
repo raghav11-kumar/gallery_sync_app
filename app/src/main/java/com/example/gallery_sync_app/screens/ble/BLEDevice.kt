@@ -129,10 +129,11 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
             bluetoothReceiver = BluetoothReceiver {
                 ReusableFunctions.DefaultAlertDialog(
                     requireContext(),
-                    "Bluetooth Has Turned Down",
-                    "Ok",
-                    "Close"
-                ) {
+                    "Bluetooth is turned Off.Please turn it on to connect to a device",
+                    "Turn On",
+                    "cancel"
+
+                    ) {
                     val enableBluetoothIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
 
                     enableBluetoothLauncher.launch(

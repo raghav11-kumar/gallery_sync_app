@@ -49,6 +49,8 @@ val customView= LayoutInflater.from(context)
         val posBut=customView.findViewById<Button>(com.example.gallery_sync_app.R.id.btnPositive)
         val negBut=customView.findViewById<Button>(com.example.gallery_sync_app.R.id.btnNegative)
         val heading=customView.findViewById<TextView>(com.example.gallery_sync_app.R.id.connection)
+        posBut.text = pos
+        negBut.text=neg
 
         Log.e("REUSABLEFUN", "ITS CALLED")
         heading.text = message

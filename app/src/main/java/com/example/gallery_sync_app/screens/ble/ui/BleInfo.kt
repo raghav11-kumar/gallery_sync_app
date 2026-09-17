@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
-import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentBleInfoBinding
 import com.example.gallery_sync_app.screens.ble.BluetoothService
@@ -41,10 +40,11 @@ class BleInfo : Fragment(R.layout.fragment_ble_info) {
         bluetoothReceiver = BluetoothReceiver {
             ReusableFunctions.DefaultAlertDialog(
                 requireContext(),
-                "Bluetooth Has Turned Down",
-                "Ok",
-                "Close"
-            ) {
+                "Looks Like Bluetooth Is Off. Go Back To Home Screen ?",
+                "Go Back",
+                "Not Now",
+
+                ) {
                 val navOptions = androidx.navigation.NavOptions.Builder()
                     .setPopUpTo(
                         R.id.buttonHolderFragScreen,
@@ -54,15 +54,15 @@ class BleInfo : Fragment(R.layout.fragment_ble_info) {
                 view.findNavController().navigate(R.id.buttonHolderFragScreen, null, navOptions)
             }
         }
-   ViewPagerAdapter(listOfImages)
+        ViewPagerAdapter(listOfImages)
         val tabLayout: TabLayout = binding.tabLayout
         val viewPager2 = binding.viewPager
         viewPager2.adapter = BleViewPagerAdapter(this)
         TabLayoutMediator(tabLayout, viewPager2) { tab, position ->
-when(position){
-    0->tab.text=getString(R.string.Data)
-    1->tab.text=getString(R.string.info)
-}
+            when (position) {
+                0 -> tab.text = getString(R.string.Data)
+                1 -> tab.text = getString(R.string.info)
+            }
 
         }.attach()
 

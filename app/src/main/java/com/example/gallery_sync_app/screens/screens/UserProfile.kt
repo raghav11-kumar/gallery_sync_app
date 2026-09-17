@@ -99,13 +99,13 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
                     Glide.with(requireContext())
                         .load(user.imageUrl)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .placeholder(R.drawable.outline_article_person_24)
+                        .placeholder(R.drawable.profile)
                         .centerCrop()
                         .into(imageId)
                 } else {
                     textId.setText("")
                     emailId.text = ""
-                    imageId.setImageResource(R.drawable.outline_article_person_24)
+                    imageId.setImageResource(R.drawable.profile)
                 }
             }
         }
