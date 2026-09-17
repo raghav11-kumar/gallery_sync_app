@@ -55,6 +55,6 @@ leakcanary = { group = "com.android.tools.studio.leakcanary", name = "leakcanary
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-hilt={id ="com.google.dagger.hilt.android",version.ref="hilt"}
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
