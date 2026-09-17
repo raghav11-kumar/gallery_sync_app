@@ -19,7 +19,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
@@ -34,6 +36,9 @@ class BluetoothService(val context: Context) {
     val notificationDataInfo = notificationData.asStateFlow()
     private val deviceInfo = MutableStateFlow<DeviceInfo?>(null)
     val deviceInformation = deviceInfo.asStateFlow()
+    private val errorFlow = MutableSharedFlow<String>()
+    val errorFlowing = errorFlow.asSharedFlow()
+
     private fun setDeviceInfo(deviceInfo: DeviceInfo) {
         this.deviceInfo.value = deviceInfo
     }
@@ -142,8 +147,11 @@ class BluetoothService(val context: Context) {
                     }
                 }
                 if (newState == BluetoothGatt.STATE_DISCONNECTED) {
-
+                    Log.e("BLESERVICE","State_DISCONNECTED")
                     pollingJob?.cancel()
+                    serviceScope.launch {
+                        errorFlow.emit("Bluetooth DisConnected")
+                    }
                     setWriteSuccess(false)
                     Log.e("BLESERVICE", "Disconnected${status}")
                 }

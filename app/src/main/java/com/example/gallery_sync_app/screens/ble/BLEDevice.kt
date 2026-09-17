@@ -28,6 +28,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentBLEDeviceBinding
+import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import com.example.gallery_sync_app.screens.ble.broadCast.BluetoothBondStateListener
 import com.example.gallery_sync_app.screens.ble.broadCast.BluetoothReceiver
 import com.example.gallery_sync_app.screens.ble.data.BleDeviceInfo
@@ -48,14 +49,37 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
     private lateinit var bleAdapter: com.example.gallery_sync_app.screens.ble.BluetoothAdapter
 
     private val bleDevices = mutableListOf<BleDeviceInfo>()
-    private lateinit var bluetoothReceiver: BluetoothReceiver
     private lateinit var bluetoothBondStateListener: BluetoothBondStateListener
+    private lateinit var bluetoothReceiver: BluetoothReceiver
 
 
     @Inject
     lateinit var bluetoothService: BluetoothService
 
     private val handler = Handler(Looper.getMainLooper())
+    private val connectionTimeoutRunnable = Runnable {
+        if (binding.connectingOverlay.isVisible) {
+            Log.e("BLEDevice", "Connection timeout reached (30 seconds). Tearing down...")
+            bluetoothService.disConnect() // Gracefully disconnect internal GATT server allocations
+
+            binding.connectingProgress.visibility = View.GONE
+            binding.connectingText.text = getString(R.string.connection_failed)
+
+            handler.postDelayed({
+                binding.connectingOverlay.visibility = View.GONE
+                binding.connectingContainer.visibility = View.GONE
+
+                ReusableFunctions.DefaultAlertDialog(
+                    requireContext(),
+                    "GATT server cannot connect. Please try again.",
+                    "Retry",
+                    "Cancel"
+                ) {
+                    scanDevices()
+                }
+            }, 1500)
+        }
+    }
     private lateinit var targetDevice: BluetoothDevice
     val bleVm: BLEViewModel by activityViewModels()
 
@@ -102,41 +126,21 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
         try {
 
             super.onViewCreated(view, savedInstanceState)
-            bluetoothReceiver = BluetoothReceiver { state ->
-                when (state) {
-                    BluetoothAdapter.STATE_OFF -> {
-                        Log.e("BluetoothReceiver", "Bluetooth StateOff ")
-                        Toast.makeText(requireContext(), "Bluetooth StateOff ", Toast.LENGTH_SHORT)
-                            .show()
-                    }
+            bluetoothReceiver = BluetoothReceiver {
+                ReusableFunctions.DefaultAlertDialog(
+                    requireContext(),
+                    "Bluetooth Has Turned Down",
+                    "Ok",
+                    "Close"
+                ) {
+                    val enableBluetoothIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
 
-                    BluetoothAdapter.STATE_ON -> {
-                        Log.e("BluetoothReceiver", "Bluetooth StateOn ")
-
-                    }
-
-                    BluetoothAdapter.STATE_TURNING_OFF -> {
-                        Log.e("BluetoothReceiver", "Bluetooth TurningOff ")
-                    }
-
-                    BluetoothAdapter.STATE_TURNING_ON -> {
-                        Log.e("BluetoothReceiver", "Bluetooth TurningOn ")
-                    }
-
-                    BluetoothAdapter.STATE_CONNECTED -> {
-                        Log.e("BluetoothReceiver", "Bluetooth Connected ")
-                    }
-
-                    BluetoothAdapter.STATE_DISCONNECTED -> {
-                        Log.e("BluetoothReceiver", "Bluetooth Disconnected ")
-                    }
-
-                    else -> {
-                        Log.e("BluetoothReceiver", "Bluetooth Else ")
-                    }
+                    enableBluetoothLauncher.launch(
+                        enableBluetoothIntent
+                    )
                 }
-
             }
+
 
             bluetoothBondStateListener = BluetoothBondStateListener { device, bondState ->
 
@@ -176,6 +180,7 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
             viewLifecycleOwner.lifecycleScope.launch {
                 bluetoothService.writeSuccessInfo.collect {
                     if (it) {
+                        handler.removeCallbacks(connectionTimeoutRunnable) // Clear the timeout guard on success
                         binding.connectingOverlay.visibility = View.GONE
                         binding.connectingContainer.visibility = View.GONE
                         view.findNavController().navigate(R.id.navigateBleToBleInfo)
@@ -188,13 +193,25 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
             viewLifecycleOwner.lifecycleScope.launch {
                 bluetoothService.isConnectedInfo.collect { isConnected ->
                     if (!isConnected && binding.connectingOverlay.isVisible) {
+                        handler.removeCallbacks(connectionTimeoutRunnable) // Clear the timeout guard on explicit failure
                         // If it fails to maintain connection
                         binding.connectingProgress.visibility = View.GONE
                         binding.connectingText.text = getString(R.string.connection_failed)
+
                         handler.postDelayed({
                             binding.connectingOverlay.visibility = View.GONE
                             binding.connectingContainer.visibility = View.GONE
-                        }, 2500)
+
+                            // Show the AlertDialog and rescans
+                            ReusableFunctions.DefaultAlertDialog(
+                                requireContext(),
+                                getString(R.string.connection_failed),
+                                "Retry",
+                                "Cancel"
+                            ) {
+                                scanDevices() // Re-trigger scan on retry
+                            }
+                        }, 1500)
                     }
                 }
             }
@@ -224,6 +241,11 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
             binding.connectingContainer.visibility = View.VISIBLE
             binding.connectingProgress.visibility = View.VISIBLE
             binding.connectingText.text = getString(R.string.connecting_message)
+
+            // Post a 30-second connection timeout guard
+            handler.removeCallbacks(connectionTimeoutRunnable)
+            handler.postDelayed(connectionTimeoutRunnable, 30_000)
+
             bluetoothService.checkAndBond(device = it)
         }
 
@@ -442,10 +464,11 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
 
     override fun onStart() {
         super.onStart()
-        val intentFilter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             requireActivity().registerReceiver(
-                bluetoothReceiver, intentFilter, Context.RECEIVER_EXPORTED
+                bluetoothReceiver, IntentFilter(
+                    BluetoothAdapter.ACTION_STATE_CHANGED
+                )
             )
             requireActivity().registerReceiver(
                 bluetoothBondStateListener,
@@ -453,7 +476,11 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
                 Context.RECEIVER_EXPORTED
             )
         } else {
-            requireActivity().registerReceiver(bluetoothReceiver, intentFilter)
+            requireActivity().registerReceiver(
+                bluetoothReceiver, IntentFilter(
+                    BluetoothAdapter.ACTION_STATE_CHANGED
+                )
+            )
             requireActivity().registerReceiver(
                 bluetoothBondStateListener, IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
             )
