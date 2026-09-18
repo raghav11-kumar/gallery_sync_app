@@ -75,5 +75,6 @@ dependencies {
     ksp("androidx.room3:room3-compiler:$room_version")
     implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.5")
     implementation("androidx.viewpager2:viewpager2:1.1.0")
+    implementation("androidx.test.uiautomator:uiautomator:2.4.0-beta02")
 
 }
