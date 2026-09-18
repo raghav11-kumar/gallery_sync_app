@@ -33,7 +33,7 @@
     <string name="ble">BLE Device</string>
     <string name="loginHeading">Login</string>
     <string name="nameCred">Enter Your Name</string>
-    <string name="passCred">Enter Your PassWord</string>
+    <string name="passCred">Enter Your Password</string>
     <string name="webSockets">WebSocket</string>
     <string name="log_in">Login</string>
     <string name="add">Add</string>
@@ -45,7 +45,7 @@
     <string name="FcmButton">Notification</string>
     <string name="userName">UserName</string>
     <string name="Email">Email</string>
-    <string name="logOut">LOGOUT</string>
+    <string name="logOut">Logout</string>
     <string name="openGallery">Open Gallery</string>
     <string name="nameLoading">Name Loading ....</string>
     <string name="emailLoading">Email Loading ....</string>

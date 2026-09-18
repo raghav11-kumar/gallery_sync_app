@@ -61,7 +61,7 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
 
             if (ReusableFunctions.areStringsEmpty(name, email, pass)) {
                 ReusableFunctions.DefaultAlertDialog(
-                    view.context, "Fill The Email ,Name And PassWord", "Sure", "No",
+                    view.context, "Fill The Email ,Name and Password", "Sure", "Cancel",
                 ) {}
             } else if (pass.length < 6) {
                 ReusableFunctions.DefaultAlertDialog(view.context,"Password Must Be At Least 6 Characters","Sure","No"){
