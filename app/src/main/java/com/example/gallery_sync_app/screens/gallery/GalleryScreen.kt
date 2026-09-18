@@ -1,6 +1,9 @@
 package com.example.gallery_sync_app.screens.gallery
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -59,7 +62,10 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
             galleryVm.errorFlowing.collect { message ->
                 ReusableFunctions.DefaultAlertDialog(
                     view.context, message, "OK", "Cancel"
-                ) {}
+                ) {
+                    val panelIntent= Intent(Settings.Panel.ACTION_WIFI)
+                    startActivityForResult(panelIntent,100)
+                }
             }
 
         }
