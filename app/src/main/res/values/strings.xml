@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">gallery-sync-app</string>
+    <string name="app_name">sync</string>
     <string name="text_value">SongName</string>
     <string-array name="song_list">
         <item>payPhone</item>
