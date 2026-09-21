@@ -17,7 +17,6 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -28,10 +27,10 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentBLEDeviceBinding
-import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import com.example.gallery_sync_app.screens.ble.broadCast.BluetoothBondStateListener
 import com.example.gallery_sync_app.screens.ble.broadCast.BluetoothReceiver
 import com.example.gallery_sync_app.screens.ble.data.BleDeviceInfo
+import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -133,7 +132,7 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
                     "Turn On",
                     "cancel"
 
-                    ) {
+                ) {
                     val enableBluetoothIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
 
                     enableBluetoothLauncher.launch(

@@ -75,18 +75,8 @@ class MainScreen : AppCompatActivity() {
                     binding.appBarLayout.visibility = android.view.View.GONE
                 }
 
-                com.example.gallery_sync_app.R.id.buttonHolderFragScreen -> {
-                    lifecycleScope.launch {
-                        authVm.UserInformation.collect { user ->
-                            user?.let {
-                                android.widget.Toast.makeText(
-                                    context, "Welcome ${it.name}", android.widget.Toast.LENGTH_SHORT
-                                ).show()
+                R.id.buttonHolderFragScreen -> {
 
-                            }
-
-                        }
-                    }
                     binding.appBarLayout.visibility = android.view.View.VISIBLE
                     binding.buttonProfileImageView.visibility = android.view.View.VISIBLE
                     supportActionBar?.title =

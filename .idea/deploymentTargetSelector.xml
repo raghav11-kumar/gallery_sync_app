@@ -50,30 +50,6 @@
           </targets>
         </DialogSelection>
       </SelectionState>
-      <SelectionState runConfigName="loginButtonIsDisplayed()">
-        <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2026-09-03T12:58:14.890719300Z">
-          <Target type="DEFAULT_BOOT">
-            <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=218c3298" />
-            </handle>
-          </Target>
-        </DropdownSelection>
-        <DialogSelection>
-          <targets>
-            <Target type="DEFAULT_BOOT">
-              <handle>
-                <DeviceId pluginId="PhysicalDevice" identifier="serial=218c3298" />
-              </handle>
-            </Target>
-            <Target type="DEFAULT_BOOT">
-              <handle>
-                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Blaze.BAS-IT-OLP-047\.android\avd\Pixel_7.avd" />
-              </handle>
-            </Target>
-          </targets>
-        </DialogSelection>
-      </SelectionState>
       <SelectionState runConfigName="checkCurrentScreen()">
         <option name="selectionMode" value="DROPDOWN" />
         <DropdownSelection timestamp="2026-09-03T12:58:14.890719300Z">
@@ -123,6 +99,30 @@
         </DialogSelection>
       </SelectionState>
       <SelectionState runConfigName="launchUsingMonkey()">
+        <option name="selectionMode" value="DROPDOWN" />
+        <DropdownSelection timestamp="2026-09-03T12:58:14.890719300Z">
+          <Target type="DEFAULT_BOOT">
+            <handle>
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=218c3298" />
+            </handle>
+          </Target>
+        </DropdownSelection>
+        <DialogSelection>
+          <targets>
+            <Target type="DEFAULT_BOOT">
+              <handle>
+                <DeviceId pluginId="PhysicalDevice" identifier="serial=218c3298" />
+              </handle>
+            </Target>
+            <Target type="DEFAULT_BOOT">
+              <handle>
+                <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Blaze.BAS-IT-OLP-047\.android\avd\Pixel_7.avd" />
+              </handle>
+            </Target>
+          </targets>
+        </DialogSelection>
+      </SelectionState>
+      <SelectionState runConfigName="appFlow()">
         <option name="selectionMode" value="DROPDOWN" />
         <DropdownSelection timestamp="2026-09-03T12:58:14.890719300Z">
           <Target type="DEFAULT_BOOT">

@@ -39,7 +39,7 @@
                     android:src="@drawable/blaze" />
             </com.google.android.material.card.MaterialCardView>
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/loginTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
                 app:layout_constraintTop_toBottomOf="@id/logoCard" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/emailInputLayout"
+                android:id="@+id/loginEmailInputLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -73,7 +73,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/passInputLayout"
+                android:id="@+id/loginPassInputLayout"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
                 android:textColorHint="@color/mediumGrey"
                 app:boxStrokeColor="@color/black"
                 app:hintTextColor="@color/black"
-                app:layout_constraintTop_toBottomOf="@id/emailInputLayout"
+                app:layout_constraintTop_toBottomOf="@id/loginEmailInputLayout"
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="@color/black">
 
@@ -103,7 +103,7 @@
                 android:textStyle="bold"
                 app:backgroundTint="@color/black"
                 app:cornerRadius="8dp"
-                app:layout_constraintTop_toBottomOf="@id/passInputLayout" />
+                app:layout_constraintTop_toBottomOf="@id/loginPassInputLayout" />
 
             <LinearLayout
                 android:layout_width="wrap_content"

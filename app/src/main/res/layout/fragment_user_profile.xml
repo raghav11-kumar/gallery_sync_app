@@ -70,7 +70,7 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="0.8"
@@ -98,13 +98,15 @@
                     android:textStyle="bold"
                     tools:ignore="LabelFor" />
 
-                <ImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/editNameIcon"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:clickable="true"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
                     android:contentDescription="@string/edit"
+                    android:focusable="true"
                     android:src="@drawable/outline_edit_24"
                     app:tint="@color/crisp" />
             </RelativeLayout>
@@ -116,7 +118,7 @@
                 android:alpha="0.2"
                 android:background="@color/crisp" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:alpha="0.8"
@@ -124,7 +126,7 @@
                 android:textColor="@color/black"
                 android:textSize="12sp" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/userProfileEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

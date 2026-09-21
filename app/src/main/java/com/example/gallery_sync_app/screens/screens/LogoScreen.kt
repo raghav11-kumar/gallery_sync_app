@@ -34,7 +34,7 @@ class LogoScreen : Fragment(R.layout.fragment_logo_screen) {
             if (isAlreadyIn) {
                 view.findNavController().navigate(R.id.navigateLogoToMainScreen)
             } else {
-                view.findNavController().navigate(R.id.navigateLogoToSignIn)
+                view.findNavController().navigate(R.id.navigateLogoToLogin)
             }
         }
 
