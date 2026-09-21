@@ -28,7 +28,7 @@
     </fragment>
     <fragment
         android:id="@+id/loginFragScreen"
-        android:name="com.example.gallery_sync_app.screens.Authentication.LoginScreen"
+        android:name="com.example.gallery_sync_app.screens.authentication.LoginScreen"
         android:label="@string/loginHeading"
         tools:layout="@layout/fragment_login_screen"
         >
@@ -114,7 +114,7 @@
     </fragment>
     <fragment
         android:id="@+id/signInFragScreen"
-        android:name="com.example.gallery_sync_app.screens.Authentication.SignInScreen"
+        android:name="com.example.gallery_sync_app.screens.authentication.SignInScreen"
         tools:layout="@layout/fragment_sign_in_screen">
         <action
             android:id="@+id/navigateSignInToLoginScreen"

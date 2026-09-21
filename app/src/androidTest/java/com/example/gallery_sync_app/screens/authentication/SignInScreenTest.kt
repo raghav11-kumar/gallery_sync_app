@@ -1,9 +1,7 @@
-package com.example.gallery_sync_app.screens.Authentication
+package com.example.gallery_sync_app.screens.authentication
 
 import android.content.Intent
-import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.simpleViewResourceName
 import androidx.test.uiautomator.uiAutomator
 import org.junit.Test

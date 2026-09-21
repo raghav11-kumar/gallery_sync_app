@@ -1,4 +1,4 @@
-package com.example.gallery_sync_app.screens.Authentication
+package com.example.gallery_sync_app.screens.authentication
 
 import android.net.Uri
 import android.util.Log

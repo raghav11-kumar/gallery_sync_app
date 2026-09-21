@@ -1,6 +1,8 @@
 package com.example.gallery_sync_app.screens.gallery
 
 import android.content.Intent
+import android.content.IntentFilter
+import android.net.wifi.WifiManager.WIFI_STATE_CHANGED_ACTION
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
@@ -12,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentGalleryScreenBinding
+import com.example.gallery_sync_app.screens.gallery.broadcast.WifiListener
 import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -21,6 +24,7 @@ import kotlin.collections.emptyList
 class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
     private lateinit var binding: FragmentGalleryScreenBinding
     private val galleryVm: GalleryViewModel by activityViewModels()
+    private lateinit var wifiListener: WifiListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding = FragmentGalleryScreenBinding.bind(view)
@@ -29,6 +33,13 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
         val adapter = RecyclerAdapterImp(emptyList()) {
             galleryVm.deleteImage(it)
         }
+        wifiListener= WifiListener{
+            ReusableFunctions.DefaultAlertDialog(requireContext(),"Internet Disconnected","Retry","Cancel"){
+                val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
+                startActivity(intent)
+            }
+        }
+
         binding.recView.layoutManager = LinearLayoutManager(requireContext())
         binding.recView.adapter = adapter
         viewLifecycleOwner.lifecycleScope.launch {
@@ -63,11 +74,9 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
                 ReusableFunctions.DefaultAlertDialog(
                     view.context, message, "OK", "Cancel"
                 ) {
-                    val panelIntent= Intent(Settings.Panel.ACTION_WIFI)
-                    startActivityForResult(panelIntent,100)
+
                 }
             }
-
         }
         val launcher = registerForActivityResult(
             ActivityResultContracts.GetContent()
@@ -89,6 +98,17 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
                 }
             }
         }
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        requireActivity().registerReceiver(wifiListener, IntentFilter(WIFI_STATE_CHANGED_ACTION))
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireActivity().unregisterReceiver(wifiListener)
 
     }
 

@@ -7,7 +7,7 @@ import androidx.fragment.app.viewModels
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentButtonsHolderBinding
 import com.example.gallery_sync_app.screens.utils.ReusableFunctions
-import com.example.gallery_sync_app.screens.Authentication.AuthenticationViewModel
+import com.example.gallery_sync_app.screens.authentication.AuthenticationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

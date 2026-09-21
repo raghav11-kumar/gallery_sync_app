@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentUserProfileBinding
-import com.example.gallery_sync_app.screens.Authentication.AuthenticationViewModel
+import com.example.gallery_sync_app.screens.authentication.AuthenticationViewModel
 import com.example.gallery_sync_app.screens.constants.UserStatus
 import com.example.gallery_sync_app.screens.utils.ReusableFunctions
 import dagger.hilt.android.AndroidEntryPoint

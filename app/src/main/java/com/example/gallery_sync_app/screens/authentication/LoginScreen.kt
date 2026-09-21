@@ -1,9 +1,8 @@
-package com.example.gallery_sync_app.screens.Authentication
+package com.example.gallery_sync_app.screens.authentication
 
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope

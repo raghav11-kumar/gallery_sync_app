@@ -11,7 +11,7 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.ActivityMainScreenBinding
-import com.example.gallery_sync_app.screens.Authentication.AuthenticationViewModel
+import com.example.gallery_sync_app.screens.authentication.AuthenticationViewModel
 import com.example.gallery_sync_app.screens.gallery.GalleryViewModel
 import com.example.gallery_sync_app.screens.websockets.WebSocketsManager
 import dagger.hilt.android.AndroidEntryPoint

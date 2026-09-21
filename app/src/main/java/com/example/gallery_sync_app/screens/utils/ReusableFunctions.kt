@@ -78,4 +78,16 @@ val customView= LayoutInflater.from(context)
     fun checkPermission(context: Context): Boolean{
         return ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT)== PackageManager.PERMISSION_GRANTED
     }
+
+    fun checkInternet(context: Context, onRetry: () -> Unit) {
+        if (!isNetworkAvailable(context)) {
+            DefaultAlertDialog(
+                context,
+                "Internet Disconnected. Please check your connection.",
+                "Retry",
+                "Cancel",
+                onRetry
+            )
+        }
+    }
 }

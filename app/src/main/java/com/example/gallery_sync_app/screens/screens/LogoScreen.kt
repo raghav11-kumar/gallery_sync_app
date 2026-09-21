@@ -8,7 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentLoginScreenBinding
 import com.example.gallery_sync_app.screens.data.local.LocalDataSaver
-import com.example.gallery_sync_app.screens.Authentication.AuthenticationViewModel
+import com.example.gallery_sync_app.screens.authentication.AuthenticationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

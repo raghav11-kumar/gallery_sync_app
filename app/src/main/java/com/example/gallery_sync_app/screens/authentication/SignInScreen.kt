@@ -1,8 +1,7 @@
-package com.example.gallery_sync_app.screens.Authentication
+package com.example.gallery_sync_app.screens.authentication
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -24,7 +23,7 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentSignInScreenBinding.bind(view)
-        val signInButton = binding.SignInButton
+        val signInButton = binding.signInButton
         val loginButton = binding.sigInLog
 
         viewLifecycleOwner.lifecycleScope.launch {
