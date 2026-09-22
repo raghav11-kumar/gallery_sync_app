@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
     lateinit var binding: FragmentSignInScreenBinding
-     var webSocketsManager= WebSocketsManager()
+    var webSocketsManager = WebSocketsManager()
     private val authVm: AuthenticationViewModel by activityViewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -60,15 +60,28 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
 
             if (ReusableFunctions.areStringsEmpty(name, email, pass)) {
                 ReusableFunctions.DefaultAlertDialog(
-                    view.context, "Fill The Email ,Name and Password", "Sure", "Cancel",
+                    view.context,
+                    "Opps! Looks like you missed a few details.please Fill in all Blanks",
+                    "Got it",
+                    "Cancel",
                 ) {}
             } else if (pass.length < 6) {
-                ReusableFunctions.DefaultAlertDialog(view.context,"Password Must Be At Least 6 Characters","Sure","No"){
-                //do some Action On positive Button Click
-            }
+                ReusableFunctions.DefaultAlertDialog(
+                    view.context,
+                    "Password Must Be At Least 6 Characters",
+                    "Got it",
+                    "Cancel"
+                ) {
+                    //do some Action On positive Button Click
+                }
 
             } else if (!email.matches(DefaultValues.emailRegex)) {
-                ReusableFunctions.DefaultAlertDialog(view.context,"Please Enter Valid Email","Sure","No"){
+                ReusableFunctions.DefaultAlertDialog(
+                    view.context,
+                    "Please Enter Valid Email",
+                    "Got it",
+                    "No"
+                ) {
                     //do some Action On positive Button Click
                 }
             } else {

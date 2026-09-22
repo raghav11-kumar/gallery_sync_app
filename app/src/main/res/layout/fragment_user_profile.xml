@@ -139,7 +139,7 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <com.google.android.material.button.MaterialButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/logoutButton"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="100dp"

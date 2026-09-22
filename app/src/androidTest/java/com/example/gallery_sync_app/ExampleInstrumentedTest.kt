@@ -3,11 +3,9 @@ package com.example.gallery_sync_app
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiScrollable
 import androidx.test.uiautomator.UiSelector
-import androidx.test.uiautomator.Until
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,6 +16,7 @@ class ExampleInstrumentedTest {
     lateinit var device: UiDevice
     lateinit var scrollable: UiScrollable
     val PACKAGE_NAME = "com.example.gallery_sync_app"
+    val TAG = "AppUiAutomation"
 
     @Before
     fun setUp() {
@@ -34,44 +33,48 @@ class ExampleInstrumentedTest {
         openApp()
         loginCheck()
         Thread.sleep(2000)
-        ReusableTestCases.userProfileCheck(PACKAGE_NAME, uiDevice = device)
         Thread.sleep(2000)
-        ReusableTestCases.bleCheck(PACKAGE_NAME,device)
+        ReusableTestCases.bleCheck(PACKAGE_NAME, device)
+        ReusableTestCases.galleryCheck(uiDevice = device, PACKAGE_NAME)
+        ReusableTestCases.checkNotification(device, PACKAGE_NAME)
+        device.waitForIdle()
+        ReusableTestCases.userProfileCheck(PACKAGE_NAME, uiDevice = device)
+
     }
 
     private fun loginCheck() {
         try {
-            val loginButton = ReusableTestCases.getDeviceId(device,PACKAGE_NAME,"loginButton")
+            val loginButton = ReusableTestCases.getDeviceId(device, PACKAGE_NAME, "loginButton")
             if (loginButton == null) {
-                Log.e("AppUiAutomation", "LoginButton isNull")
+                Log.e(TAG, "LoginButton isNull")
 
+            } else {
+                Log.d(TAG, "Requesting For Email button")
+
+                val gmail = ReusableTestCases.getDeviceId(device, PACKAGE_NAME, "userEmail")
+                if (gmail == null) {
+                    Log.e("AppUiAutomation", "Request Failed Cuz Email button returned Null")
+                } else {
+                    gmail.text = DefaultValues.email
+                    Log.d(TAG, "Email ${gmail.text} is Logged In")
+
+                    Thread.sleep(1000)
+                    Log.d("AppUiAutomation", "Requesting For password button")
+                }
+                val password = ReusableTestCases.getDeviceId(device, PACKAGE_NAME, "passInput")
+                if (password == null) {
+                    Log.e(TAG, "Request failed Cuz password  button returned null")
+                } else {
+                    password.text = DefaultValues.password
+                    Thread.sleep(1000)
+                    Log.d(TAG, "clicking the loginButton")
+
+                    loginButton.click()
+                    Log.d(TAG, "Successfully IN MainScreen")
+                }
             }
-            Log.e("AppUiAutomation", "Requesting For Email button")
-
-            val gmail =ReusableTestCases.getDeviceId(device,PACKAGE_NAME,"userEmail")
-            if (gmail == null) {
-                Log.e("AppUiAutomation", "Request Failed Cuz Email button returned Null")
-
-
-            }
-            gmail?.text = DefaultValues.email
-            Log.e("AppUiAutomation", "Email ${gmail.text} is Logged In")
-
-            Thread.sleep(1000)
-            Log.e("AppUiAutomation", "Requesting For password button")
-
-            val password = ReusableTestCases.getDeviceId(device,PACKAGE_NAME,"passInput")
-            if (password == null) {
-                Log.e("AppUiAutomation", "Request failed Cuz password  button returned null")
-            }
-            password?.text = DefaultValues.password
-            Thread.sleep(1000)
-            Log.e("AppUiAutomation", "clicking the loginButton")
-
-            loginButton.click()
-            Log.e("AppUiAutomation", "Successfully IN MainScreen")
         } catch (e: Exception) {
-            Log.e("AppUiAutomation", "Failed In Login Check Cuz Of ${e.message}")
+            Log.d(TAG, "Failed In Login Check Cuz Of ${e.message}")
         }
     }
 
@@ -87,7 +90,7 @@ class ExampleInstrumentedTest {
             appIcon.click()
 
         } catch (e: Exception) {
-            Log.e("OPENAPPTEST", "Button click failed: ${e.message}")
+            Log.d(TAG, "Button click failed: ${e.message}")
         }
     }
 }
