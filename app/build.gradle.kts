@@ -64,7 +64,7 @@ dependencies {
 
     implementation(libs.okhttp.logging.interceptor)
     implementation(libs.glide)
-    implementation( "com.android.support:support-v4:19.1.0")
+    implementation("com.android.support:support-v4:19.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 
     val room_version = "3.0.2"

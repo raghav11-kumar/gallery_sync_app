@@ -33,7 +33,6 @@ class BluetoothService(val context: Context) {
 
 
     private val notificationData = MutableStateFlow<BleResponse?>(null)
-    val notificationDataInfo = notificationData.asStateFlow()
     private val deviceInfo = MutableStateFlow<DeviceInfo?>(null)
     val deviceInformation = deviceInfo.asStateFlow()
     private val errorFlow = MutableSharedFlow<String>()
@@ -56,7 +55,6 @@ class BluetoothService(val context: Context) {
     private val cccdUuid = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 
 
-    private var targetDevice: BluetoothDevice? = null
     private var isConnected = MutableStateFlow(false)
     val isConnectedInfo = isConnected.asStateFlow()
     private var pollingJob: Job? = null
@@ -378,13 +376,6 @@ class BluetoothService(val context: Context) {
 
     }
 
-    fun isDevicePaired(device: BluetoothDevice): Boolean {
-        if (ReusableFunctions.checkPermission(context)) {
-            if (device.bondState == BluetoothDevice.BOND_BONDED) return true
-        }
-        return false
-
-    }
 
     private fun requestMeteringData() {
         val gatt = bluetoothGatt ?: return

@@ -21,7 +21,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -79,9 +78,6 @@ class BLEDevice : Fragment(R.layout.fragment_b_l_e_device) {
             }, 1500)
         }
     }
-    private lateinit var targetDevice: BluetoothDevice
-    val bleVm: BLEViewModel by activityViewModels()
-
 
     private val enableBluetoothLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()

@@ -15,18 +15,18 @@ class BluetoothAdapter(
     val list: List<BleDeviceInfo>,
     val context: Context,
     private val onDeviceClick: (BluetoothDevice) -> Unit
-) : RecyclerView.Adapter<BluetoothAdapter.viewHolder>() {
+) : RecyclerView.Adapter<BluetoothAdapter.ViewHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup, viewType: Int
-    ): viewHolder {
+    ): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.device_item, parent, false)
 
 
-        return viewHolder(view)
+        return ViewHolder(view)
     }
 
     override fun onBindViewHolder(
-        holder: viewHolder, position: Int
+        holder: ViewHolder, position: Int
     ) {
         val data = list[position]
         holder.itemView.apply {
@@ -49,10 +49,10 @@ class BluetoothAdapter(
         return list.size
     }
 
-    class viewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val devName = view.findViewById<TextView>(R.id.deviceName)
-        val macAdd = view.findViewById<TextView>(R.id.macAddress)
-        val rxxi = view.findViewById<TextView>(R.id.rssiText)
+        val macAdd: TextView = view.findViewById<TextView>(R.id.macAddress)
+        val rxxi: TextView = view.findViewById<TextView>(R.id.rssiText)
 
 
     }
