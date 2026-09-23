@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.gms.google.services)
-
 }
 
 android {
@@ -36,7 +35,6 @@ android {
     buildFeatures {
         viewBinding = true
     }
-
 }
 
 dependencies {

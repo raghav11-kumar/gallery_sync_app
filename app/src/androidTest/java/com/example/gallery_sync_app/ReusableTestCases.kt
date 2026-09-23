@@ -5,11 +5,12 @@ import androidx.test.uiautomator.By
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject2
 import androidx.test.uiautomator.Until
-import com.example.gallery_sync_app.data.ImageAxis
 
 object ReusableTestCases {
+    private fun getObjects(uiDevice: UiDevice, packageName: String, id: String) =
+        uiDevice.findObjects(By.res(packageName, id))
 
-    var TAG = "AppUiAutomation"
+    private var TAG = "AppUiAutomation"
     fun userProfileCheck(packageName: String, uiDevice: UiDevice) {
         try {
             Log.d(TAG, "Requesting For UserProfileLogo")
@@ -104,7 +105,7 @@ object ReusableTestCases {
                 Thread.sleep(15_000)
 
                 // Search for the MAC address again
-                val macAddress = uiDevice.findObjects(By.res(packageName, "macAddress"))
+                val macAddress = getObjects(uiDevice = uiDevice, packageName, "macAddress")
                 for (mac in macAddress) {
                     if (mac.text.equals(DefaultValues.macAddress)) {
 
@@ -127,7 +128,7 @@ object ReusableTestCases {
                 }
 
                 // If we reach here, target wasn't found.
-                // Scan again if attempts remain.
+                // Scan again if attempts to remain.
 
                 if (attempt < 3) {
 
@@ -174,21 +175,26 @@ object ReusableTestCases {
             val posBut = getDeviceId(uiDevice, packageName, "btnPositive")
             if (posBut == null) {
                 Log.e(TAG, "PosBut is Null")
+                Thread.sleep(30_000)
+                val retryButton = uiDevice.findObject(By.text("retry"))
+                if (retryButton == null) {
+                    Log.e(TAG, "Failed To Get Retry Button")
+                } else {
+                    Log.d(TAG, "Clicked The RetyButton")
+                    retryButton.click()
+                    Thread.sleep(15_000)
+                    macAddressClick(uiDevice, packageName, itemMacAddress)
+                    return
+                }
             } else {
                 Log.d(TAG, "Clicked On PosBut")
                 posBut.click()
 
                 Thread.sleep(5_000)
-                val textData = uiDevice.wait(
-                    Until.findObject(By.text("Data")), 20_000
-                )
+                val textData = getResourceByText("Data", uiDevice)
                 if (textData == null) Log.e(TAG, "TextData View was NUll")
                 else textData.click()
-                val infoData = uiDevice.wait(
-                    Until.findObject(
-                        By.text("Info")
-                    ), 20_000
-                )
+                val infoData = getResourceByText("Info", uiDevice)
                 if (infoData == null) Log.e(TAG, "InfoData View Was Null")
                 else infoData.click()
                 Thread.sleep(3000)
@@ -200,7 +206,6 @@ object ReusableTestCases {
         }
     }
 
-
     fun galleryCheck(uiDevice: UiDevice, packageName: String) {
         try {
             Log.d(TAG, "Requesting For GalleryButton")
@@ -210,57 +215,47 @@ object ReusableTestCases {
             } else {
                 Log.d(TAG, "Clicked the Gallery Button")
                 galleryButton.click()
-            }
-            Thread.sleep(1000)
-            Log.d(TAG, "Requesting For AddIcon")
-            val addIcon = getDeviceId(uiDevice, packageName, "addIcon")
-            if (addIcon == null) {
-                Log.e(TAG, "addIcon Button is Null")
-            } else {
-                Log.d(TAG, "Clicked AddIcon")
-                addAnyImage(packageName, uiDevice)
                 Thread.sleep(1000)
-                val editIcon = getDeviceId(uiDevice, packageName, "editIcon")
-                if (editIcon == null) {
-                    Log.e(TAG, "EditIcon Is Null")
+                Log.d(TAG, "Requesting For AddIcon")
+                val addIcon = getDeviceId(uiDevice, packageName, "addIcon")
+                if (addIcon == null) {
+                    Log.e(TAG, "addIcon Button is Null")
                 } else {
+                    Log.d(TAG, "Clicked AddIcon")
+                    addAnyImage(packageName, uiDevice)
                     Thread.sleep(1000)
-                    Log.d(TAG, "EditIcon Clicked")
-                    editIcon.click()
-                    Thread.sleep(1000)
-                    repeat(10) {
+                    val editIcon = getDeviceId(uiDevice, packageName, "editIcon")
+                    if (editIcon == null) {
+                        Log.e(TAG, "EditIcon Is Null")
+                    } else {
+                        Thread.sleep(1000)
+                        Log.d(TAG, "EditIcon Clicked")
+                        editIcon.click()
+                        Thread.sleep(1000)
 
-                        val images = uiDevice.findObjects(
-                            By.res(
-                                packageName, "deleteIcon"
-                            )
-                        )
+                        val images = getObjects(uiDevice, packageName, "deleteIcon")
                         Log.d(
                             TAG, "Delete icons currently visible: ${images.size}"
                         )
 
                         if (images.isEmpty()) {
                             Log.d(TAG, "No more images to delete")
-                            return@repeat
-                        }
-                        images[0].click()
-                        val positiveButton = uiDevice.wait(
-                            Until.findObject(
-                                By.res(
-                                    packageName, "btnPositive"
-                                )
-                            ), 5_000
-                        )
+                        } else {
+                            images[0].click()
+                            val positiveButton =
+                                getDeviceId(device = uiDevice, packageName, "btnPositive")
 
-                        if (positiveButton == null) {
-                            Log.e(TAG, "Positive button not found")
-                            return@repeat
+                            if (positiveButton == null) {
+                                Log.e(TAG, "Positive button not found")
+                            } else {
+
+                                positiveButton.click()
+                                // Give the RecyclerView a chance to update
+                                uiDevice.waitForIdle()
+                                Thread.sleep(500)
+                            }
                         }
 
-                        positiveButton.click()
-                        // Give the RecyclerView a chance to update
-                        uiDevice.waitForIdle()
-                        Thread.sleep(500)
                     }
 
 
@@ -287,15 +282,11 @@ object ReusableTestCases {
         ), 20_000
     )
 
-    fun addAnyImage(
+    private fun addAnyImage(
         packageName: String, uiDevice: UiDevice
     ) {
 
-        val addButton = uiDevice.wait(
-            Until.findObject(
-                By.res(packageName, "addIcon")
-            ), 5_000
-        )
+        val addButton = getDeviceId(uiDevice, packageName, "addIcon")
 
         if (addButton == null) {
             Log.e(TAG, "Add button not found")
@@ -309,24 +300,11 @@ object ReusableTestCases {
         Log.d(
             TAG, "Gallery screen size: width=$width height=$height"
         )
-        val listOfImages = listOf(
-            ImageAxis(245, 1072), ImageAxis(540, 1072), ImageAxis(835, 1072)
-        )
-
-
         addButton.click()
-
         uiDevice.waitForIdle()
         Thread.sleep(1_000)
-
         uiDevice.click(245, 1072)
-
-        val doneButton = uiDevice.wait(
-            Until.findObject(
-                By.text("Done")
-            ), 20_000
-        )
-
+        val doneButton = getResourceByText("Done", uiDevice)
         if (doneButton == null) {
             Log.e(TAG, "Done button not found")
         } else {
@@ -335,6 +313,12 @@ object ReusableTestCases {
             Thread.sleep(1_000)
         }
     }
+
+    private fun getResourceByText(text: String, uiDevice: UiDevice) = uiDevice.wait(
+        Until.findObject(
+            By.text(text)
+        ), 20_000
+    )
 
     fun checkNotification(uiDevice: UiDevice, packageName: String) {
         var c = 0
@@ -350,6 +334,83 @@ object ReusableTestCases {
             Thread.sleep(500)
         }
         Thread.sleep(6000)
+    }
+
+    fun checkWebsocketScreen(uiDevice: UiDevice, packageName: String) {
+        try {
+            val webSocketButton = getDeviceId(uiDevice, packageName, "webSocket_button")
+            if (webSocketButton == null) {
+                Log.e(TAG, "WebSocket Button is Null")
+            } else {
+                webSocketButton.click()
+                Thread.sleep(1000)
+                val volData = getDeviceId(device = uiDevice, packageName, "volDet")
+                if (volData == null) {
+                    Log.e(TAG, "VolDAta Is Null")
+
+                } else {
+                    Log.d(TAG, "VolData ${volData.text}")
+
+                }
+
+                Thread.sleep(200)
+                val currDet = getDeviceId(uiDevice, packageName, "currDet")
+                if (currDet == null) {
+                    Log.e(TAG, "CurrDet is Null")
+                } else {
+                    Log.d(TAG, "currDet is ${currDet.text}")
+                }
+                Thread.sleep(200)
+                val actPValue = getDeviceId(uiDevice, packageName, "actPValue")
+
+                if (actPValue == null) {
+                    Log.e(TAG, "actPValue is Null")
+                } else {
+                    Log.d(TAG, "actPValue is ${actPValue.text}")
+                }
+                Thread.sleep(200)
+                val apparValue = getDeviceId(uiDevice, packageName, "apparValue")
+                if (apparValue == null) {
+                    Log.e(TAG, "apparValue is Null")
+                } else {
+                    Log.d(TAG, "apparValue is ${apparValue.text}")
+                }
+                Thread.sleep(200)
+                val rpValue = getDeviceId(uiDevice, packageName, "RpValue")
+                if (rpValue == null) {
+                    Log.e(TAG, "rpValue is Null")
+                } else {
+                    Log.d(TAG, "rpValue is ${rpValue.text}")
+                }
+                Thread.sleep(200)
+                val dsValue = getDeviceId(uiDevice, packageName, "dsValue")
+                if (dsValue == null) {
+                    Log.e(TAG, "dsValue is Null")
+                } else {
+                    Log.d(TAG, "dsValue is ${dsValue.text}")
+                }
+                Thread.sleep(200)
+                val enValue = getDeviceId(uiDevice, packageName, "enValue")
+                if (enValue == null) {
+                    Log.e(TAG, "enValue is Null")
+                } else {
+                    Log.d(TAG, "enValue is ${enValue.text}")
+                }
+                Thread.sleep(200)
+                val lpValue = getDeviceId(uiDevice, packageName, "lpValue")
+                if (lpValue == null) {
+                    Log.e(TAG, "lpValue is Null")
+                } else {
+                    Log.d(TAG, "lpValue is ${lpValue.text}")
+                }
+
+            }
+            Thread.sleep(1000)
+            uiDevice.pressBack()
+            Thread.sleep(200)
+        } catch (e: Exception) {
+            Log.e(TAG, "WebSocketsCheck Failed ${e}")
+        }
     }
 
 

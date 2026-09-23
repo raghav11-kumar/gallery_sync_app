@@ -36,6 +36,9 @@ class ExampleInstrumentedTest {
         Thread.sleep(2000)
         ReusableTestCases.bleCheck(PACKAGE_NAME, device)
         ReusableTestCases.galleryCheck(uiDevice = device, PACKAGE_NAME)
+        ReusableTestCases.checkWebsocketScreen(uiDevice = device, PACKAGE_NAME)
+        device.waitForIdle()
+
         ReusableTestCases.checkNotification(device, PACKAGE_NAME)
         device.waitForIdle()
         ReusableTestCases.userProfileCheck(PACKAGE_NAME, uiDevice = device)
@@ -93,4 +96,5 @@ class ExampleInstrumentedTest {
             Log.d(TAG, "Button click failed: ${e.message}")
         }
     }
+
 }
