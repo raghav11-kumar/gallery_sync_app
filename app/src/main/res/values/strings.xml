@@ -90,5 +90,11 @@
     <string name="pt">PT</string>
     <string name="st">ST</string>
     <string name="qt">QT</string>
+    <string name="title">Title</string>
+    <string name="eventType">Event Type</string>
+    <string name="eventId">Event Id</string>
+    <string name="timestamp">Time Stamp</string>
+    <string name="source">Source</string>
+    <string name="message">Message</string>
 
 </resources>

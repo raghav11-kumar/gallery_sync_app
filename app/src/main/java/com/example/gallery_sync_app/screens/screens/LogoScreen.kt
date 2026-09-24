@@ -1,19 +1,19 @@
 package com.example.gallery_sync_app.screens.screens
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.findNavController
 import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.FragmentLoginScreenBinding
-import com.example.gallery_sync_app.screens.data.local.LocalDataSaver
 import com.example.gallery_sync_app.screens.Authentication.AuthenticationViewModel
+import com.example.gallery_sync_app.screens.data.local.LocalDataSaver
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import androidx.navigation.findNavController
 import kotlin.time.Duration.Companion.milliseconds
 
 @AndroidEntryPoint
@@ -34,7 +34,7 @@ class LogoScreen : Fragment(R.layout.fragment_logo_screen) {
             if (isAlreadyIn) {
                 view.findNavController().navigate(R.id.navigateLogoToMainScreen)
             } else {
-                view.findNavController().navigate(R.id.navigateLogoToSignIn)
+                view.findNavController().navigate(R.id.navigateLogoToLogin)
             }
         }
 

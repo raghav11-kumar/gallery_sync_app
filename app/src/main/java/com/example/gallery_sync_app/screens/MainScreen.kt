@@ -2,6 +2,7 @@ package com.example.gallery_sync_app.screens
 
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -76,17 +77,7 @@ class MainScreen : AppCompatActivity() {
                 }
 
                 com.example.gallery_sync_app.R.id.buttonHolderFragScreen -> {
-                    lifecycleScope.launch {
-                        authVm.UserInformation.collect { user ->
-                            user?.let {
-                                android.widget.Toast.makeText(
-                                    context, "Welcome ${it.name}", android.widget.Toast.LENGTH_SHORT
-                                ).show()
 
-                            }
-
-                        }
-                    }
                     binding.appBarLayout.visibility = android.view.View.VISIBLE
                     binding.buttonProfileImageView.visibility = android.view.View.VISIBLE
                     supportActionBar?.title =
@@ -145,7 +136,9 @@ class MainScreen : AppCompatActivity() {
 
 
                 }
-
+  R.id.mqqtFragScreen->{
+      binding.appBarLayout.visibility= View.GONE
+  }
                 else -> {
                     binding.appBarLayout.visibility = android.view.View.VISIBLE
                 }

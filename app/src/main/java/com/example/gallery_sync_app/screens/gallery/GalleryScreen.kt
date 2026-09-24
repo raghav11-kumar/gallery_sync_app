@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -63,8 +64,12 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
                 ReusableFunctions.DefaultAlertDialog(
                     view.context, message, "OK", "Cancel"
                 ) {
+
+                    if(Build.VERSION.SDK_INT>=29){
                     val panelIntent= Intent(Settings.Panel.ACTION_WIFI)
-                    startActivityForResult(panelIntent,100)
+                    startActivityForResult(panelIntent,100
+                    )
+                    }
                 }
             }
 

@@ -35,7 +35,9 @@ class ButtonsHolder : Fragment(R.layout.fragment_buttons_holder) {
         fmcBut.setOnClickListener {
             authVm.showPushNotification()
         }
-        binding.mqqtButton.visibility = View.GONE
+        binding.mqqtButton.setOnClickListener {
+            ReusableFunctions.navigateSrcToDest(it,R.id.navigateButtonToMqqt)
+        }
     }
 
 }
