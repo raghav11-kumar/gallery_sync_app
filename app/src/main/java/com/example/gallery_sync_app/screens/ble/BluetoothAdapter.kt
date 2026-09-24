@@ -20,11 +20,8 @@ class BluetoothAdapter(
         parent: ViewGroup, viewType: Int
     ): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.device_item, parent, false)
-
-
         return ViewHolder(view)
     }
-
     override fun onBindViewHolder(
         holder: ViewHolder, position: Int
     ) {
@@ -33,7 +30,6 @@ class BluetoothAdapter(
             holder.devName.text = data.deviceName
             holder.macAdd.text = data.macAddress
             holder.rxxi.text = data.rssi.toString()
-
         }
         holder.itemView.setOnClickListener {
             ReusableFunctions.DefaultAlertDialog(

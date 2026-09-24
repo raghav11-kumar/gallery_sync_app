@@ -20,8 +20,8 @@ class MQTTFragment : Fragment(R.layout.fragment_mqtt_frag) {
             mqttManager.connect()
             binding.subText1.setOnClickListener {
                 mqttManager.publish()
-
             }
+
         }catch (e: Exception){
             Log.e("MQQT","error ${e.message}")
         }

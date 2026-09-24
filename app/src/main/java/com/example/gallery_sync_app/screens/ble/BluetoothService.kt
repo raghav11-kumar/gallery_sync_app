@@ -52,7 +52,7 @@ class BluetoothService(val context: Context) {
     private val serviceUuid = UUID.fromString("d43e0800-d5a5-d3e5-b13e-3922431410be")
     private val meteringUUID = UUID.fromString("d43e0822-d5a5-d3e5-b13e-3922431410be")
     private val characteristicUUId = UUID.fromString("d43e0811-d5a5-d3e5-b13e-3922431410be")
-    private val cccdUuid = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
+    private val ccdUuid = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
 
 
     private var isConnected = MutableStateFlow(false)
@@ -145,7 +145,7 @@ class BluetoothService(val context: Context) {
                     }
                 }
                 if (newState == BluetoothGatt.STATE_DISCONNECTED) {
-                    Log.e("BLESERVICE","State_DISCONNECTED")
+                    Log.e("BLESERVICE", "State_DISCONNECTED")
                     pollingJob?.cancel()
                     serviceScope.launch {
                         errorFlow.emit("Bluetooth DisConnected")
@@ -276,7 +276,7 @@ class BluetoothService(val context: Context) {
                 pollingJob?.cancel()
                 pollingJob = serviceScope.launch {
                     while (true) {
-                requestMeteringData()
+                        requestMeteringData()
                         delay(6000.milliseconds) // Wait 3 seconds
                     }
                 }
@@ -314,7 +314,7 @@ class BluetoothService(val context: Context) {
                             "BLESERVICE",
                             "meteringCharacteristic Notification Enabled = $notificationEnabled"
                         )
-                        val descriptor = meteringCharacteristic.getDescriptor(cccdUuid)
+                        val descriptor = meteringCharacteristic.getDescriptor(ccdUuid)
                         descriptor.value = BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
                         gatt.writeDescriptor(descriptor)
 

@@ -10,12 +10,11 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
-class MQTTManager{
+class MQTTManager {
 
     private val serverUrl = "tcp://10.30.41.123:1883"
 
-    private val clientId =
-        "android_${System.currentTimeMillis()}"
+    private val clientId = "android_${System.currentTimeMillis()}"
 
     private val client = MqttClient(
         serverUrl,
@@ -24,12 +23,10 @@ class MQTTManager{
     )
 
     fun connect() {
-
         if (client.isConnected) {
             Log.d("MQTT", "Already connected")
             return
         }
-
         CoroutineScope(Dispatchers.IO).launch {
 
             try {
@@ -113,7 +110,8 @@ class MQTTManager{
             }
         }
     }
-     fun publish(){
+
+    fun publish() {
         try {
             if (!client.isConnected) {
                 Log.e(
@@ -122,12 +120,12 @@ class MQTTManager{
                 )
                 return
             }
-            val payload=byteArrayOf(1,2,3)
-            client.publish("text/sendMessage",payload,1,true)
+            val payload = byteArrayOf(1, 2, 3)
+            val response = client.publish("text/sendMessage", payload, 1, true)
 
 
-        }catch (e: Exception){
-            Log.e("MQTT","Publish Failed${e.message}")
+        } catch (e: Exception) {
+            Log.e("MQTT", "Publish Failed${e.message}")
         }
     }
 
