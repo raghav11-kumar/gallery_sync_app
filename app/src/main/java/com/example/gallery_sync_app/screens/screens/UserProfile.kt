@@ -116,7 +116,7 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
             if (isEditing) {
                 textId.isEnabled = true
                 textId.requestFocus()
-                textId.setSelection(textId.text.length)
+                textId.setSelection(bindingEx.userProfileName.text!!.length)
                 bindingEx.editNameIcon.setImageResource(R.drawable.outline_close_24)
                 val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(textId, InputMethodManager.SHOW_IMPLICIT)

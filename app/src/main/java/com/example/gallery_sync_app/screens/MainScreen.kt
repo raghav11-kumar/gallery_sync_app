@@ -14,7 +14,6 @@ import com.example.gallery_sync_app.R
 import com.example.gallery_sync_app.databinding.ActivityMainScreenBinding
 import com.example.gallery_sync_app.screens.Authentication.AuthenticationViewModel
 import com.example.gallery_sync_app.screens.gallery.GalleryViewModel
-import com.example.gallery_sync_app.screens.websockets.WebSocketsManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -26,7 +25,6 @@ class MainScreen : AppCompatActivity() {
 
     private var showMenu = false
     private var isEditMode = false
-    private val webSocketsManager = WebSocketsManager()
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -50,7 +48,7 @@ class MainScreen : AppCompatActivity() {
             insets
         }
 
-        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU && androidx.core.app.ActivityCompat.checkSelfPermission(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && androidx.core.app.ActivityCompat.checkSelfPermission(
                 this, android.Manifest.permission.POST_NOTIFICATIONS
             ) != android.content.pm.PackageManager.PERMISSION_GRANTED
         ) {
@@ -66,22 +64,22 @@ class MainScreen : AppCompatActivity() {
         val userInfo = authVm.UserInformation
         val context = this
         val navHostFragment =
-            supportFragmentManager.findFragmentById(com.example.gallery_sync_app.R.id.frag_cont) as androidx.navigation.fragment.NavHostFragment
+            supportFragmentManager.findFragmentById(R.id.frag_cont) as androidx.navigation.fragment.NavHostFragment
         val navController = navHostFragment.navController
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             showMenu = false
             when (destination.id) {
-                com.example.gallery_sync_app.R.id.logoScreen -> {
-                    binding.appBarLayout.visibility = android.view.View.GONE
+                R.id.logoScreen, R.id.loginFragScreen, R.id.signInFragScreen, R.id.bleInfo -> {
+                    binding.appBarLayout.visibility = View.GONE
                 }
 
-                com.example.gallery_sync_app.R.id.buttonHolderFragScreen -> {
+                R.id.buttonHolderFragScreen -> {
 
-                    binding.appBarLayout.visibility = android.view.View.VISIBLE
-                    binding.buttonProfileImageView.visibility = android.view.View.VISIBLE
+                    binding.appBarLayout.visibility = View.VISIBLE
+                    binding.buttonProfileImageView.visibility = View.VISIBLE
                     supportActionBar?.title =
-                        getString(com.example.gallery_sync_app.R.string.main_screen_header)
+                        getString(R.string.main_screen_header)
 
                     lifecycleScope.launch {
                         userInfo.collect {
@@ -90,55 +88,45 @@ class MainScreen : AppCompatActivity() {
                         }
                     }
                     binding.buttonProfileImageView.setOnClickListener {
-                        navController.navigate(com.example.gallery_sync_app.R.id.navigateMainToUserProfile)
+                        navController.navigate(R.id.navigateMainToUserProfile)
                     }
                 }
 
-                com.example.gallery_sync_app.R.id.galleryFragScreen -> {
+                R.id.galleryFragScreen -> {
                     lifecycleScope.launch {
                         galleryVm.isUploading.collect {
                             binding.appBarLayout.visibility =
-                                if (it) android.view.View.GONE else android.view.View.VISIBLE
+                                if (it) View.GONE else View.VISIBLE
                         }
                     }
                     supportActionBar?.title = getString(R.string.gallery_)
-                    binding.buttonProfileImageView.visibility = android.view.View.GONE
+                    binding.buttonProfileImageView.visibility = View.GONE
 
                     showMenu = true
                 }
 
-                com.example.gallery_sync_app.R.id.userProfile -> {
-                    binding.buttonProfileImageView.visibility = android.view.View.GONE
+                R.id.userProfile -> {
+                    binding.buttonProfileImageView.visibility = View.GONE
                 }
 
-                com.example.gallery_sync_app.R.id.webSocketFragScreen -> {
+                R.id.webSocketFragScreen -> {
                     supportActionBar?.title = getString(R.string.webSockets)
-                    binding.buttonProfileImageView.visibility = android.view.View.GONE
+                    binding.buttonProfileImageView.visibility = View.GONE
                 }
 
-                com.example.gallery_sync_app.R.id.bleFragScreen -> {
+                R.id.bleFragScreen -> {
                     supportActionBar?.title = getString(R.string.ble)
-                    binding.buttonProfileImageView.visibility = android.view.View.GONE
+                    binding.buttonProfileImageView.visibility = View.GONE
                 }
 
-                com.example.gallery_sync_app.R.id.loginFragScreen -> {
-                    binding.appBarLayout.visibility = android.view.View.GONE
-                }
 
-                com.example.gallery_sync_app.R.id.signInFragScreen -> {
-                    binding.appBarLayout.visibility = android.view.View.GONE
-
-                }
-
-                com.example.gallery_sync_app.R.id.bleInfo -> {
-
-                    binding.buttonProfileImageView.visibility = android.view.View.GONE
-
+                R.id.mqqtFragScreen -> {
+                    supportActionBar?.title =
+                        getString(com.example.gallery_sync_app.R.string.mqqt)
+                    binding.buttonProfileImageView.visibility = View.GONE
 
                 }
-  R.id.mqqtFragScreen->{
-      binding.appBarLayout.visibility= View.GONE
-  }
+
                 else -> {
                     binding.appBarLayout.visibility = android.view.View.VISIBLE
                 }
@@ -148,20 +136,20 @@ class MainScreen : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: android.view.Menu?): Boolean {
-        menuInflater.inflate(com.example.gallery_sync_app.R.menu.app_menu, menu)
+        menuInflater.inflate(R.menu.app_menu, menu)
         return true
     }
 
     override fun onPrepareOptionsMenu(menu: android.view.Menu?): Boolean {
-        val editItem = menu?.findItem(com.example.gallery_sync_app.R.id.editIcon)
+        val editItem = menu?.findItem(R.id.editIcon)
 
-        menu?.findItem(com.example.gallery_sync_app.R.id.addIcon)?.isVisible = showMenu
+        menu?.findItem(R.id.addIcon)?.isVisible = showMenu
         editItem?.isVisible = showMenu
 
         if (isEditMode) {
-            editItem?.setIcon(com.example.gallery_sync_app.R.drawable.outline_close_24)
+            editItem?.setIcon(R.drawable.outline_close_24)
         } else {
-            editItem?.setIcon(com.example.gallery_sync_app.R.drawable.outline_edit_24)
+            editItem?.setIcon(R.drawable.outline_edit_24)
         }
 
         return super.onPrepareOptionsMenu(menu)
@@ -169,12 +157,12 @@ class MainScreen : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: android.view.MenuItem): Boolean {
         return when (item.itemId) {
-            com.example.gallery_sync_app.R.id.addIcon -> {
+            R.id.addIcon -> {
                 galleryVm.openGallery()
                 true
             }
 
-            com.example.gallery_sync_app.R.id.editIcon -> {
+            R.id.editIcon -> {
                 galleryVm.openEdit()
                 true
             }

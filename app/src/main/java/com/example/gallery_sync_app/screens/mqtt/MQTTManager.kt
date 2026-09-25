@@ -7,7 +7,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended
 import org.eclipse.paho.client.mqttv3.MqttClient
@@ -25,6 +27,8 @@ class MQTTManager {
     private val mqttResponse = MutableSharedFlow<MqttResponse?>(2)
     val mqttEvents = mqttResponse.asSharedFlow()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val connected = MutableStateFlow(false)
+    val isConnected = connected.asStateFlow()
 
     private val clientId =
         "android_${System.currentTimeMillis()}"
@@ -62,6 +66,7 @@ class MQTTManager {
                         reconnect: Boolean,
                         serverURI: String?
                     ) {
+                        connected.value = true
                         Log.d(
                             TAG,
                             "Connected: $serverURI"
@@ -73,7 +78,7 @@ class MQTTManager {
                     override fun connectionLost(
                         cause: Throwable?
                     ) {
-
+                        connected.value = false
                         Log.e(
                             TAG,
                             "Connection lost",
@@ -174,6 +179,7 @@ class MQTTManager {
             if (client.isConnected) {
 
                 client.disconnect()
+                connected.value = false
 
                 Log.d(
                     TAG,

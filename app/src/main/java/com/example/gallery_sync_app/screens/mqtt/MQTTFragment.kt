@@ -23,6 +23,15 @@ class MQTTFragment : Fragment(R.layout.fragment_mqtt_frag) {
             Log.d("MQTT", "onViewCreated")
             super.onViewCreated(view, savedInstanceState)
             val binding = FragmentMqttFragBinding.bind(view)
+            viewLifecycleOwner.lifecycleScope.launch {
+                mqttVm.isConnected.collect { isConnected ->
+                    binding.dataHead.text =
+                        if (isConnected) getString(R.string.connected) else getString(R.string.notCon)
+                }
+            }
+            binding.TitleHead.text = getString(R.string.mqqt)
+
+
 
 
 
@@ -47,7 +56,6 @@ class MQTTFragment : Fragment(R.layout.fragment_mqtt_frag) {
     override fun onStart() {
         super.onStart()
         mqttVm.connect()
-
     }
 
     override fun onDestroyView() {

@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class MqttViewModel @Inject constructor (
+class MqttViewModel @Inject constructor(
     private val mqttManager: MQTTManager
 ) : ViewModel() {
 
@@ -25,4 +25,6 @@ class MqttViewModel @Inject constructor (
     fun disconnect() {
         mqttManager.disconnect()
     }
+
+    val isConnected = mqttManager.isConnected
 }
