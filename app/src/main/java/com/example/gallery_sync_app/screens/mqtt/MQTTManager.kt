@@ -1,8 +1,15 @@
 package com.example.gallery_sync_app.screens.mqtt
 
 import android.util.Log
+import com.example.gallery_sync_app.screens.mqtt.data.MqttResponse
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended
 import org.eclipse.paho.client.mqttv3.MqttClient
@@ -10,23 +17,32 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions
 import org.eclipse.paho.client.mqttv3.MqttMessage
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence
 
-class MQTTManager{
+class MQTTManager {
 
-    private val serverUrl = "tcp://10.30.41.123:1883"
+    private val TAG = "MQTT"
+    private val serverUrl = "ssl://9601e0f2642f40ad9f88d34a4f33cc15.s1.eu.hivemq.cloud:8883"
+    private val password = "Blaze@4321"
+    private val gson = Gson()
+
+    private val mqttResponse = MutableSharedFlow<MqttResponse?>(2)
+    val mqttEvents = mqttResponse.asSharedFlow()
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val connected = MutableStateFlow(false)
+    val isConnected = connected.asStateFlow()
 
     private val clientId =
         "android_${System.currentTimeMillis()}"
-
-    private val client = MqttClient(
-        serverUrl,
-        clientId,
-        MemoryPersistence()
-    )
+    private val client =
+        MqttClient(
+            serverUrl,
+            clientId,
+            MemoryPersistence()
+        )
 
     fun connect() {
-
+        Log.e(TAG, "Fun Called")
         if (client.isConnected) {
-            Log.d("MQTT", "Already connected")
+            Log.d(TAG, "Already connected")
             return
         }
 
@@ -34,11 +50,14 @@ class MQTTManager{
 
             try {
 
+
                 val options = MqttConnectOptions().apply {
-                    keepAliveInterval = 60
-                    connectionTimeout = 60
+                    keepAliveInterval = 80
+                    connectionTimeout = 80
                     isAutomaticReconnect = true
                     isCleanSession = true
+                    userName = "listner"
+                    password = this@MQTTManager.password.toCharArray()
                 }
 
                 client.setCallback(object : MqttCallbackExtended {
@@ -47,21 +66,21 @@ class MQTTManager{
                         reconnect: Boolean,
                         serverURI: String?
                     ) {
-
+                        connected.value = true
                         Log.d(
-                            "MQTT",
+                            TAG,
                             "Connected: $serverURI"
                         )
+                        subscribe("test/events", 1)
 
-                        subscribe("test/home")
                     }
 
                     override fun connectionLost(
                         cause: Throwable?
                     ) {
-
+                        connected.value = false
                         Log.e(
-                            "MQTT",
+                            TAG,
                             "Connection lost",
                             cause
                         )
@@ -71,16 +90,23 @@ class MQTTManager{
                         topic: String?,
                         message: MqttMessage?
                     ) {
+                        Log.d(TAG, "Message Arrived on topic: $topic")
 
-                        Log.d(
-                            "MQTT",
-                            "Topic: $topic"
-                        )
+                        val json = message?.payload?.decodeToString() ?: message?.toString() ?: ""
+                        Log.d(TAG, "Raw Message String: $json")
 
-                        Log.d(
-                            "MQTT",
-                            "Message: ${message?.toString()}"
-                        )
+                        try {
+                            val parsedResponse = gson.fromJson(
+                                json,
+                                MqttResponse::class.java
+                            )
+                            Log.d(TAG, "Parsed MqttResponse: $parsedResponse")
+                            scope.launch {
+                                mqttResponse.emit(parsedResponse)
+                            }
+                        } catch (e: Exception) {
+                            Log.e(TAG, "Error parsing JSON to MqttResponse", e)
+                        }
                     }
 
                     override fun deliveryComplete(
@@ -88,7 +114,7 @@ class MQTTManager{
                     ) {
 
                         Log.d(
-                            "MQTT",
+                            TAG,
                             "Delivery complete"
                         )
                     }
@@ -97,41 +123,24 @@ class MQTTManager{
                 client.connect(options)
 
                 Log.d(
-                    "MQTT",
+                    TAG,
                     "Connected successfully"
                 )
 
-                subscribe("test/home")
 
             } catch (e: Exception) {
 
                 Log.e(
-                    "MQTT",
+                    TAG,
+
                     "Connection failed",
                     e
                 )
             }
         }
     }
-     fun publish(){
-        try {
-            if (!client.isConnected) {
-                Log.e(
-                    "MQTT",
-                    "Cannot publish. Client not connected."
-                )
-                return
-            }
-            val payload=byteArrayOf(1,2,3)
-            client.publish("text/sendMessage",payload,1,true)
 
-
-        }catch (e: Exception){
-            Log.e("MQTT","Publish Failed${e.message}")
-        }
-    }
-
-    private fun subscribe(
+    fun subscribe(
         topic: String,
         qos: Int = 1
     ) {
@@ -140,7 +149,7 @@ class MQTTManager{
 
             if (!client.isConnected) {
                 Log.e(
-                    "MQTT",
+                    TAG,
                     "Cannot subscribe. Client not connected."
                 )
                 return
@@ -149,14 +158,14 @@ class MQTTManager{
             client.subscribe(topic, qos)
 
             Log.d(
-                "MQTT",
+                TAG,
                 "Subscribed to $topic"
             )
 
         } catch (e: Exception) {
 
             Log.e(
-                "MQTT",
+                TAG,
                 "Subscribe failed",
                 e
             )
@@ -170,9 +179,10 @@ class MQTTManager{
             if (client.isConnected) {
 
                 client.disconnect()
+                connected.value = false
 
                 Log.d(
-                    "MQTT",
+                    TAG,
                     "Disconnected"
                 )
             }
@@ -180,7 +190,7 @@ class MQTTManager{
         } catch (e: Exception) {
 
             Log.e(
-                "MQTT",
+                TAG,
                 "Disconnect failed",
                 e
             )

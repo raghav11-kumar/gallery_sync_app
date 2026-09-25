@@ -18,7 +18,10 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
     lateinit var binding: FragmentSignInScreenBinding
+<<<<<<< HEAD:app/src/main/java/com/example/gallery_sync_app/screens/authentication/SignInScreen.kt
     var webSocketsManager = WebSocketsManager()
+=======
+>>>>>>> 68cd230654625a7bfe4f3923229c9c5188cc6e5f:app/src/main/java/com/example/gallery_sync_app/screens/Authentication/SignInScreen.kt
     private val authVm: AuthenticationViewModel by activityViewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,7 +55,6 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
             }
         }
         signInButton.setOnClickListener {
-            webSocketsManager.sendMessage("Wassup")
 
             val email = binding.singInUserGmail.text.toString()
             val name = binding.signInUserName.text.toString()
@@ -69,8 +71,13 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
                 ReusableFunctions.DefaultAlertDialog(
                     view.context,
                     "Password Must Be At Least 6 Characters",
+<<<<<<< HEAD:app/src/main/java/com/example/gallery_sync_app/screens/authentication/SignInScreen.kt
                     "Got it",
                     "Cancel"
+=======
+                    "Sure",
+                    "No"
+>>>>>>> 68cd230654625a7bfe4f3923229c9c5188cc6e5f:app/src/main/java/com/example/gallery_sync_app/screens/Authentication/SignInScreen.kt
                 ) {
                     //do some Action On positive Button Click
                 }
@@ -79,7 +86,11 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
                 ReusableFunctions.DefaultAlertDialog(
                     view.context,
                     "Please Enter Valid Email",
+<<<<<<< HEAD:app/src/main/java/com/example/gallery_sync_app/screens/authentication/SignInScreen.kt
                     "Got it",
+=======
+                    "Sure",
+>>>>>>> 68cd230654625a7bfe4f3923229c9c5188cc6e5f:app/src/main/java/com/example/gallery_sync_app/screens/Authentication/SignInScreen.kt
                     "No"
                 ) {
                     //do some Action On positive Button Click

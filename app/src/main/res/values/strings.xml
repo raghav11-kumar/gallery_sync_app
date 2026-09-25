@@ -1,5 +1,9 @@
 <resources>
+<<<<<<< HEAD
     <string name="app_name">sync</string>
+=======
+    <string name="app_name">gallery_sync</string>
+>>>>>>> 68cd230654625a7bfe4f3923229c9c5188cc6e5f
     <string name="text_value">SongName</string>
     <string-array name="song_list">
         <item>payPhone</item>
@@ -67,7 +71,7 @@
     <string name="etHead">Event Type</string>
     <string name="lpHead">Last Update</string>
     <string name="sub">Subscribe</string>
-    <string name="mqqt">Mqqt</string>
+    <string name="mqqt">MQTT</string>
     <string name="scanner">Scan Devices</string>
     <string name="deviceName">DeviceName</string>
     <string name="macAdd">Mac Address</string>
@@ -82,7 +86,7 @@
     <string name="charUUid">Characteristic UUID</string>
     <string name="serUUID">Service UUID</string>
     <string name="bondState">Bond State</string>
-<string name="noImagesIcon">No Images Available</string>
+    <string name="noImagesIcon">No Images Available</string>
     <string name="wait">Wait Until It Loads</string>
     <string name="connecting_message">Connecting to device, please wait...</string>
     <string name="connection_failed">Connection failed. Please try again.</string>
@@ -90,5 +94,11 @@
     <string name="pt">PT</string>
     <string name="st">ST</string>
     <string name="qt">QT</string>
+    <string name="title">Title</string>
+    <string name="eventType">Event Type</string>
+    <string name="eventId">Event Id</string>
+    <string name="timestamp">Time Stamp</string>
+    <string name="source">Source</string>
+    <string name="message">Message</string>
 
 </resources>

@@ -56,9 +56,10 @@ class RecyclerAdapterImp(
         holder.deleteId.setOnClickListener {
             ReusableFunctions.DefaultAlertDialog(
                 context,
-                "ARE YOU SURE YOU WANT TO DELETE",
-                "YES",
-                "NO"
+                "This Image Will Be Permanently Deleted And Cannot Be Recovered." +
+                        "Are You Sure You Want To Continue ?",
+                "Delete",
+                "Cancel"
             ) {
                 onDelete(list[position])
             }
