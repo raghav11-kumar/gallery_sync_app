@@ -29,7 +29,7 @@ class MQTTFragment : Fragment(R.layout.fragment_mqtt_frag) {
                         if (isConnected) getString(R.string.connected) else getString(R.string.notCon)
                 }
             }
-            binding.TitleHead.text = getString(R.string.mqqt)
+            binding.titleHead.text = getString(R.string.mqqt)
 
 
 
@@ -41,7 +41,7 @@ class MQTTFragment : Fragment(R.layout.fragment_mqtt_frag) {
                         response?.let {
                             binding.eventId.text = it.eventId ?: "-"
                             binding.sourceId.text = it.source ?: "-"
-                            binding.messageID.text = it.message ?: "-"
+                            binding.messageId.text = it.message ?: "-"
                             binding.timeStampId.text = it.timeStamp ?: "-"
                             binding.eventData.text = it.eventType ?: "-"
                         }

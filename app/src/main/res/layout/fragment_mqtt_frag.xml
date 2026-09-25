@@ -21,7 +21,7 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/TitleHead"
+            android:id="@+id/titleHead"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -158,7 +158,7 @@
                 android:textColor="?attr/colorOutline" />
 
             <TextView
-                android:id="@+id/messageID"
+                android:id="@+id/messageId"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
