@@ -30,7 +30,9 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
             authVm.errorFlowing.collect { message ->
                 ReusableFunctions.DefaultAlertDialog(
                     view.context, message, "OK", "Cancel"
-                ) {}
+                ) {
+
+                }
             }
         }
 
@@ -46,6 +48,7 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
                     }
 
                     else -> {
+
                     }
                 }
 
