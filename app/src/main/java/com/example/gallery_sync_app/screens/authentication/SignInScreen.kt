@@ -18,10 +18,7 @@ import kotlinx.coroutines.launch
 @AndroidEntryPoint
 class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
     lateinit var binding: FragmentSignInScreenBinding
-<<<<<<< HEAD:app/src/main/java/com/example/gallery_sync_app/screens/authentication/SignInScreen.kt
-    var webSocketsManager = WebSocketsManager()
-=======
->>>>>>> 68cd230654625a7bfe4f3923229c9c5188cc6e5f:app/src/main/java/com/example/gallery_sync_app/screens/Authentication/SignInScreen.kt
+     var webSocketsManager= WebSocketsManager()
     private val authVm: AuthenticationViewModel by activityViewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -55,6 +52,7 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
             }
         }
         signInButton.setOnClickListener {
+            webSocketsManager.sendMessage("Wassup")
 
             val email = binding.singInUserGmail.text.toString()
             val name = binding.signInUserName.text.toString()
@@ -62,37 +60,15 @@ class SignInScreen : Fragment(R.layout.fragment_sign_in_screen) {
 
             if (ReusableFunctions.areStringsEmpty(name, email, pass)) {
                 ReusableFunctions.DefaultAlertDialog(
-                    view.context,
-                    "Opps! Looks like you missed a few details.please Fill in all Blanks",
-                    "Got it",
-                    "Cancel",
+                    view.context, "Fill The Email ,Name and Password", "Sure", "Cancel",
                 ) {}
             } else if (pass.length < 6) {
-                ReusableFunctions.DefaultAlertDialog(
-                    view.context,
-                    "Password Must Be At Least 6 Characters",
-<<<<<<< HEAD:app/src/main/java/com/example/gallery_sync_app/screens/authentication/SignInScreen.kt
-                    "Got it",
-                    "Cancel"
-=======
-                    "Sure",
-                    "No"
->>>>>>> 68cd230654625a7bfe4f3923229c9c5188cc6e5f:app/src/main/java/com/example/gallery_sync_app/screens/Authentication/SignInScreen.kt
-                ) {
-                    //do some Action On positive Button Click
-                }
+                ReusableFunctions.DefaultAlertDialog(view.context,"Password Must Be At Least 6 Characters","Sure","No"){
+                //do some Action On positive Button Click
+            }
 
             } else if (!email.matches(DefaultValues.emailRegex)) {
-                ReusableFunctions.DefaultAlertDialog(
-                    view.context,
-                    "Please Enter Valid Email",
-<<<<<<< HEAD:app/src/main/java/com/example/gallery_sync_app/screens/authentication/SignInScreen.kt
-                    "Got it",
-=======
-                    "Sure",
->>>>>>> 68cd230654625a7bfe4f3923229c9c5188cc6e5f:app/src/main/java/com/example/gallery_sync_app/screens/Authentication/SignInScreen.kt
-                    "No"
-                ) {
+                ReusableFunctions.DefaultAlertDialog(view.context,"Please Enter Valid Email","Sure","No"){
                     //do some Action On positive Button Click
                 }
             } else {

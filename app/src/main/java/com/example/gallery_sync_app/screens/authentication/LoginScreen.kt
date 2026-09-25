@@ -64,27 +64,14 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
             Log.e("Fragment", "loginButton is clickable")
             if (ReusableFunctions.areStringsEmpty(userEmail, passWord)) {
                 ReusableFunctions.DefaultAlertDialog(
-                    view.context,
-                    "Opps! Looks like you missed a few details.please Fill in all Blanks",
-                    "Got it",
-                    "Cancel",
+                    view.context, "Fill The Email ,Name And PassWord", "Sure", "No",
                 ) {}
             } else if (passWord.length < 6) {
-                ReusableFunctions.DefaultAlertDialog(
-                    view.context,
-                    "Password Must Be At Least 6 Characters",
-                    "Got it",
-                    "Cancel"
-                ) {
+                ReusableFunctions.DefaultAlertDialog(view.context,"Password Must Be At Least 6 Characters","Sure","No"){
                     //do some Action On positive Button Click
                 }
             } else if (!userEmail.matches(DefaultValues.emailRegex)) {
-                ReusableFunctions.DefaultAlertDialog(
-                    view.context,
-                    "Please Enter Valid Email",
-                    "Got it",
-                    "Cancel"
-                ) {
+                ReusableFunctions.DefaultAlertDialog(view.context,"Please Enter Valid Email","Sure","No"){
                     //do some Action On positive Button Click
                 }
             } else {

@@ -38,7 +38,7 @@
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/GalleryButton"
+            android:id="@+id/Gallery_button"
             android:layout_width="200dp"
             android:layout_height="60dp"
             android:layout_marginBottom="24dp"
