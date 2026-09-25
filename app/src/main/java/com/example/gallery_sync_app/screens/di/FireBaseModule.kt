@@ -24,5 +24,4 @@ class FireBaseModule {
     @Singleton
     fun provideFcm() = FirebaseMessaging.getInstance()
 
-
 }

@@ -31,7 +31,9 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
             authVm.errorFlowing.collect { message ->
                 ReusableFunctions.DefaultAlertDialog(
                     view.context, message, "OK", "Cancel"
-                ) {}
+                ) {
+
+                }
             }
         }
 
@@ -67,11 +69,21 @@ class LoginScreen : Fragment(R.layout.fragment_login_screen) {
                     view.context, "Fill The Email ,Name And PassWord", "Sure", "No",
                 ) {}
             } else if (passWord.length < 6) {
-                ReusableFunctions.DefaultAlertDialog(view.context,"Password Must Be At Least 6 Characters","Sure","No"){
+                ReusableFunctions.DefaultAlertDialog(
+                    view.context,
+                    "Password Must Be At Least 6 Characters",
+                    "Sure",
+                    "No"
+                ) {
                     //do some Action On positive Button Click
                 }
             } else if (!userEmail.matches(DefaultValues.emailRegex)) {
-                ReusableFunctions.DefaultAlertDialog(view.context,"Please Enter Valid Email","Sure","No"){
+                ReusableFunctions.DefaultAlertDialog(
+                    view.context,
+                    "Please Enter Valid Email",
+                    "Sure",
+                    "No"
+                ) {
                     //do some Action On positive Button Click
                 }
             } else {

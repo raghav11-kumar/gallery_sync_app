@@ -13,6 +13,7 @@ import com.example.gallery_sync_app.screens.services.NotificationService
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -32,40 +33,38 @@ class AuthenticationViewModel @Inject constructor(
 
     ) : ViewModel() {
     //keeps track User Login Status
+    private val TAG: String = "AUTHVM"
+
     private val isLoggedIn = MutableStateFlow(UserStatus.Unknown)
     val isIn = isLoggedIn.asStateFlow()
 
     private val errorFlow = MutableSharedFlow<String>()
     val errorFlowing = errorFlow.asSharedFlow()
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
+    private val isLoadingState = MutableStateFlow(false)
+    val isLoading = isLoadingState.asStateFlow()
 
-    private val _isImageLoading = MutableStateFlow(false)
-    val isImageLoading = _isImageLoading.asStateFlow()
+    private val isImageLoadingState = MutableStateFlow(false)
+    val isImageLoading = isImageLoadingState.asStateFlow()
 
-    private val _userId = MutableStateFlow(fbAuth.uid ?: "")
+    private val userId = MutableStateFlow(fbAuth.uid ?: "")
     //Gets The Data From Room by Flow .  When Changes Occur In Db   Automatically Updates ui
 
-    val UserInformation = _userId.flatMapLatest { uid ->
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val userInformation = userId.flatMapLatest { uid ->
         repo.getUser(uid)
     }
 
     private val imageInfo = MutableStateFlow<ImagBBResponse?>(null)
-    val ImageInformation = imageInfo
-
-
-
 
 
     fun signIn(userName: String, userEmail: String, passWord: String) {
         viewModelScope.launch {
-            _isLoading.value = true
+            isLoadingState.value = true
             try {
                 // 1. Wait for Firebase to create the user
                 val authResult =
-                    fbAuth.createUserWithEmailAndPassword(userEmail.trim(), passWord.trim())
-                        .await()
+                    fbAuth.createUserWithEmailAndPassword(userEmail.trim(), passWord.trim()).await()
                 val newUid = authResult.user?.uid ?: ""
 
                 if (newUid.isNotEmpty()) {
@@ -73,17 +72,17 @@ class AuthenticationViewModel @Inject constructor(
                     repo.saveUser(UserData(newUid, userName, userEmail))
 
                     localDataSaver.saveUser(userEmail)
-                    _userId.value = newUid
+                    userId.value = newUid
                     isLoggedIn.value = UserStatus.Success
 
-                    Log.e("AuthVM", "SuccessFul Sign In")
+                    Log.e(TAG, "SuccessFul Sign In")
                 }
             } catch (e: Exception) {
                 isLoggedIn.value = UserStatus.Failure
                 errorFlow.emit(e.message ?: "Failed Sign In")
-                Log.e("AuthVM", "Failed Sign In ${e.message}")
+                Log.e(TAG, "Failed Sign In ${e.message}")
             } finally {
-                _isLoading.value = false
+                isLoadingState.value = false
             }
         }
     }
@@ -91,25 +90,25 @@ class AuthenticationViewModel @Inject constructor(
     //if The User already Signed In?can use login
     fun login(email: String, passWord: String) {
         viewModelScope.launch {
-            _isLoading.value = true
+            isLoadingState.value = true
             try {
                 fbAuth.signInWithEmailAndPassword(email, passWord).await()
                 val newUid = fbAuth.uid ?: ""
 
                 if (newUid.isNotEmpty()) {
                     localDataSaver.saveUser(email)
-                    _userId.value = newUid
+                    userId.value = newUid
                     isLoggedIn.value = UserStatus.Success
                     repo.saveUserLocally(newUid)
-                    Log.e("AuthVM", "SuccessFul Sign In")
+                    Log.e(TAG, "SuccessFul Sign In")
                 }
 
             } catch (e: Exception) {
-                Log.e("AuthVm", "Failed To Login ${e.message}")
+                Log.e(TAG, "Failed To Login ${e.message}")
                 isLoggedIn.value = UserStatus.Failure
                 errorFlow.emit(e.message ?: "Failed To Login")
             } finally {
-                _isLoading.value = false
+                isLoadingState.value = false
             }
 
         }
@@ -132,25 +131,24 @@ class AuthenticationViewModel @Inject constructor(
     }
 
 
-
     //sends Image To ImgBB And gets The Response
     fun saveImage(uri: Uri) {
         val apiKey = "f06041a98c3e3556f51266c55a27e4b6"
         val multipartData = repo.convertUriToImage(uri)
         multipartData.onSuccess {
             viewModelScope.launch {
-                _isImageLoading.value = true
+                isImageLoadingState.value = true
                 val response = repo.sendImage(
                     apiKey = apiKey, it
                 )
                 response.onSuccess {
-                    Log.e("AuthVm", "SuccessFully Retrieved Image ${it}")
+                    Log.e(TAG, "SuccessFully Retrieved Image ${it}")
                     imageInfo.value = it
-                    _isImageLoading.value = false
+                    isImageLoadingState.value = false
                 }
                 response.onFailure {
-                    Log.e("AuthVm", "Failed TO Send IMage ${it.message}")
-                    _isImageLoading.value = false
+                    Log.e(TAG, "Failed TO Send IMage ${it.message}")
+                    isImageLoadingState.value = false
                     errorFlow.emit(it.message ?: "Failed to upload image")
                 }
 
@@ -164,29 +162,33 @@ class AuthenticationViewModel @Inject constructor(
 
     fun logOut() {
         viewModelScope.launch {
-            _isLoading.value = true
+            isLoadingState.value = true
             try {
                 repo.clearAllData()
                 fbAuth.signOut()
                 //clears the users Log State
                 localDataSaver.clearUser()
                 isLoggedIn.value = UserStatus.NotLogged
-                _userId.value = ""
+                userId.value = ""
             } finally {
-                _isLoading.value = false
+                isLoadingState.value = false
             }
         }
     }
+
     fun updateUserName(name: String) {
         viewModelScope.launch {
-            _isLoading.value = true
+            isLoadingState.value = true
             try {
                 val result = repo.updateUserName(name)
                 result.onFailure {
                     errorFlow.emit(it.message ?: "Update Failed")
                 }
+                result.onSuccess {
+                    Log.d(TAG, "SuccessFully Updated UserName")
+                }
             } finally {
-                _isLoading.value = false
+                isLoadingState.value = false
             }
         }
     }

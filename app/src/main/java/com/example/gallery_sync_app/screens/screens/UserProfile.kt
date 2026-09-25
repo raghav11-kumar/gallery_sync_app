@@ -33,7 +33,7 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
         val textId = bindingEx.userProfileName
         val emailId = bindingEx.userProfileEmail
         val imageId = bindingEx.userProfileImage
-        val editId=bindingEx.editImageFab
+        val editId = bindingEx.editImageFab
         var imageUri: Uri
         val launcher = registerForActivityResult(
             ActivityResultContracts.GetContent()
@@ -46,12 +46,12 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
         viewLifecycleOwner.lifecycleScope.launch {
             authVm.isIn.collect { state ->
 
-                    when(state){
-                        UserStatus.NotLogged -> {
-                            ReusableFunctions.navigateSrcToDest(view, R.id.navigateProfileToLogin)
-                        }
-                        else->{}
+                when (state) {
+                    UserStatus.NotLogged -> {
+                        ReusableFunctions.navigateSrcToDest(view, R.id.navigateProfileToLogin)
+                    }
 
+                    else -> {}
 
 
                 }
@@ -59,9 +59,9 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
             }
         }
         editId.setOnClickListener {
-            it.isEnabled=false
+            it.isEnabled = false
             launcher.launch("image/*")
-            it.postDelayed({it.isEnabled=true},1000)
+            it.postDelayed({ it.isEnabled = true }, 1000)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -89,7 +89,7 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            authVm.UserInformation.collect { user ->
+            authVm.userInformation.collect { user ->
                 if (user != null) {
 
                     Log.e("UserProfileFrag", "The Info has Been called${user}")
@@ -118,14 +118,16 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
                 textId.requestFocus()
                 textId.setSelection(bindingEx.userProfileName.text!!.length)
                 bindingEx.editNameIcon.setImageResource(R.drawable.outline_close_24)
-                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm =
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.showSoftInput(textId, InputMethodManager.SHOW_IMPLICIT)
             } else {
                 val newName = textId.text.toString()
                 authVm.updateUserName(newName)
                 textId.isEnabled = false
                 bindingEx.editNameIcon.setImageResource(R.drawable.outline_edit_24)
-                val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm =
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(textId.windowToken, 0)
             }
         }
@@ -138,8 +140,10 @@ class UserProfile : Fragment(R.layout.fragment_user_profile) {
         }
 
         bindingEx.logoutButton.setOnClickListener {
-            ReusableFunctions.DefaultAlertDialog(view.context,"Are You Sure You Want To LogOut","Yes" +
-                    "","No") {
+            ReusableFunctions.DefaultAlertDialog(
+                view.context, "Are You Sure You Want To LogOut", "Yes" +
+                        "", "No"
+            ) {
                 authVm.logOut()
             }
         }

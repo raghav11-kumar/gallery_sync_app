@@ -61,7 +61,7 @@ class MainScreen : AppCompatActivity() {
             )
         }
 
-        val userInfo = authVm.UserInformation
+        val userInfo = authVm.userInformation
         val context = this
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.frag_cont) as androidx.navigation.fragment.NavHostFragment
@@ -76,8 +76,8 @@ class MainScreen : AppCompatActivity() {
 
                 R.id.buttonHolderFragScreen -> {
 
-                    binding.appBarLayout.visibility = android.view.View.VISIBLE
-                    binding.buttonProfileImageView.visibility = android.view.View.VISIBLE
+                    binding.appBarLayout.visibility = View.VISIBLE
+                    binding.buttonProfileImageView.visibility = View.VISIBLE
                     binding.appBarLayout.visibility = View.VISIBLE
                     binding.buttonProfileImageView.visibility = View.VISIBLE
                     supportActionBar?.title =
