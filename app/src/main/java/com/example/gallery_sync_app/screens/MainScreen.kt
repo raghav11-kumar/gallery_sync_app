@@ -76,13 +76,10 @@ class MainScreen : AppCompatActivity() {
 
                 R.id.buttonHolderFragScreen -> {
 
-<<<<<<< HEAD
                     binding.appBarLayout.visibility = android.view.View.VISIBLE
                     binding.buttonProfileImageView.visibility = android.view.View.VISIBLE
-=======
                     binding.appBarLayout.visibility = View.VISIBLE
                     binding.buttonProfileImageView.visibility = View.VISIBLE
->>>>>>> 68cd230654625a7bfe4f3923229c9c5188cc6e5f
                     supportActionBar?.title =
                         getString(R.string.main_screen_header)
 

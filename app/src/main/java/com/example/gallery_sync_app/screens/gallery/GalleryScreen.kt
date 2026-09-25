@@ -76,14 +76,11 @@ class GalleryScreen : Fragment(R.layout.fragment_gallery_screen) {
                     view.context, message, "OK", "Cancel"
                 ) {
 
-<<<<<<< HEAD
-=======
                     if(Build.VERSION.SDK_INT>=29){
                     val panelIntent= Intent(Settings.Panel.ACTION_WIFI)
                     startActivityForResult(panelIntent,100
                     )
                     }
->>>>>>> 68cd230654625a7bfe4f3923229c9c5188cc6e5f
                 }
             }
         }

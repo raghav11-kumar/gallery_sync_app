@@ -1,9 +1,5 @@
 <resources>
-<<<<<<< HEAD
-    <string name="app_name">sync</string>
-=======
     <string name="app_name">gallery_sync</string>
->>>>>>> 68cd230654625a7bfe4f3923229c9c5188cc6e5f
     <string name="text_value">SongName</string>
     <string-array name="song_list">
         <item>payPhone</item>

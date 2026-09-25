@@ -11,16 +11,13 @@
         android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-<<<<<<< HEAD
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.INJECT_EVENTS" />
-=======
+
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
 
->>>>>>> 68cd230654625a7bfe4f3923229c9c5188cc6e5f
     <application
         android:name=".screens.MyApp"
         android:allowBackup="true"
@@ -50,8 +47,6 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".screens.ble.broadCast.BluetoothReceiver" />
-        <receiver android:name=".screens.ble.broadCast.BluetoothBondStateListener" />
 
 
     </application>
