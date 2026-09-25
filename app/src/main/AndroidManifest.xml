@@ -44,8 +44,7 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".screens.ble.broadCast.BluetoothReceiver" />
-        <receiver android:name=".screens.ble.broadCast.BluetoothBondStateListener" />
+
 
 
     </application>
